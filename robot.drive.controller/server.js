@@ -3,9 +3,17 @@
 //////////////////////////////////////////////////////////////////////
 // arduino backside serial port related stuff
 //////////////////////////////////////////////////////////////////////
+const raspberry2arduinoBaud = 9600;
+//const raspberry2arduinoBaud = 19200;
+//const raspberry2arduinoBaud = 57600;
+//const raspberry2arduinoBaud = 74880;
+//const raspberry2arduinoBaud = 115200;
+//const raspberry2arduinoBaud = 230400;
+//const raspberry2arduinoBaud = 250000;
+//const raspberry2arduinoBaud = 500000;
 const serial = require('serialport');
 const readline = require('@serialport/parser-readline');
-const port = new serial('/dev/ttyACM0', { baudRate: 115200, autoOpen: false });
+const port = new serial('/dev/ttyACM0', { baudRate: raspberry2arduinoBaud, autoOpen: false });
 const parser = port.pipe(new readline({ delimiter: '\n'}));
 
 port.on('open', () => {
@@ -47,8 +55,28 @@ let cmds = '';
 let last = '';
 let msg = '';
 let error = '';
+let thereIsError = false;
+let commandWasSentToArduino = false;
+
+const clearAllStatusVariables = () => {
+    volts = '';
+    amps1 = '';
+    amps2 = '';
+    temp = '';
+    speed1 = '';
+    speed2 = '';
+    cmds = '';
+    last = '';
+    msg = '';
+    error = '';
+    thereIsError = false;
+    commandWasSentToArduino = false;
+}
 
 parser.on('data', data => {
+
+    clearAllStatusVariables();
+
     //console.log(data);
     try {
         const result = JSON.parse(data);
@@ -82,6 +110,7 @@ parser.on('data', data => {
         }
         if (result.error !== undefined) {
             error = result.error;
+            thereIsError = true;
         }
     } catch (error) {
             console.log(data);
@@ -130,6 +159,8 @@ app.get('/arduino/data', respondWithCollectedDataHandler);
 
 ///////arduino command handler command code with gamepad/joystick handler//////////
 const parseAndSendCommandToArduino = (path) => {
+
+    commandWasSentToArduino = false;
 
     const tokens = path.split('/',10);
     //console.log(tokens);
@@ -183,6 +214,12 @@ const parseAndSendCommandToArduino = (path) => {
                         break;
                 }
                 break;
+        case 'clr.usb.err':
+                command = '4';
+                break;
+        case 'clr.num.usb.cmds':
+                command = '5';
+                break;
         case 'version':
                 command = '20';
                 break;
@@ -201,26 +238,31 @@ const parseAndSendCommandToArduino = (path) => {
                 command = '28';
                 break;
         case 'forward':
+                if (thereIsError) { return; }
                 command = '29' + ' ' + parm1 + ' ' + parm2;
                 break;
         case 'backward':
+                if (thereIsError) { return; }
                 command = '32' + ' ' + parm1 + ' ' + parm2;
                 break;
         case 'left':
+                if (thereIsError) { return; }
                 command = '33' + ' ' + parm1 + ' ' + parm2;
                 break;
         case 'right':
+                if (thereIsError) { return; }
                 command = '34' + ' ' + parm1 + ' ' + parm2;
                 break;
 
         default:
-                command = '28';
+                throw 'Unknown command :' + cmd;
                 break;
     }
 
 
     console.log(command);
     //return;
+    commandWasSentToArduino = true;
     port.write(command + '\n', error => {
         if (error) {
             console.log('Error sending data to arduino: ', error.message);
@@ -234,9 +276,16 @@ const commandHandler = (request, response) => {
 
     //console.log('server log: ' + request.path);
 
-    parseAndSendCommandToArduino(request.path);
-
-    response.status(200).send('You requested ' + request.path);
+    try {
+        parseAndSendCommandToArduino(request.path);
+        if (commandWasSentToArduino) {
+            response.status(200).send('Cmd Sent To Arduino. You requested ' + request.path);
+        } else {
+            response.status(500).send('CMD NOT SENT TO ARDUINO: You requested ' + request.path);
+        }
+    } catch (error) {
+        response.status(500).send('Error: ' + error + '\n\nYou requested ' + request.path);
+    }
 }
 app.get('/arduino/api/*', commandHandler);
 
@@ -264,14 +313,14 @@ app.get('/arduino/api', commandHelpHandler);
 
 ///////arduino serial connection test handler///////////////////////////////////////////////////
 const commandTestSerialHandler = (request, response) => {
-    console.log('server log: ' + request.path);
+    console.log('You requested ' + request.path);
     response.send(request.path);
 
     port.write('\n', error => {
         if (error) {
             console.log('Error sending data to arduino: ', error.message);
         } else {
-            console.log('test \\n sent to arduino');
+            console.log('test \\n (newline) sent to arduino');
         }
     });
 
@@ -322,7 +371,7 @@ const joystickAxesHandler = (request, response) => {
 app.post('/gamepad/axes/', joystickAxesHandler);
 
 
-app.listen(8080, () => {
-    console.log('HTTP Raspberry Pi Server is Up at 8080');
+app.listen(8084, () => {
+    console.log('HTTP Raspberry Pi Server is Up at 8084');
 });
 
