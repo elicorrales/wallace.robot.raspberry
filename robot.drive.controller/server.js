@@ -156,6 +156,8 @@ const respondWithCollectedDataHandler = (request, response) => {
 }
 app.get('/arduino/data', respondWithCollectedDataHandler);
 
+const waitForArduinoCommandResponse = (command) => {
+}
 
 ///////arduino command handler command code with gamepad/joystick handler//////////
 const parseAndSendCommandToArduino = (path) => {
@@ -196,11 +198,6 @@ const parseAndSendCommandToArduino = (path) => {
         case 'help':
                 command = '0'
                 break;
-/*
-        case 'numcmds':
-                command = '1';
-                break;
-*/
         case 'status':
                 switch (parm1) {
                     case '':
@@ -223,17 +220,6 @@ const parseAndSendCommandToArduino = (path) => {
         case 'version':
                 command = '20';
                 break;
-/*
-        case 'amps':
-                command = '22';
-                break;
-        case 'temp':
-                command = '23';
-                break;
-        case 'speeds':
-                command = '25';
-                break;
-            */
         case 'stop':
                 command = '28';
                 break;
@@ -268,9 +254,13 @@ const parseAndSendCommandToArduino = (path) => {
             console.log('Error sending data to arduino: ', error.message);
         } else {
             console.log('command \'',command,'\' sent to arduino');
+            waitForArduinoCommandResponse(command);
         }
     });
 }
+
+
+
 ///////arduino command handler/////////////////////////////////////////////////////
 const commandHandler = (request, response) => {
 

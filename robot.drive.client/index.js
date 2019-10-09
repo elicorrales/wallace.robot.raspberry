@@ -3,6 +3,7 @@
 let autoStatus = false;
 let previousx = 0;
 let previousy = 0;
+let maxspeed = document.getElementById('maxspeed').value;
 
 const doArduinoCommand = (command, status) => {
     if (status === 'status') {
@@ -19,6 +20,11 @@ const doArduinoCommand = (command, status) => {
     .catch(error => {
         console.log(error);
     });
+}
+
+const doArduinoSetMaxSpeed = (slider) => {
+    maxspeed = slider.value;
+    console.log(maxspeed);
 }
 
 // this fires as long as slider is moving
@@ -95,12 +101,15 @@ const gamePadHandler = () => {
 
         // make sure the joystick movement is clearly vertical, or clearly horizontal
         if ((absX + 0.05 > absY) || (absY + 0.05 > absX)) {
-            const x = X>=0 ? map(X,0.2,1,0,100,true) : map(X,-0.2,-1,0,-100,true);
-            const y = Y>=0 ? map(Y,0.2,1,0,100,true) : map(Y,-0.2,-1,0,-100,true);
+
+            let x = X>=0 ? map(X,0.2,1,0,maxspeed,true) : map(X,-0.2,-1,0,-maxspeed,true);
+
+            let y = Y>=0 ? map(Y,0.2,1,0,maxspeed,true) : map(Y,-0.2,-1,0,-maxspeed,true);
 
             let intx = Math.floor(x);
             let inty = Math.floor(y);
 
+            console.log(intx,'  ',inty);
             sendGamepadAxesToServer(intx,inty);
         }
     }, 30);

@@ -11,15 +11,12 @@
         <button onclick="doArduinoCommand('status/start/500','status')">Auto Status Start 500</button><br/>
         <button onclick="doArduinoCommand('status/start/200','status')">Auto Status Start 200</button><br/>
         <button onclick="doArduinoCommand('stop')">Stop Motors</button><br/>
-        <button onclick="doArduinoCommand('forward/30/30')">Forward at 30 30</button><br/>
-        <button onclick="doArduinoCommand('forward/80/80')">Forward at 80 80</button><br/>
-        <button onclick="doArduinoCommand('backward/30/30')">Backward at 30 30</button><br/>
-        <button onclick="doArduinoCommand('backward/80/80')">Backward at 80 80</button><br/>
-        <button onclick="doArduinoCommand('left/30/30')">Left at 30 30</button><br/>
-        <button onclick="doArduinoCommand('left/80/80')">Left at 80 80</button><br/>
-        <button onclick="doArduinoCommand('right/30/30')">Right at 30 30</button><br/>
-        <button onclick="doArduinoCommand('right/80/80')">Right at 80 80</button><br/>
+        <button onclick="doArduinoCommand('clr.usb.err')">Clear USB Error</button><br/>
+        <button onclick="doArduinoCommand('clr.num.usb.cmds')">Clear Num USB Cmds</button><br/>
         <hr>
+        Max Speed:<input id="maxspeed" type="range" min="0" max="100" value="50" class="slider" 
+            oninput="doArduinoSetMaxSpeed(this, event)"
+            /><br/>
         Forward:<input id="forward" type="range" min="0" max="100" value="0" class="slider" 
             oninput="doArduinoStartMovement(this, event)"
             onclick="doArduinoEndMovement(this, event)"
