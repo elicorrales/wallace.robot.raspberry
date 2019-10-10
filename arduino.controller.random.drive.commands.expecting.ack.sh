@@ -29,21 +29,21 @@ do
     if [ $random -ge 0 ] && [ $random -lt 8192 ];
     then
         echo;echo "Move forward at $speed..";
-        curl --silent "${api}/forwardresp/${speed}/${speed}";
+        curl --silent "${api}/forwardresp/${speed}";
         echo; echo;
     elif [ $random -ge 8192 ] && [ $random -lt 16384 ];
     then
         echo;echo "Move backward at $speed..";
-        curl --silent "${api}/backwardresp/${speed}/${speed}";
+        curl --silent "${api}/backwardresp/${speed}";
         echo; echo;
     elif [ $random -ge 16384 ] && [ $random -lt 24576 ];
     then
         echo;echo "Move left at $speed..";
-        curl --silent "${api}/leftresp/${speed}/${speed}";
+        curl --silent "${api}/leftresp/${speed}";
         echo; echo;
     else
         echo;echo "Move right at $speed..";
-        curl --silent "${api}/rightresp/${speed}/${speed}";
+        curl --silent "${api}/rightresp/${speed}";
         echo; echo;
     fi;
         #sleep 0.001;

@@ -14,14 +14,14 @@ do
     for speed in 10 20 30 40 50 60 70 80 90 100 90 80 70 60 50 40 30 20 10;
     do
         echo;echo "Move forward at $speed..";
-        curl "${api}/forward/${speed}/${speed}";
+        curl "${api}/forward/${speed}";
     done;
 
 
     for speed in 10 20 30 40 50 60 70 80 90 100 90 80 70 60 50 40 30 20 10;
     do
         echo;echo "Move backward at $speed..";
-        curl "${api}/backward/${speed}/${speed}";
+        curl "${api}/backward/${speed}";
     done;
 done;
 

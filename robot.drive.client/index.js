@@ -1,7 +1,7 @@
 'use strict';
 
-//let ipAddress='10.0.0.58';
-let ipAddress='192.168.43.64';
+let ipAddress='10.0.0.58';
+//let ipAddress='192.168.43.64';
 
 let autoStatus = false;
 let previousx = 0;
@@ -56,7 +56,7 @@ const sendArduinoMovementCommand = (command) => {
 
     setTimeout(() => {
         const speed = document.getElementById(command).value;
-        fetch('http://'+ipAddress+':8084/arduino/api/' + command + '/' + speed + '/' + speed, { method: 'GET' })
+        fetch('http://'+ipAddress+':8084/arduino/api/' + command + '/' + speed, { method: 'GET' })
         .then(result => {
             console.log(result);
         })

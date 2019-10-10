@@ -3,14 +3,15 @@
 //////////////////////////////////////////////////////////////////////
 // arduino backside serial port related stuff
 //////////////////////////////////////////////////////////////////////
-const raspberry2arduinoBaud = 9600;
+//const raspberry2arduinoBaud = 9600;
 //const raspberry2arduinoBaud = 19200;
 //const raspberry2arduinoBaud = 57600;
 //const raspberry2arduinoBaud = 74880;
-const raspberry2arduinoBaud = 115200;
+//const raspberry2arduinoBaud = 115200;
 //const raspberry2arduinoBaud = 230400;
 //const raspberry2arduinoBaud = 250000;
-//const raspberry2arduinoBaud = 500000;
+const raspberry2arduinoBaud = 500000;
+
 const serial = require('serialport');
 const readline = require('@serialport/parser-readline');
 const port = new serial('/dev/ttyACM0', { baudRate: raspberry2arduinoBaud, autoOpen: false });
@@ -197,7 +198,7 @@ const parseAndSendCommandToArduino = (path) => {
 
     //console.log(cmd,' ',parm1,' ',parm2,' ',parm3);
     let command = '';
-    let myRandom = 0;//random(0,100);
+    let myRandom = Math.floor(Math.random()*100);
 
     const now = new Date().getTime();
 
