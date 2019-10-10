@@ -7,7 +7,7 @@ const raspberry2arduinoBaud = 9600;
 //const raspberry2arduinoBaud = 19200;
 //const raspberry2arduinoBaud = 57600;
 //const raspberry2arduinoBaud = 74880;
-//const raspberry2arduinoBaud = 115200;
+const raspberry2arduinoBaud = 115200;
 //const raspberry2arduinoBaud = 230400;
 //const raspberry2arduinoBaud = 250000;
 //const raspberry2arduinoBaud = 500000;
@@ -52,11 +52,14 @@ let temp = '';
 let speed1 = '';
 let speed2 = '';
 let cmds = '';
-let last = '';
+let lastcmd = '';
 let msg = '';
 let error = '';
+
+let cmdNum = '';
 let thereIsError = false;
 let commandWasSentToArduino = false;
+let arduinoIsExpectedToRespond = false;
 
 const clearAllStatusVariables = () => {
     volts = '';
@@ -66,11 +69,13 @@ const clearAllStatusVariables = () => {
     speed1 = '';
     speed2 = '';
     cmds = '';
-    last = '';
+    lastcmd = '';
     msg = '';
     error = '';
+    cmdNum = '';
     thereIsError = false;
     commandWasSentToArduino = false;
+    arduinoIsExpectedToRespond = false;
 }
 
 parser.on('data', data => {
@@ -103,7 +108,7 @@ parser.on('data', data => {
             cmds = result.cmds;
         }
         if (result.last !== undefined) {
-            last = result.last;
+            lastcmd = result.last;
         }
         if (result.msg !== undefined) {
             msg = result.msg;
@@ -150,19 +155,19 @@ const respondWithCollectedDataHandler = (request, response) => {
         speed2,
         msg,
         cmds,
-        last,
+        lastcmd,
         error
     });
 }
 app.get('/arduino/data', respondWithCollectedDataHandler);
 
-const waitForArduinoCommandResponse = (command) => {
-}
 
 ///////arduino command handler command code with gamepad/joystick handler//////////
 const parseAndSendCommandToArduino = (path) => {
 
+
     commandWasSentToArduino = false;
+    arduinoIsExpectedToRespond = false;
 
     const tokens = path.split('/',10);
     //console.log(tokens);
@@ -180,7 +185,7 @@ const parseAndSendCommandToArduino = (path) => {
         }
         if (!gotParm1 && tokens[i] != '' && tokens[i] != 'arduino' && tokens[i] != 'api') {
             parm1 = tokens[i]; gotParm1 = true; continue;
-        }
+       }
         if (!gotParm2 && tokens[i] != '' && tokens[i] != 'arduino' && tokens[i] != 'api') {
             parm2 = tokens[i]; gotParm2 = true; continue;
         }
@@ -192,52 +197,90 @@ const parseAndSendCommandToArduino = (path) => {
 
     //console.log(cmd,' ',parm1,' ',parm2,' ',parm3);
     let command = '';
+    let myRandom = 0;//random(0,100);
+
     const now = new Date().getTime();
 
     switch (cmd) {
         case 'help':
-                command = '0'
+                cmdNum = 0;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                 break;
         case 'status':
                 switch (parm1) {
                     case '':
-                        command = '24';
+                        cmdNum = 24;
+                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                         break;
                     case 'stop':
-                        command = '2';
+                        cmdNum = 2;
+                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                         break;
                     case 'start':
-                        command = '3' + ' ' + parm2;
+                        cmdNum = 3;
+                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm2)) + ' ' + parm2;
                         break;
                 }
                 break;
         case 'clr.usb.err':
-                command = '4';
+                cmdNum = 4;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                 break;
         case 'clr.num.usb.cmds':
-                command = '5';
+                cmdNum = 5;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                 break;
         case 'version':
-                command = '20';
+                cmdNum = 20;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                 break;
         case 'stop':
-                command = '28';
+                cmdNum = 28;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
                 break;
         case 'forward':
                 if (thereIsError) { return; }
-                command = '29' + ' ' + parm1 + ' ' + parm2;
+                cmdNum = 29;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
                 break;
         case 'backward':
                 if (thereIsError) { return; }
-                command = '32' + ' ' + parm1 + ' ' + parm2;
+                cmdNum = 32;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
                 break;
         case 'left':
                 if (thereIsError) { return; }
-                command = '33' + ' ' + parm1 + ' ' + parm2;
+                cmdNum = 33;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
                 break;
         case 'right':
                 if (thereIsError) { return; }
-                command = '34' + ' ' + parm1 + ' ' + parm2;
+                cmdNum = 34;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                break;
+        case 'forwardresp':
+                arduinoIsExpectedToRespond = true;
+                if (thereIsError) { return; }
+                cmdNum = 35;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                break;
+        case 'backwardresp':
+                arduinoIsExpectedToRespond = true;
+                if (thereIsError) { return; }
+                cmdNum = 36;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                break;
+        case 'leftresp':
+                arduinoIsExpectedToRespond = true;
+                if (thereIsError) { return; }
+                cmdNum = 37;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                break;
+        case 'rightresp':
+                arduinoIsExpectedToRespond = true;
+                if (thereIsError) { return; }
+                cmdNum = 38;
+                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
                 break;
 
         default:
@@ -254,7 +297,6 @@ const parseAndSendCommandToArduino = (path) => {
             console.log('Error sending data to arduino: ', error.message);
         } else {
             console.log('command \'',command,'\' sent to arduino');
-            waitForArduinoCommandResponse(command);
         }
     });
 }
@@ -264,7 +306,7 @@ const parseAndSendCommandToArduino = (path) => {
 ///////arduino command handler/////////////////////////////////////////////////////
 const commandHandler = (request, response) => {
 
-    //console.log('server log: ' + request.path);
+    console.log('server log: ' + request.path);
 
     try {
         parseAndSendCommandToArduino(request.path);
@@ -331,15 +373,15 @@ const processAxesValues = (data) => {
     let command = 'arduino/api/';
     if (Math.abs(Y) > Math.abs(X)) {
         if (Y < 0) {
-            command = 'forward/' + (-Y) + '/' + (-Y);
+            command = 'forwardresp/' + (-Y) + '/' + (-Y);
         } else if (Y > 0) {
-            command = 'backward/' + Y + '/' + Y;
+            command = 'backwardresp/' + Y + '/' + Y;
         }
     } else if (Math.abs(Y) < Math.abs(X)) {
         if (X > 0) {
-            command = 'right/' + X + '/' + X;
+            command = 'rightresp/' + X + '/' + X;
         } else if (X < 0) {
-            command = 'left/' + (-X) + '/' + (-X);
+            command = 'leftresp/' + (-X) + '/' + (-X);
         }
     }
 
@@ -351,7 +393,7 @@ const processAxesValues = (data) => {
 
 //gamepad joystick axes handler
 const joystickAxesHandler = (request, response) => {
-    //console.log('server log: ' + request.path);
+    console.log('server log: ' + request.path);
     if (request.body !== undefined) {
         //console.log(request.body);
         processAxesValues(request.body);

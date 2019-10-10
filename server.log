@@ -1,0 +1,2382 @@
+HTTP Raspberry Pi Server is Up at 8084
+serial port open
+{"v":12.80,"a1":0.01,"a2":0.03,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.03,"a2":0.02,"t":87.62,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.04,"a2":0.10,"t":87.62,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.03,"a2":0.11,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.00,"a2":0.15,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.01,"a2":0.09,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+{"v":12.80,"a1":0.04,"a2":0.13,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+server log: /arduino/api/status/stop
+2
+command ' 2 ' sent to arduino
+{"v":12.80,"a1":0.03,"a2":0.17,"t":87.44,"s1":0,"s2":0,"cmds":0,"last":none}
+server log: /gamepad/axes/
+35 5 5
+server log: /gamepad/axes/
+command ' 35 5 5 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+   35
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+   35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+Waiting For Arduino To Respond to 35
+   35
+{ v: 12.8,
+  a1: 0.05,
+  a2: 0.15,
+  t: 87.44,
+  s1: 0,
+  s2: 0,
+  cmds: 2,
+  last: 35 }
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+37 5 5
+command ' 37 5 5 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+35 ' ' 37
+{ v: 12.8,
+  a1: 0,
+  a2: 0.16,
+  t: 87.44,
+  s1: 0,
+  s2: 0,
+  cmds: 3,
+  last: 37 }
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 45 45
+command ' 37 45 45 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 47 47
+command ' 37 47 47 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 50 50
+command ' 37 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 50 50
+command ' 37 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 50 50
+command ' 37 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+{ v: 12.8,
+  a1: 0.17,
+  a2: 0,
+  t: 87.62,
+  s1: 0,
+  s2: 29,
+  cmds: 4,
+  last: 37 }
+server log: /gamepad/axes/
+37 46 46
+command ' 37 46 46 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 17 17
+command ' 37 17 17 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+{ v: 12.8,
+  a1: 3.19,
+  a2: 2.09,
+  t: 87.44,
+  s1: -58,
+  s2: 85,
+  cmds: 5,
+  last: 37 }
+{ v: 12.8,
+  a1: 1.15,
+  a2: 1.54,
+  t: 87.44,
+  s1: -410,
+  s2: 442,
+  cmds: 6,
+  last: 37 }
+{ v: 12.7,
+  a1: 1.01,
+  a2: 0.9,
+  t: 87.62,
+  s1: -733,
+  s2: 763,
+  cmds: 7,
+  last: 37 }
+{ v: 12.7,
+  a1: 1.07,
+  a2: 0.9,
+  t: 87.44,
+  s1: -884,
+  s2: 911,
+  cmds: 8,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.63,
+  a2: 0.91,
+  t: 87.44,
+  s1: -952,
+  s2: 982,
+  cmds: 9,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.84,
+  a2: 0.77,
+  t: 87.44,
+  s1: -948,
+  s2: 972,
+  cmds: 10,
+  last: 37 }
+server log: /gamepad/axes/
+38 5 5
+command ' 38 5 5 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+{ v: 12.8,
+  a1: 0.01,
+  a2: 0,
+  t: 87.62,
+  s1: 0,
+  s2: 0,
+  cmds: 11,
+  last: 38 }
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 50 50
+command ' 38 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 50 50
+command ' 38 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 50 50
+command ' 38 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 50 50
+command ' 38 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 29 29
+command ' 38 29 29 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+{ v: 12.8,
+  a1: 0.01,
+  a2: 0.44,
+  t: 87.62,
+  s1: 4,
+  s2: -25,
+  cmds: 12,
+  last: 38 }
+{ v: 12.8,
+  a1: 1.33,
+  a2: 2.41,
+  t: 87.62,
+  s1: 67,
+  s2: -97,
+  cmds: 13,
+  last: 38 }
+{ v: 12.7,
+  a1: 1.73,
+  a2: 1.52,
+  t: 87.44,
+  s1: 426,
+  s2: -460,
+  cmds: 14,
+  last: 38 }
+{ v: 12.7,
+  a1: 0.91,
+  a2: 0.91,
+  t: 87.62,
+  s1: 746,
+  s2: -784,
+  cmds: 15,
+  last: 38 }
+{ v: 12.7,
+  a1: 0.75,
+  a2: 0.88,
+  t: 87.62,
+  s1: 881,
+  s2: -926,
+  cmds: 16,
+  last: 38 }
+server log: /gamepad/axes/
+36 10 10
+command ' 36 10 10 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+Waiting For Arduino To Respond to 36
+38 ' ' 36
+{ v: 12.8,
+  a1: 0.01,
+  a2: 0.16,
+  t: 87.44,
+  s1: 13,
+  s2: -15,
+  cmds: 17,
+  last: 36 }
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+{ v: 12.8,
+  a1: 3.33,
+  a2: 1.84,
+  t: 87.44,
+  s1: -70,
+  s2: -118,
+  cmds: 18,
+  last: 36 }
+server log: /gamepad/axes/
+36 47 47
+command ' 36 47 47 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 32 32
+command ' 36 32 32 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+{ v: 12.8,
+  a1: 1.78,
+  a2: 2.11,
+  t: 87.44,
+  s1: -163,
+  s2: -207,
+  cmds: 19,
+  last: 36 }
+server log: /gamepad/axes/
+36 16 16
+command ' 36 16 16 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 3 3
+command ' 36 3 3 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+{ v: 12.7,
+  a1: 1.36,
+  a2: 1.08,
+  t: 87.44,
+  s1: -559,
+  s2: -595,
+  cmds: 20,
+  last: 36 }
+{ v: 12.7,
+  a1: 1.07,
+  a2: 0.87,
+  t: 87.44,
+  s1: -811,
+  s2: -844,
+  cmds: 21,
+  last: 36 }
+{ v: 12.7,
+  a1: 1.08,
+  a2: 0.83,
+  t: 87.62,
+  s1: -927,
+  s2: -958,
+  cmds: 22,
+  last: 36 }
+{ v: 12.7,
+  a1: 0.63,
+  a2: 0.82,
+  t: 87.44,
+  s1: -977,
+  s2: -1010,
+  cmds: 23,
+  last: 36 }
+{ v: 12.7,
+  a1: 0.77,
+  a2: 0.74,
+  t: 87.62,
+  s1: -963,
+  s2: -996,
+  cmds: 24,
+  last: 36 }
+{ v: 12.7,
+  a1: 0.18,
+  a2: 0.63,
+  t: 87.62,
+  s1: -823,
+  s2: -852,
+  cmds: 25,
+  last: 36 }
+{ v: 12.7,
+  a1: 2.34,
+  a2: 1.13,
+  t: 87.62,
+  s1: -575,
+  s2: -606,
+  cmds: 26,
+  last: 36 }
+server log: /gamepad/axes/
+35 6 6
+command ' 35 6 6 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+Waiting For Arduino To Respond to 35
+36 ' ' 35
+{ v: 12.8,
+  a1: 0.04,
+  a2: 0.01,
+  t: 87.62,
+  s1: -2,
+  s2: -2,
+  cmds: 27,
+  last: 35 }
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+{ v: 12.8,
+  a1: 0.81,
+  a2: 0.83,
+  t: 87.44,
+  s1: 15,
+  s2: 39,
+  cmds: 28,
+  last: 35 }
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 50 50
+command ' 35 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+{ v: 12.8,
+  a1: 1.46,
+  a2: 2.14,
+  t: 87.62,
+  s1: 83,
+  s2: 107,
+  cmds: 29,
+  last: 35 }
+server log: /gamepad/axes/
+35 46 46
+command ' 35 46 46 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 19 19
+command ' 35 19 19 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+{ v: 12.7,
+  a1: 1.63,
+  a2: 1.51,
+  t: 87.62,
+  s1: 450,
+  s2: 481,
+  cmds: 30,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.92,
+  a2: 0.82,
+  t: 87.44,
+  s1: 749,
+  s2: 790,
+  cmds: 31,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.97,
+  a2: 0.88,
+  t: 87.44,
+  s1: 878,
+  s2: 931,
+  cmds: 32,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.92,
+  a2: 0.85,
+  t: 87.44,
+  s1: 941,
+  s2: 990,
+  cmds: 33,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.9,
+  a2: 0.77,
+  t: 87.62,
+  s1: 970,
+  s2: 1031,
+  cmds: 34,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.95,
+  a2: 0.69,
+  t: 87.44,
+  s1: 983,
+  s2: 1043,
+  cmds: 35,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.66,
+  a2: 0.86,
+  t: 87.62,
+  s1: 988,
+  s2: 1048,
+  cmds: 36,
+  last: 35 }
+{ v: 12.7,
+  a1: 0.79,
+  a2: 0.6,
+  t: 87.62,
+  s1: 950,
+  s2: 1010,
+  cmds: 37,
+  last: 35 }
+server log: /gamepad/axes/
+38 13 13
+command ' 38 13 13 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+Waiting For Arduino To Respond to 38
+35 ' ' 38
+{ v: 12.8,
+  a1: 0.03,
+  a2: 0.13,
+  t: 87.44,
+  s1: 3,
+  s2: 3,
+  cmds: 38,
+  last: 38 }
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 50 50
+command ' 38 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 18 18
+command ' 38 18 18 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+{ v: 12.7,
+  a1: 1.68,
+  a2: 0.7,
+  t: 87.44,
+  s1: 110,
+  s2: -150,
+  cmds: 39,
+  last: 38 }
+{ v: 12.7,
+  a1: 1.15,
+  a2: 2.19,
+  t: 87.62,
+  s1: 219,
+  s2: -262,
+  cmds: 40,
+  last: 38 }
+server log: /gamepad/axes/
+37 18 18
+server log: /gamepad/axes/
+command ' 37 18 18 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 37
+38 ' ' 37
+{ v: 12.8,
+  a1: 0.02,
+  a2: 0.04,
+  t: 87.62,
+  s1: 2,
+  s2: -2,
+  cmds: 41,
+  last: 37 }
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 43 43
+command ' 37 43 43 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 43 43
+command ' 37 43 43 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 43 43
+command ' 37 43 43 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 42 42
+command ' 37 42 42 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 42 42
+command ' 37 42 42 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+{ v: 12.7,
+  a1: 1.81,
+  a2: 0.02,
+  t: 87.62,
+  s1: -180,
+  s2: 215,
+  cmds: 42,
+  last: 37 }
+server log: /gamepad/axes/
+37 36 36
+command ' 37 36 36 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+server log: /gamepad/axes/
+37 12 12
+command ' 37 12 12 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 37
+37 ' ' 37
+Arduino Responded to 37, ready for next command
+{ v: 12.7,
+  a1: 2.45,
+  a2: 2.16,
+  t: 87.62,
+  s1: -298,
+  s2: 327,
+  cmds: 43,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.39,
+  a2: 0.87,
+  t: 87.62,
+  s1: -590,
+  s2: 621,
+  cmds: 44,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.23,
+  a2: 0.9,
+  t: 87.62,
+  s1: -750,
+  s2: 774,
+  cmds: 45,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.17,
+  a2: 1.07,
+  t: 87.62,
+  s1: -803,
+  s2: 831,
+  cmds: 46,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.46,
+  a2: 0.83,
+  t: 87.62,
+  s1: -824,
+  s2: 841,
+  cmds: 47,
+  last: 37 }
+{ v: 12.7,
+  a1: 0.6,
+  a2: 0.78,
+  t: 87.62,
+  s1: -771,
+  s2: 799,
+  cmds: 48,
+  last: 37 }
+server log: /gamepad/axes/
+38 6 6
+command ' 38 6 6 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+Waiting For Arduino To Respond to 38
+37 ' ' 38
+{ v: 12.8,
+  a1: 0.01,
+  a2: 0.07,
+  t: 87.62,
+  s1: -3,
+  s2: 4,
+  cmds: 49,
+  last: 38 }
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 37 37
+command ' 38 37 37 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 35 35
+command ' 38 35 35 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+server log: /gamepad/axes/
+38 19 19
+command ' 38 19 19 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+38 ' ' 38
+Arduino Responded to 38, ready for next command
+{ v: 12.7,
+  a1: 1.13,
+  a2: 0.77,
+  t: 87.62,
+  s1: 9,
+  s2: -61,
+  cmds: 50,
+  last: 38 }
+{ v: 12.7,
+  a1: 1.53,
+  a2: 1.99,
+  t: 87.62,
+  s1: 64,
+  s2: -129,
+  cmds: 51,
+  last: 38 }
+{ v: 12.7,
+  a1: 1.31,
+  a2: 0.75,
+  t: 87.62,
+  s1: 362,
+  s2: -411,
+  cmds: 52,
+  last: 38 }
+server log: /gamepad/axes/
+35 12 12
+command ' 35 12 12 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+Waiting For Arduino To Respond to 35
+38 ' ' 35
+{ v: 12.7,
+  a1: 0.04,
+  a2: 0.04,
+  t: 87.62,
+  s1: 4,
+  s2: -5,
+  cmds: 53,
+  last: 35 }
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+35 28 28
+command ' 35 28 28 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 35
+35 ' ' 35
+Arduino Responded to 35, ready for next command
+server log: /gamepad/axes/
+Unknown command :
+{ v: 12.7,
+  a1: 2.79,
+  a2: 0.09,
+  t: 87.62,
+  s1: 103,
+  s2: 139,
+  cmds: 54,
+  last: 35 }
+server log: /gamepad/axes/
+36 13 13
+command ' 36 13 13 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+Waiting For Arduino To Respond to 36
+35 ' ' 36
+{ v: 12.8,
+  a1: 0.03,
+  a2: 0.2,
+  t: 87.62,
+  s1: 16,
+  s2: 17,
+  cmds: 55,
+  last: 36 }
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 50 50
+command ' 36 50 50 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 41 41
+command ' 36 41 41 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+{ v: 12.7,
+  a1: 1.88,
+  a2: 0.8,
+  t: 87.62,
+  s1: -113,
+  s2: -144,
+  cmds: 56,
+  last: 36 }
+server log: /gamepad/axes/
+36 27 27
+command ' 36 27 27 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 15 15
+command ' 36 15 15 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+server log: /gamepad/axes/
+36 11 11
+command ' 36 11 11 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 36
+36 ' ' 36
+Arduino Responded to 36, ready for next command
+{ v: 12.7,
+  a1: 2.29,
+  a2: 2.06,
+  t: 87.62,
+  s1: -225,
+  s2: -258,
+  cmds: 57,
+  last: 36 }
+server log: /gamepad/axes/
+Unknown command :
+{ v: 12.7,
+  a1: 1.33,
+  a2: 1.03,
+  t: 87.62,
+  s1: -618,
+  s2: -645,
+  cmds: 58,
+  last: 36 }
+{ v: 12.7,
+  a1: 1.11,
+  a2: 0.78,
+  t: 87.62,
+  s1: -842,
+  s2: -867,
+  cmds: 59,
+  last: 36 }
+{ v: 12.7,
+  a1: 0.62,
+  a2: 0.87,
+  t: 87.62,
+  s1: -939,
+  s2: -971,
+  cmds: 60,
+  last: 36 }
+server log: /gamepad/axes/
+Unknown command :
+server log: /gamepad/axes/
+38 23 23
+command ' 38 23 23 ' sent to arduino
+..going to wait for arduino to respond....
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+{ v: 12.7,
+  a1: 1,
+  a2: 0.57,
+  t: 87.62,
+  s1: -891,
+  s2: -926,
+  cmds: 61,
+  last: 36 }
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+{ v: 12.7,
+  a1: 0.5,
+  a2: 1.06,
+  t: 87.62,
+  s1: -724,
+  s2: -751,
+  cmds: 62,
+  last: 36 }
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+server log: /gamepad/axes/
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+{ v: 12.7,
+  a1: 5.51,
+  a2: 1.28,
+  t: 87.62,
+  s1: -477,
+  s2: -520,
+  cmds: 63,
+  last: 36 }
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+36 ' ' 38
+Waiting For Arduino To Respond to 38
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+{ v: 12.7,
+  a1: 0.78,
+  a2: 1.28,
+  t: 87.62,
+  s1: -294,
+  s2: -344,
+  cmds: 64,
+  last: 38 }
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/
+server log: /gamepad/axes/

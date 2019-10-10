@@ -1,6 +1,6 @@
 #!/bin/bash
 
-baseurl="http://localhost:8080";
+baseurl="http://localhost:8084";
 arduino="${baseurl}/arduino";
 api="${arduino}/api";
 

@@ -1,5 +1,8 @@
 'use strict';
 
+//let ipAddress='10.0.0.58';
+let ipAddress='192.168.43.64';
+
 let autoStatus = false;
 let previousx = 0;
 let previousy = 0;
@@ -12,8 +15,7 @@ const doArduinoCommand = (command, status) => {
         autoStatus = false;
     }
 
-    //console.log('http://10.0.0.58:8080/arduino/api/' + command);
-    fetch('http://10.0.0.58:8084/arduino/api/' + command, { method: 'GET' })
+    fetch('http://'+ipAddress+':8084/arduino/api/' + command, { method: 'GET' })
     .then(result => {
         //console.log(result);
     })
@@ -54,7 +56,7 @@ const sendArduinoMovementCommand = (command) => {
 
     setTimeout(() => {
         const speed = document.getElementById(command).value;
-        fetch('http://10.0.0.58:8084/arduino/api/' + command + '/' + speed + '/' + speed, { method: 'GET' })
+        fetch('http://'+ipAddress+':8084/arduino/api/' + command + '/' + speed + '/' + speed, { method: 'GET' })
         .then(result => {
             console.log(result);
         })
@@ -68,7 +70,7 @@ const sendArduinoMovementCommand = (command) => {
 
 const sendGamepadAxesToServer = (X, Y) => {
     console.log(X,' ',Y);
-    fetch('http://10.0.0.58:8084/gamepad/axes/', {
+    fetch('http://'+ipAddress+':8084/gamepad/axes/', {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json',
@@ -139,7 +141,7 @@ setInterval(() => {
 
         gotGoodResponseFromServerCollectedDataRequest = false;
     
-        fetch('http://10.0.0.58:8084/arduino/data', { method: 'GET' })
+        fetch('http://'+ipAddress+':8084/arduino/data', { method: 'GET' })
         .then(response => {
             if (response.status !== 200) {
                 console.log('Bad data retrieval response from server:',response.status);

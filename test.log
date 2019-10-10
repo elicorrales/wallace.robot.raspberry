@@ -1,0 +1,31 @@
+
+STOP RC auto send status indication
+on server side console (node server.js)
+press <ENTER> to move on.Cmd Sent To Arduino. You requested /arduino/api/status/start/50
+
+Cmd Sent To Arduino. You requested /arduino/api/clr.usb.err
+
+Cmd Sent To Arduino. You requested /arduino/api/clr.num.usb.cmds
+
+
+Move backward at 50..
+Cmd Sent To Arduino. You requested /arduino/api/backwardresp/50/50
+
+
+Move backward at 50..
+CMD NOT SENT TO ARDUINO: You requested /arduino/api/backwardresp/50/50
+
+
+Move left at 50..
+CMD NOT SENT TO ARDUINO: You requested /arduino/api/leftresp/50/50
+
+
+Move left at 50..
+CMD NOT SENT TO ARDUINO: You requested /arduino/api/leftresp/50/50
+
+CMD NOT SENT TO ARDUINO: You requested /arduino/api/status/stop
+
+
+Stop motors
+CMD NOT SENT TO ARDUINO: You requested /arduino/api/stop
+
