@@ -10,7 +10,9 @@
 //const raspberry2arduinoBaud = 115200;
 //const raspberry2arduinoBaud = 230400;
 //const raspberry2arduinoBaud = 250000;
-const raspberry2arduinoBaud = 500000;
+//const raspberry2arduinoBaud = 500000;
+//const raspberry2arduinoBaud = 1000000;
+const raspberry2arduinoBaud = 2000000;
 
 const serial = require('serialport');
 const readline = require('@serialport/parser-readline');
@@ -58,6 +60,7 @@ let msg = '';
 let error = '';
 
 let cmdNum = '';
+let dropped = '';
 let thereIsError = false;
 let commandWasSentToArduino = false;
 let arduinoIsExpectedToRespond = false;
@@ -74,6 +77,7 @@ const clearAllStatusVariables = () => {
     msg = '';
     error = '';
     cmdNum = '';
+    dropped = '';
     thereIsError = false;
     commandWasSentToArduino = false;
     arduinoIsExpectedToRespond = false;
@@ -107,6 +111,9 @@ parser.on('data', data => {
         }
         if (result.cmds !== undefined) {
             cmds = result.cmds;
+        }
+        if (result.drop !== undefined) {
+            dropped = result.drop;
         }
         if (result.last !== undefined) {
             lastcmd = result.last;
@@ -156,6 +163,7 @@ const respondWithCollectedDataHandler = (request, response) => {
         speed2,
         msg,
         cmds,
+        dropped,
         lastcmd,
         error
     });
@@ -205,83 +213,83 @@ const parseAndSendCommandToArduino = (path) => {
     switch (cmd) {
         case 'help':
                 cmdNum = 0;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'status':
                 switch (parm1) {
                     case '':
                         cmdNum = 24;
-                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                        command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                         break;
                     case 'stop':
                         cmdNum = 2;
-                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                        command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                         break;
                     case 'start':
                         cmdNum = 3;
-                        command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm2)) + ' ' + parm2;
+                        command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm2) + 5) + ' ' + parm2;
                         break;
                 }
                 break;
         case 'clr.usb.err':
                 cmdNum = 4;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'clr.num.usb.cmds':
                 cmdNum = 5;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'version':
                 cmdNum = 20;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'stop':
                 cmdNum = 28;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom));
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'forward':
                 if (thereIsError) { return; }
                 cmdNum = 29;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'backward':
                 if (thereIsError) { return; }
                 cmdNum = 32;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'left':
                 if (thereIsError) { return; }
                 cmdNum = 33;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'right':
                 if (thereIsError) { return; }
                 cmdNum = 34;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'forwardresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 35;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'backwardresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 36;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'leftresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 37;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
         case 'rightresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 38;
-                command = cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1)) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
 
         default:

@@ -45,7 +45,6 @@ do
         curl --silent "${api}/right/${speed}";
         echo; echo;
     fi;
-        #sleep 0.001;
         numCycles=$((numCycles-1));
         dataResults=$(curl --silent $data 2>&1);
         cmdNotSent=$(echo $dataResults | grep "CMD NOT SENT");

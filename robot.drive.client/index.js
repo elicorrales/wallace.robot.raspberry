@@ -133,13 +133,13 @@ function setup() {}
 
 
 
-let gotGoodResponseFromServerCollectedDataRequest = true;
+//let gotGoodResponseFromServerCollectedDataRequest = true;
 
 setInterval(() => {
 
-    if (gotGoodResponseFromServerCollectedDataRequest && autoStatus) {
+    //if (gotGoodResponseFromServerCollectedDataRequest) {
 
-        gotGoodResponseFromServerCollectedDataRequest = false;
+        //gotGoodResponseFromServerCollectedDataRequest = false;
     
         fetch('http://'+ipAddress+':8084/arduino/data', { method: 'GET' })
         .then(response => {
@@ -148,7 +148,7 @@ setInterval(() => {
                 return;
             }
             response.json().then(data => {
-                if (autoStatus) console.log(data);
+                //if (autoStatus) console.log(data);
                 arduinodata.innerHTML = ''
                         + 'Volts:' + data.volts + '&nbsp;&nbsp;'
                         + 'Amps1:' + data.amps1 + '&nbsp;&nbsp;'
@@ -157,15 +157,18 @@ setInterval(() => {
                         + 'M2 Spd:' + data.speed2 + '&nbsp;&nbsp;'
                         + 'Temp: ' + data.temp + '<br/>'
                         + 'Cmds: ' + data.cmds + '&nbsp;&nbsp;'
+                        + 'Dropped: ' + data.dropped + '&nbsp;&nbsp;'
+                        + '% Err: ' + ((data.dropped / data.cmds) * 100).toFixed(1) + '&nbsp;&nbsp;'
                         + 'Last: ' + data.last + '&nbsp;&nbsp;'
                         + 'Msg:  ' + data.msg + '<br/>'
                         + 'Error:' + data.error;
 
-                gotGoodResponseFromServerCollectedDataRequest = true;
+
+                //gotGoodResponseFromServerCollectedDataRequest = true;
             });
         })
         .catch(error => {
             console.log(error);
         });
-    }
-}, 500);
+    //}
+}, 100);
