@@ -4,18 +4,110 @@
     <body>
         <h1>Test Arduino/Roboclaw Commands</h1>
         <span id="arduinodata"></span><br/>
+        <button onclick="beep(100,720,50)">beep</button>
+        <button onclick="beep(100,520,50)">beep</button>
+        <button onclick="beep(999,220,50)">boop</button>
+        <button onclick="beep(999,120,50)">boop</button>
+        <table>
+            <tr>
+                <td>
         <button onclick="doArduinoCommand('help')">Help</button><br/>
         <button onclick="doArduinoCommand('version')">Version</button><br/>
         <button onclick="doArduinoCommand('status')">Status</button><br/>
         <button onclick="doArduinoCommand('status/stop','nostatus')">Auto Status Stop</button><br/>
         <button onclick="doArduinoCommand('status/start/500','status')">Auto Status Start 500</button><br/>
         <button onclick="doArduinoCommand('status/start/200','status')">Auto Status Start 200</button><br/>
+        <button onclick="doArduinoCommand('status/start/100','status')">Auto Status Start 100</button><br/>
+        <button onclick="doArduinoCommand('status/start/50','status')">Auto Status Start 50</button><br/>
         <button onclick="doArduinoCommand('stop')">Stop Motors</button><br/>
         <button onclick="doArduinoCommand('clr.usb.err')">Clear USB Error</button><br/>
         <button onclick="doArduinoCommand('clr.num.usb.cmds')">Clear Num USB Cmds</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/50')">Min Speed / Amps 0.8 @ 50ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/50')">Min Speed / Amps 0.6 @ 50ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/50')">Min Speed / Amps 0.4 @ 50ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/50')">Min Speed / Amps 0.2 @ 50ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/50')">Min Speed / Amps 0.1 @ 50ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/50')">Min Speed / Amps 0 @ 50ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/100')">Min Speed / Amps 0.8 @ 100ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/100')">Min Speed / Amps 0.6 @ 100ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/100')">Min Speed / Amps 0.4 @ 100ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/100')">Min Speed / Amps 0.2 @ 100ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/100')">Min Speed / Amps 0.1 @ 100ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/100')">Min Speed / Amps 0 @ 100ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/200')">Min Speed / Amps 0.8 @ 200ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/200')">Min Speed / Amps 0.6 @ 200ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/200')">Min Speed / Amps 0.4 @ 200ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/200')">Min Speed / Amps 0.2 @ 200ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/200')">Min Speed / Amps 0.1 @ 200ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/200')">Min Speed / Amps 0 @ 200ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/400')">Min Speed / Amps 0.8 @ 400ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/400')">Min Speed / Amps 0.6 @ 400ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/400')">Min Speed / Amps 0.4 @ 400ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/400')">Min Speed / Amps 0.2 @ 400ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/400')">Min Speed / Amps 0.1 @ 400ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/400')">Min Speed / Amps 0 @ 400ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/2/600')">Min Speed / Amps 2 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/1/600')">Min Speed / Amps 1 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/600')">Min Speed / Amps 0.8 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/600')">Min Speed / Amps 0.6 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/600')">Min Speed / Amps 0.4 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/600')">Min Speed / Amps 0.2 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/600')">Min Speed / Amps 0.1 @ 600ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/600')">Min Speed / Amps 0 @ 600ms</button><br/>
+                </td>
+                <!--
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/3/800')">Min Speed / Amps 3 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/2/800')">Min Speed / Amps 2 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/1/800')">Min Speed / Amps 1 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/800')">Min Speed / Amps 0.8 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/800')">Min Speed / Amps 0.6 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/800')">Min Speed / Amps 0.4 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/800')">Min Speed / Amps 0.2 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/800')">Min Speed / Amps 0.1 @ 800ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/800')">Min Speed / Amps 0 @ 800ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/3/1000')">Min Speed / Amps 3 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/2/1000')">Min Speed / Amps 2 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/1/1000')">Min Speed / Amps 1 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/1000')">Min Speed / Amps 0.8 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/1000')">Min Speed / Amps 0.6 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/1000')">Min Speed / Amps 0.4 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/1000')">Min Speed / Amps 0.2 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/1000')">Min Speed / Amps 0.1 @ 1000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/1000')">Min Speed / Amps 0 @ 1000ms</button><br/>
+                </td>
+                <td>
+        <button onclick="doArduinoCommand('minspd2amps/3/2000')">Min Speed / Amps 3 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/2/2000')">Min Speed / Amps 2 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/1/2000')">Min Speed / Amps 1 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.8/2000')">Min Speed / Amps 0.8 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.6/2000')">Min Speed / Amps 0.6 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.4/2000')">Min Speed / Amps 0.4 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.2/2000')">Min Speed / Amps 0.2 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0.1/2000')">Min Speed / Amps 0.1 @ 2000ms</button><br/>
+        <button onclick="doArduinoCommand('minspd2amps/0/2000')">Min Speed / Amps 0 @ 2000ms</button><br/>
+                </td>
+                -->
+            </tr>
+        </table>
         <hr>
-        Max Speed:<input id="maxspeed" type="range" min="0" max="100" value="50" class="slider" 
+        Max Speed:<input id="maxspeed" type="range" min="70" max="100" value="100" class="slider" 
             oninput="doArduinoSetMaxSpeed(this, event)"
+            /><br/>
+        Max Rotation Speed:<input id="maxrotspeed" type="range" min="60" max="100" value="80" class="slider" 
+            oninput="doArduinoSetMaxRotationSpeed(this, event)"
             /><br/>
         Forward:<input id="forward" type="range" min="0" max="100" value="0" class="slider" 
             oninput="doArduinoStartMovement(this, event)"

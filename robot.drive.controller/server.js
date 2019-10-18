@@ -58,6 +58,8 @@ let cmds = '';
 let lastcmd = '';
 let msg = '';
 let error = '';
+let hiAmpsCnt = '';
+let loSpdCnt = '';
 
 let cmdNum = '';
 let dropped = '';
@@ -76,6 +78,8 @@ const clearAllStatusVariables = () => {
     lastcmd = '';
     msg = '';
     error = '';
+    hiAmpsCnt = '';
+    loSpdCnt = '';
     cmdNum = '';
     dropped = '';
     thereIsError = false;
@@ -90,7 +94,8 @@ parser.on('data', data => {
     //console.log(data);
     try {
         const result = JSON.parse(data);
-        console.log(result);
+        //console.log(result);
+        //
         if (result.v !== undefined) {
             volts = result.v;
         }
@@ -124,7 +129,16 @@ parser.on('data', data => {
         if (result.error !== undefined) {
             error = result.error;
             thereIsError = true;
+        } 
+        if (result.hiAmpsCnt !== undefined) {
+            hiAmpsCnt = result.hiAmpsCnt;
         }
+        if (result.loSpdCnt !== undefined) {
+            loSpdCnt = result.loSpdCnt;
+        }
+
+        if (thereIsError) { console.log(result); }
+
     } catch (error) {
             console.log(data);
     }
@@ -165,7 +179,9 @@ const respondWithCollectedDataHandler = (request, response) => {
         cmds,
         dropped,
         lastcmd,
-        error
+        error,
+        hiAmpsCnt,
+        loSpdCnt
     });
 }
 app.get('/arduino/data', respondWithCollectedDataHandler);
@@ -238,6 +254,14 @@ const parseAndSendCommandToArduino = (path) => {
         case 'clr.num.usb.cmds':
                 cmdNum = 5;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
+                break;
+        case 'minspd2amps':
+                cmdNum = 6;
+                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1)+parseInt(parm2)+6)+' '+parm1+' '+parm2;
+                break;
+        case 'maxamps':
+                cmdNum = 7;
+                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1)+parseInt(parm2)+6)+' '+parm1+' '+parm2;
                 break;
         case 'version':
                 cmdNum = 20;
@@ -382,15 +406,19 @@ const processAxesValues = (data) => {
     let command = 'arduino/api/';
     if (Math.abs(Y) > Math.abs(X)) {
         if (Y < 0) {
-            command = 'forwardresp/' + (-Y) + '/' + (-Y);
+            //command = 'forwardresp/' + (-Y) + '/' + (-Y);
+            command = 'forward/' + (-Y) + '/' + (-Y);
         } else if (Y > 0) {
-            command = 'backwardresp/' + Y + '/' + Y;
+            //command = 'backwardresp/' + Y + '/' + Y;
+            command = 'backward/' + Y + '/' + Y;
         }
     } else if (Math.abs(Y) < Math.abs(X)) {
         if (X > 0) {
-            command = 'rightresp/' + X + '/' + X;
+            //command = 'rightresp/' + X + '/' + X;
+            command = 'right/' + X + '/' + X;
         } else if (X < 0) {
-            command = 'leftresp/' + (-X) + '/' + (-X);
+            //command = 'leftresp/' + (-X) + '/' + (-X);
+            command = 'left/' + (-X) + '/' + (-X);
         }
     }
 
