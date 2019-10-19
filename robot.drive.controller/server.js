@@ -1,8 +1,8 @@
 'use strict';
 
-//////////////////////////////////////////////////////////////////////
-// arduino backside serial port related stuff
-//////////////////////////////////////////////////////////////////////
+const serial = require('serialport');
+const readline = require('@serialport/parser-readline');
+
 //const raspberry2arduinoBaud = 9600;
 //const raspberry2arduinoBaud = 19200;
 //const raspberry2arduinoBaud = 57600;
@@ -14,29 +14,33 @@
 //const raspberry2arduinoBaud = 1000000;
 const raspberry2arduinoBaud = 2000000;
 
-const serial = require('serialport');
-const readline = require('@serialport/parser-readline');
-const port = new serial('/dev/ttyACM0', { baudRate: raspberry2arduinoBaud, autoOpen: false });
-const parser = port.pipe(new readline({ delimiter: '\n'}));
+const raspberry2redboardBaud = 9600;
+//const raspberry2redboardBaud = 115200;
 
-port.on('open', () => {
-        console.log('serial port open');
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// arduino backside serial port related stuff
+//////////////////////////////////////////////////////////////////////////////////////////
+ 
+const arduinoPort = new serial('/dev/ttyACM0',{baudRate:raspberry2arduinoBaud,autoOpen:false});
+const arduinoParser = arduinoPort.pipe(new readline({ delimiter: '\n'}));
+
+arduinoPort.on('open', () => {
+        console.log('serial arduinoPort open');
 });
 
-port.on('close', () => {
-        console.log('serial port closed');
+arduinoPort.on('close', () => {
+        console.log('serial arduinoPort closed');
         reconnectToArduino();
 });
 
-port.on('error', () => {
-        console.log('serial port error');
+arduinoPort.on('error', () => {
+        console.log('serial arduinoPort error');
         reconnectToArduino();
 });
 
 const connectToArduino = () => {
-
-    port.open();
-
+    arduinoPort.open();
 }
 
 const reconnectToArduino = () => {
@@ -47,6 +51,49 @@ const reconnectToArduino = () => {
 }
 
 connectToArduino();
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// redboard backside serial port related stuff
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*
+const redboardPort = new serial('/dev/ttyUSB0',{baudRate:raspberry2redboardBaud,autoOpen:false});
+const redboardParser = redboardPort.pipe(new readline({ delimiter: '\n'}));
+
+redboardPort.on('open', () => {
+        console.log('serial redboardPort open');
+});
+
+redboardPort.on('close', () => {
+        console.log('serial redboardPort closed');
+        reconnectToRedboard();
+});
+
+redboardPort.on('error', () => {
+        console.log('serial redboardPort error');
+        reconnectToRedboard();
+});
+
+const connectToRedboard = () => {
+    redboardPort.open();
+}
+
+const reconnectToRedboard = () => {
+    console.log('ATTEMPT RE-CONNECT TO RED BOARD');
+    setTimeout(() => {
+        connectToRedboard();
+    }, 2000);
+}
+
+connectToRedboard();
+*/
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// arduino - robot - driving functions
+//////////////////////////////////////////////////////////////////////////////////////////
 
 let volts = '';
 let amps1 = '';
@@ -87,7 +134,7 @@ const clearAllStatusVariables = () => {
     arduinoIsExpectedToRespond = false;
 }
 
-parser.on('data', data => {
+arduinoParser.on('data', data => {
 
     clearAllStatusVariables();
 
@@ -325,7 +372,7 @@ const parseAndSendCommandToArduino = (path) => {
     console.log(command);
     //return;
     commandWasSentToArduino = true;
-    port.write(command + '\n', error => {
+    arduinoPort.write(command + '\n', error => {
         if (error) {
             console.log('Error sending data to arduino: ', error.message);
         } else {

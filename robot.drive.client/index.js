@@ -1,7 +1,11 @@
 'use strict';
 
 let ipAddress='10.0.0.58';
-//let ipAddress='192.168.43.64';
+let ipAddress2='192.168.43.64';
+let currIpAddress = ipAddress;
+let haveReachedRaspberryNodeJsServerAtLeastOneTime = false;
+let haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
+let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 5;
 
 let sentStartingMotorSpeedToAmpsRatio = false;
 
@@ -40,7 +44,7 @@ const doArduinoCommand = (command, status) => {
         autoStatus = false;
     }
 
-    fetch('http://'+ipAddress+':8084/arduino/api/' + command, { method: 'GET' })
+    fetch('http://'+currIpAddress+':8084/arduino/api/' + command, { method: 'GET' })
     .then(result => {
         //console.log(result);
     })
@@ -88,7 +92,7 @@ const sendArduinoMovementCommand = (command) => {
 
     setTimeout(() => {
         const speed = document.getElementById(command).value;
-        fetch('http://'+ipAddress+':8084/arduino/api/' + command + '/' + speed, { method: 'GET' })
+        fetch('http://'+currIpAddress+':8084/arduino/api/' + command + '/' + speed, { method: 'GET' })
         .then(result => {
             //console.log(result);
         })
@@ -102,7 +106,7 @@ const sendArduinoMovementCommand = (command) => {
 
 const sendGamepadAxesToServer = (X, Y) => {
     //console.log(X,' ',Y);
-    fetch('http://'+ipAddress+':8084/gamepad/axes/', {
+    fetch('http://'+currIpAddress+':8084/gamepad/axes/', {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json',
@@ -186,12 +190,17 @@ function setup() {}
 
 
 
+let statusInterval = 1000;
 setInterval(() => {
 
+         if (haveReachedRaspberryNodeJsServerAtLeastOneTime) {
+            statusInterval = 50;
+         }
 
     
-        fetch('http://'+ipAddress+':8084/arduino/data', { method: 'GET' })
+        fetch('http://'+currIpAddress+':8084/arduino/data', { method: 'GET' })
         .then(response => {
+            haveReachedRaspberryNodeJsServerAtLeastOneTime = true;
             if (response.status !== 200) {
                 console.log('Bad data retrieval response from server:',response.status);
                 return;
@@ -231,6 +240,26 @@ setInterval(() => {
             });
         })
         .catch(error => {
-            console.log(error);
+            if (!haveReachedRaspberryNodeJsServerAtLeastOneTime) {
+                console.log('Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #'+
+                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes);
+                if (haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes <=
+                maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses) {
+                    haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes++;
+                } else { 
+                    switch (currIpAddress) {
+                        case ipAddress:
+                            currIpAddress = ipAddress2;
+                            haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
+                            break;
+                        case ipAddress2:
+                            console.log('Not Reaching Raspberry Node Js Server at any address.');
+                            break;
+                    }
+                }
+
+            } else {
+                console.log(error);
+            }
         });
-}, 100);
+}, statusInterval);
