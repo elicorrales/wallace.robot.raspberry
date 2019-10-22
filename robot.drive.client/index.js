@@ -14,11 +14,27 @@ let previousx = 0;
 let previousy = 0;
 let maxspeed = document.getElementById('maxspeed').value;
 let maxrotspeed = document.getElementById('maxrotspeed').value;
+
+let speed2cmd = document.getElementById('speed2cmd').value;
+let speed2cmdMillis = document.getElementById('speed2cmdMillis').value;
+
 let startBeeping = false;
 let beeping = false;
 
 // stuff related to making an error sound
 let audioContext = undefined;
+
+const doArduinoSetSpeedVsCommandedRatio = (slider) => {
+    speed2cmd = slider.value;
+    speed2cmdValue.innerHTML = slider.value;
+    doArduinoCommand('minspd2cmd/'+ speed2cmd + '/' + speed2cmdMillis);
+}
+
+const doArduinoSetSpeedVsCommandedRatioMillis = (slider) => {
+    speed2cmdMillis = slider.value;
+    speed2cmdMillisValue.innerHTML = slider.value;
+    doArduinoCommand('minspd2cmd/'+ speed2cmd + '/' + speed2cmdMillis);
+}
 
 const  beep = (vol, freq, duration) => {
     let oscillator=audioContext.createOscillator();
@@ -233,7 +249,7 @@ setInterval(() => {
                    startBeeping = false;
                    if (!sentStartingMotorSpeedToAmpsRatio) {
                         sentStartingMotorSpeedToAmpsRatio = true;
-                        doArduinoCommand('minspd2amps/2/600');
+                        doArduinoCommand('minspd2cmd/2/600');
                    }
                }
 

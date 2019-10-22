@@ -138,22 +138,22 @@ arduinoParser.on('data', data => {
 
     clearAllStatusVariables();
 
-    //console.log(data);
+    console.log(data);
     try {
         const result = JSON.parse(data);
         //console.log(result);
         //
         if (result.v !== undefined) {
-            volts = result.v;
+            volts = result.v/10;
         }
         if (result.a1 !== undefined) {
-            amps1 = result.a1;
+            amps1 = result.a1/100;
         }
         if (result.a2 !== undefined) {
-            amps2 = result.a2;
+            amps2 = result.a2/100;
         }
         if (result.t !== undefined) {
-            temp = result.t;
+            temp = ((result.t/10) * (9/5)).toFixed(1) + 32;
         }
         if (result.s1 !== undefined) {
             speed1 = result.s1;
@@ -161,20 +161,20 @@ arduinoParser.on('data', data => {
         if (result.s2 !== undefined) {
             speed2 = result.s2;
         }
-        if (result.cmds !== undefined) {
-            cmds = result.cmds;
+        if (result.c !== undefined) {
+            cmds = result.c;
         }
-        if (result.drop !== undefined) {
-            dropped = result.drop;
-        }
-        if (result.last !== undefined) {
-            lastcmd = result.last;
+        if (result.d !== undefined) {
+            dropped = result.d;
+        } 
+        if (result.l !== undefined) {
+            lastcmd = result.l;
         }
         if (result.msg !== undefined) {
             msg = result.msg;
         }
-        if (result.error !== undefined) {
-            error = result.error;
+        if (result.e !== undefined) {
+            error = result.e;
             thereIsError = true;
         } 
         if (result.hiAmpsCnt !== undefined) {
@@ -242,7 +242,7 @@ const parseAndSendCommandToArduino = (path) => {
     arduinoIsExpectedToRespond = false;
 
     const tokens = path.split('/',10);
-    //console.log(tokens);
+    console.log(tokens);
     let cmd = '';
     let gotCmd = false;
     let gotParm1 = false;
@@ -267,9 +267,16 @@ const parseAndSendCommandToArduino = (path) => {
     }
 
 
-    //console.log(cmd,' ',parm1,' ',parm2,' ',parm3);
+    console.log('cmd:',cmd,' p1:',parm1,' p2:',parm2,' p3:',parm3);
     let command = '';
     let myRandom = Math.floor(Math.random()*100);
+    console.log('p1[', parm1, '] p2[', parm2, ']');
+    let isFloatParm1  = (parm1 !== undefined ? parm1.includes('.') : false);
+    let isFloatParm2  = (parm2 !== undefined ? parm2.includes('.') : false);
+    let parm1ForSum = isFloatParm1 ? Math.floor(parseFloat(parm1)*1000) : parm1;
+    let parm2ForSum = isFloatParm2 ? Math.floor(parseFloat(parm2)*1000) : parm2;
+    console.log('p1f[',parm1ForSum, '] p2f[',parm2ForSum,']');
+
 
     const now = new Date().getTime();
 
@@ -278,21 +285,17 @@ const parseAndSendCommandToArduino = (path) => {
                 cmdNum = 0;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
-        case 'status':
-                switch (parm1) {
-                    case '':
-                        cmdNum = 24;
-                        command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
-                        break;
-                    case 'stop':
-                        cmdNum = 2;
-                        command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
-                        break;
-                    case 'start':
-                        cmdNum = 3;
-                        command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm2) + 5) + ' ' + parm2;
-                        break;
-                }
+        case 'ack.cmds':
+                cmdNum = 1;
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
+                break;
+        case 'status.stop':
+                cmdNum = 2;
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
+                break;
+        case 'status.start':
+                cmdNum = 3;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + ( parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'clr.usb.err':
                 cmdNum = 4;
@@ -302,16 +305,16 @@ const parseAndSendCommandToArduino = (path) => {
                 cmdNum = 5;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
-        case 'minspd2amps':
+        case 'minspd2cmd':
                 cmdNum = 6;
-                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1)+parseInt(parm2)+6)+' '+parm1+' '+parm2;
-                break;
-        case 'maxamps':
-                cmdNum = 7;
-                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1)+parseInt(parm2)+6)+' '+parm1+' '+parm2;
+                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1ForSum)+parseInt(parm2ForSum)+6)+' '+parm1+' '+parm2;
                 break;
         case 'version':
                 cmdNum = 20;
+                command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
+                break;
+        case 'status':
+                cmdNum = 24;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
         case 'stop':
@@ -321,46 +324,46 @@ const parseAndSendCommandToArduino = (path) => {
         case 'forward':
                 if (thereIsError) { return; }
                 cmdNum = 29;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'backward':
                 if (thereIsError) { return; }
                 cmdNum = 32;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'left':
                 if (thereIsError) { return; }
                 cmdNum = 33;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'right':
                 if (thereIsError) { return; }
                 cmdNum = 34;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'forwardresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 35;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'backwardresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 36;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'leftresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 37;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
         case 'rightresp':
                 arduinoIsExpectedToRespond = true;
                 if (thereIsError) { return; }
                 cmdNum = 38;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
 
         default:
@@ -376,7 +379,7 @@ const parseAndSendCommandToArduino = (path) => {
         if (error) {
             console.log('Error sending data to arduino: ', error.message);
         } else {
-            console.log('command \'',command,'\' sent to arduino');
+            console.log(cmd + ': command \'',command,'\' sent to arduino');
         }
     });
 }
