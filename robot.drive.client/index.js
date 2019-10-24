@@ -7,57 +7,56 @@ let haveReachedRaspberryNodeJsServerAtLeastOneTime = false;
 let haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
 let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 5;
 
-let sentStartingMotorSpeedToAmpsRatio = false;
 
-let autoStatus = false;
+//let autoStatus = false;
 let previousx = 0;
 let previousy = 0;
+
 let maxspeed = document.getElementById('maxspeed').value;
+document.getElementById('maxspeedvalue').innerHTML = maxspeed;
 let maxrotspeed = document.getElementById('maxrotspeed').value;
+document.getElementById('maxrotspeedvalue').innerHTML = maxrotspeed;
 
-let speed2cmd = document.getElementById('speed2cmd').value;
-let speed2cmdMillis = document.getElementById('speed2cmdMillis').value;
+let speedcmdthreshold = document.getElementById('speedcmdthreshold').value;
+document.getElementById('speedcmdthresholdvalue').innerHTML = speedcmdthreshold;
+let minactualspeed    = document.getElementById('minactualspeed').value;
+document.getElementById('minactualspeedvalue').innerHTML = minactualspeed;
+let millislowspeed    = document.getElementById('millislowspeed').value;
+document.getElementById('millislowspeedvalue').innerHTML = millislowspeed;
+let startTrackingMillisLowSpeed = false;
+let currMillisLowSpeed;
+let robotMovementIsDisabled = false;
+let movementIsDisabledDetailsMessage = '';
 
-let startBeeping = false;
-let beeping = false;
-
-// stuff related to making an error sound
-let audioContext = undefined;
-
-const doArduinoSetSpeedVsCommandedRatio = (slider) => {
-    speed2cmd = slider.value;
-    speed2cmdValue.innerHTML = slider.value;
-    doArduinoCommand('minspd2cmd/'+ speed2cmd + '/' + speed2cmdMillis);
+const doArduinoSetSpeedCmdThreshold = (slider) => {
+    speedcmdthreshold = slider.value;
+    speedcmdthresholdvalue.innerHTML = slider.value;
 }
 
-const doArduinoSetSpeedVsCommandedRatioMillis = (slider) => {
-    speed2cmdMillis = slider.value;
-    speed2cmdMillisValue.innerHTML = slider.value;
-    doArduinoCommand('minspd2cmd/'+ speed2cmd + '/' + speed2cmdMillis);
+const doArduinoSetMinActualSpeed = (slider) => {
+    minactualspeed = slider.value;
+    minactualspeedvalue.innerHTML = slider.value;
 }
 
-const  beep = (vol, freq, duration) => {
-    let oscillator=audioContext.createOscillator();
-    let gain=audioContext.createGain();
-    oscillator.connect(gain);
-    oscillator.frequency.value=freq;
-    oscillator.type="square";
-    gain.connect(audioContext.destination);
-    gain.gain.value=vol*0.01;
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime+duration*0.001);
+const doArduinoSetMillisLowSpeed = (slider) => {
+    millislowspeed = slider.value;
+    millislowspeedvalue.innerHTML = slider.value;
 }
+
 
 const doArduinoCommand = (command, status) => {
 
-    if (audioContext === undefined) {
-        audioContext = new AudioContext(); // browsers limit the number of concurrent audio contexts, so you better re-use'em
-    }
-
+/*
     if (status === 'status') {
         autoStatus = true;
     } else if (status === 'nostatus') {
         autoStatus = false;
+    }
+*/
+
+    if (command === 'clr.usb.err') {
+        robotMovementIsDisabled = false;
+        movementIsDisabledDetailsMessage = '';
     }
 
     fetch('http://'+currIpAddress+':8084/arduino/api/' + command, { method: 'GET' })
@@ -71,16 +70,16 @@ const doArduinoCommand = (command, status) => {
 
 const doArduinoSetMaxSpeed = (slider) => {
     maxspeed = slider.value;
-    console.log(maxspeed);
+    maxspeedvalue.innerHTML = maxspeed;
 }
 const doArduinoSetMaxRotationSpeed = (slider) => {
     maxrotspeed = slider.value;
-    console.log(maxrotspeed);
+    maxrotspeedvalue.innerHTML = maxrotspeed;
 }
 
 
 
-
+/*
 // this fires as long as slider is moving
 // (speed changing)
 let mouseSliderPressed = false
@@ -119,8 +118,15 @@ const sendArduinoMovementCommand = (command) => {
         sendArduinoMovementCommand(command);
     }, 10);
 }
+*/
 
 const sendGamepadAxesToServer = (X, Y) => {
+
+    if (robotMovementIsDisabled) {
+        messages.innerHTML = 'ROBOT IS DISABLED : ' + movementIsDisabledDetailsMessage;
+        return;
+    }
+
     //console.log(X,' ',Y);
     fetch('http://'+currIpAddress+':8084/gamepad/axes/', {
             method: 'POST',
@@ -166,23 +172,9 @@ const gamePadHandler = () => {
             //console.log(intx,'  ',inty);
             sendGamepadAxesToServer(intx,inty);
         }
-    }, 30);
+    }, 20);
 }
 
-
-const doBeep = () => {
-
-    if (startBeeping && !beeping) {
-        setTimeout(()=>{
-            console.log('going to beeeepppppp....');
-            beeping = true;
-            beep(999,120,50);
-            beeping = false;
-            console.log('done beeping....');
-        },1);
-    }
-
-}
 
 
 //occurs once at start
@@ -223,35 +215,46 @@ setInterval(() => {
             }
             response.json().then(data => {
                 arduinodata.innerHTML = ''
-                        + 'Volts:' + data.volts + '<br/>'
-                        + 'Amps1:' + data.amps1 + '<br/>'
-                        + 'Amps2:' + data.amps2  + '<br/>'
+                        + 'Volts:' + (data.volts/10).toFixed(1) + '<br/>'
+                        + 'Amps1:' + (data.amps1/100).toFixed(1) + '<br/>'
+                        + 'Amps2:' + (data.amps2/100).toFixed(1)  + '<br/>'
                         + 'M1 Spd:' + data.speed1 + '<br/>'
                         + 'M2 Spd:' + data.speed2 + '<br/>'
-                        + 'Temp: ' + data.temp + '<br/>'
+                        + 'Spd Cmd:'+ data.spdcmd + '<br/>'
+                        + 'Temp: ' + ((data.temp/10)*1.8+32).toFixed(1) + '<br/>'
                         + 'Cmds: ' + data.cmds + '&nbsp;&nbsp;'
                         + 'Dropped: ' + data.dropped + '&nbsp;&nbsp;'
-                        + '% Err: ' + ((data.dropped / data.cmds) * 100).toFixed(1) + '&nbsp;&nbsp;'
-                        + 'Last: ' + data.last + '&nbsp;&nbsp;'
-                        + 'Msg:  ' + data.msg + '<br/>'
-                        + 'Error:' + data.error + '<br/>'
-                        + 'HiAmpCnt:' + data.hiAmpsCnt + '<br/>'
-                        + 'LoSpdCnt:' + data.loSpdCnt + '<br/>';
+                        + 'Err: ' + ((data.dropped / data.cmds) * 100).toFixed(1) + '%&nbsp;&nbsp;'
+                        + 'Last: ' + data.lastcmd + '&nbsp;&nbsp;<br/>';
 
+                if (data.version!==undefined) {
+                    console.log('version:'+data.version);
+                }
+                messages.innerHTML = (data.msg!==undefined?data.msg:'') + (data.version!==undefined?'<br/>'+data.version:'');
+                errors.innerHTML   = data.error;
 
-                            //<button onclick="beep(100,720,50)">beep</button>
-                            //<button onclick="beep(100,520,50)">beep</button>
-                            //<button onclick="beep(999,220,50)">boop</button>
-               if (data.error !== '') {
-                   startBeeping = true;
-                   doBeep();
-               } else {
-                   startBeeping = false;
-                   if (!sentStartingMotorSpeedToAmpsRatio) {
-                        sentStartingMotorSpeedToAmpsRatio = true;
-                        doArduinoCommand('minspd2cmd/2/600');
-                   }
-               }
+                if (!robotMovementIsDisabled && data.spdcmd !== undefined && data.spdcmd !== '' 
+                    && data.spdcmd > speedcmdthreshold 
+                    && (Math.abs(data.speed1) < minactualspeed || Math.abs(data.speed2) < minactualspeed)
+                ) {
+                    if (!startTrackingMillisLowSpeed) {
+                        currMillisLowSpeed = new Date().getTime();
+                        startTrackingMillisLowSpeed = true;
+                    }
+                    let now = new Date().getTime();
+                    if (now - currMillisLowSpeed > millislowspeed) {
+                        movementIsDisabledDetailsMessage = 'WARNING! ROBOT IS STUCK!!'
+                                            + ' thres:' + data.spdcmd
+                                            + ', actual1:' + data.speed1
+                                            + ', actual2:' + data.speed2
+                                            + ', millis:' + (now - currMillisLowSpeed);
+                        warnings.innerHTML = movementIsDisabledDetailsMessage;
+                        robotMovementIsDisabled = true;
+                    }
+                } else {
+                    warnings.innerHTML = '';
+                }
+
 
             });
         })

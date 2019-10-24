@@ -45,6 +45,7 @@ const connectToArduino = () => {
 
 const reconnectToArduino = () => {
     console.log('ATTEMPT RE-CONNECT TO ARDUINO');
+    error = 'ATTEMPT RE-CONNECT TO ARDUINO';
     setTimeout(() => {
         connectToArduino();
     }, 2000);
@@ -105,9 +106,8 @@ let cmds = '';
 let lastcmd = '';
 let msg = '';
 let error = '';
-let hiAmpsCnt = '';
-let loSpdCnt = '';
-
+let spdcmd = '';
+let version = '';
 let cmdNum = '';
 let dropped = '';
 let thereIsError = false;
@@ -125,10 +125,10 @@ const clearAllStatusVariables = () => {
     lastcmd = '';
     msg = '';
     error = '';
-    hiAmpsCnt = '';
-    loSpdCnt = '';
+    spdcmd = '';
     cmdNum = '';
     dropped = '';
+    version = '';
     thereIsError = false;
     commandWasSentToArduino = false;
     arduinoIsExpectedToRespond = false;
@@ -138,22 +138,22 @@ arduinoParser.on('data', data => {
 
     clearAllStatusVariables();
 
-    console.log(data);
+    //console.log(data);
     try {
         const result = JSON.parse(data);
         //console.log(result);
         //
         if (result.v !== undefined) {
-            volts = result.v/10;
+            volts = result.v;
         }
         if (result.a1 !== undefined) {
-            amps1 = result.a1/100;
+            amps1 = result.a1;
         }
         if (result.a2 !== undefined) {
-            amps2 = result.a2/100;
+            amps2 = result.a2;
         }
         if (result.t !== undefined) {
-            temp = ((result.t/10) * (9/5)).toFixed(1) + 32;
+            temp = result.t;
         }
         if (result.s1 !== undefined) {
             speed1 = result.s1;
@@ -175,19 +175,18 @@ arduinoParser.on('data', data => {
         }
         if (result.e !== undefined) {
             error = result.e;
-            thereIsError = true;
+            //thereIsError = true;
         } 
-        if (result.hiAmpsCnt !== undefined) {
-            hiAmpsCnt = result.hiAmpsCnt;
-        }
-        if (result.loSpdCnt !== undefined) {
-            loSpdCnt = result.loSpdCnt;
+        if (result.version !== undefined) {
+            version = result.version;
+            console.log('VERSION VERSION'+version);
         }
 
         if (thereIsError) { console.log(result); }
 
-    } catch (error) {
+    } catch (e) {
             console.log(data);
+        error = e;
     }
 
 });
@@ -224,11 +223,11 @@ const respondWithCollectedDataHandler = (request, response) => {
         speed2,
         msg,
         cmds,
+        spdcmd,
         dropped,
         lastcmd,
         error,
-        hiAmpsCnt,
-        loSpdCnt
+        version
     });
 }
 app.get('/arduino/data', respondWithCollectedDataHandler);
@@ -297,6 +296,10 @@ const parseAndSendCommandToArduino = (path) => {
                 cmdNum = 3;
                 command = '5 ' + cmdNum + ' ' + myRandom + ' ' + ( parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
                 break;
+        case 'move.timeout':
+                cmdNum = 6;
+                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + ( parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
+                break;
         case 'clr.usb.err':
                 cmdNum = 4;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
@@ -304,10 +307,6 @@ const parseAndSendCommandToArduino = (path) => {
         case 'clr.num.usb.cmds':
                 cmdNum = 5;
                 command = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
-                break;
-        case 'minspd2cmd':
-                cmdNum = 6;
-                command = '6 '+cmdNum+' '+myRandom+' '+(parseInt(cmdNum)+parseInt(myRandom)+parseInt(parm1ForSum)+parseInt(parm2ForSum)+6)+' '+parm1+' '+parm2;
                 break;
         case 'version':
                 cmdNum = 20;
@@ -325,45 +324,25 @@ const parseAndSendCommandToArduino = (path) => {
                 if (thereIsError) { return; }
                 cmdNum = 29;
                 command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
+                spdcmd = parm1;
                 break;
         case 'backward':
                 if (thereIsError) { return; }
                 cmdNum = 32;
                 command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
+                spdcmd = parm1;
                 break;
         case 'left':
                 if (thereIsError) { return; }
                 cmdNum = 33;
                 command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
+                spdcmd = parm1;
                 break;
         case 'right':
                 if (thereIsError) { return; }
                 cmdNum = 34;
                 command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
-                break;
-        case 'forwardresp':
-                arduinoIsExpectedToRespond = true;
-                if (thereIsError) { return; }
-                cmdNum = 35;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
-                break;
-        case 'backwardresp':
-                arduinoIsExpectedToRespond = true;
-                if (thereIsError) { return; }
-                cmdNum = 36;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
-                break;
-        case 'leftresp':
-                arduinoIsExpectedToRespond = true;
-                if (thereIsError) { return; }
-                cmdNum = 37;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
-                break;
-        case 'rightresp':
-                arduinoIsExpectedToRespond = true;
-                if (thereIsError) { return; }
-                cmdNum = 38;
-                command = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1ForSum) + 5) + ' ' + parm1;
+                spdcmd = parm1;
                 break;
 
         default:
@@ -375,9 +354,10 @@ const parseAndSendCommandToArduino = (path) => {
     console.log(command);
     //return;
     commandWasSentToArduino = true;
-    arduinoPort.write(command + '\n', error => {
-        if (error) {
-            console.log('Error sending data to arduino: ', error.message);
+    arduinoPort.write(command + '\n', e => {
+        if (e) {
+            error = 'Error sending data to arduino: ', e.message;
+            console.log('Error sending data to arduino: ', e.message);
         } else {
             console.log(cmd + ': command \'',command,'\' sent to arduino');
         }
@@ -398,49 +378,15 @@ const commandHandler = (request, response) => {
         } else {
             response.status(500).send('CMD NOT SENT TO ARDUINO: You requested ' + request.path);
         }
-    } catch (error) {
-        response.status(500).send('Error: ' + error + '\n\nYou requested ' + request.path);
+    } catch (e) {
+        response.status(500).send('Error: ' + e + '\n\nYou requested ' + request.path);
+        error = 'Error: ' + e + ' requesting ' + request.path;
     }
 }
 app.get('/arduino/api/*', commandHandler);
 
 
 
-
-///////arduino command HELP handler///////////////////////////////////////////////////
-const commandHelpHandler = (request, response) => {
-    //console.log('server log: ' + request.path);
-    response.send(request.path);
-
-    port.write('0\n', error => {
-        if (error) {
-            console.log('Error sending data to arduino: ', error.message);
-        } else {
-            console.log('command sent to arduino');
-        }
-    });
-
-}
-app.get('/arduino/api', commandHelpHandler);
-
-
-
-
-///////arduino serial connection test handler///////////////////////////////////////////////////
-const commandTestSerialHandler = (request, response) => {
-    console.log('You requested ' + request.path);
-    response.send(request.path);
-
-    port.write('\n', error => {
-        if (error) {
-            console.log('Error sending data to arduino: ', error.message);
-        } else {
-            console.log('test \\n (newline) sent to arduino');
-        }
-    });
-
-}
-app.get('/arduino', commandTestSerialHandler);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -474,7 +420,12 @@ const processAxesValues = (data) => {
 
 
     let path = command;
-    parseAndSendCommandToArduino(path);
+    try {
+        parseAndSendCommandToArduino(path);
+    } catch (e) {
+        console.log(e);
+        error = e;
+    }
 }
 
 

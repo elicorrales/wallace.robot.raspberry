@@ -1,65 +1,61 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <link rel="stylesheet" href="bootstrap.min.css">
+    </head>
     <body>
-        <h1>Test Arduino/Roboclaw Commands</h1>
-        <!--
-        <button onclick="beep(100,720,50)">beep</button>
-        <button onclick="beep(100,520,50)">beep</button>
-        <button onclick="beep(999,220,50)">boop</button>
-        <button onclick="beep(999,120,50)">boop</button>
-        -->
-        <table>
-            <tr>
-                <td>
+        <h1><center>Test Arduino/Roboclaw Commands</center></h1>
+        <div class="container container-fluid">
+            <div class="row">
+                    <div id="messages" class="alert alert-info"></div>
+                    <div id="warnings" class="alert alert-warning"></div>
+                    <div id="errors" class="alert alert-danger"></div>
+            </div>
+            <div class="row">
                     <span id="arduinodata"></span><br/>
-                </td>
-                <td>
-                    <button onclick="doArduinoCommand('help')">Help</button><br/>
-                    <button onclick="doArduinoCommand('version')">Version</button><br/>
-                    <button onclick="doArduinoCommand('status')">Status</button><br/>
+            </div>
+            <div class="row">
+                    <button onclick="doArduinoCommand('version')">Version</button>
+                    <button onclick="doArduinoCommand('status')">Status</button>
+                    <!--
                     <button onclick="doArduinoCommand('ack.cmds')">Arduino Should Ack All Commands Rcvd</button><br/>
-                    <button onclick="doArduinoCommand('status.stop','nostatus')">Auto Status Stop</button><br/>
-                    <button onclick="doArduinoCommand('status.start/500','status')">Auto Status Start 500</button><br/>
-                    <button onclick="doArduinoCommand('status.start/200','status')">Auto Status Start 200</button><br/>
-                    <button onclick="doArduinoCommand('status.start/100','status')">Auto Status Start 100</button><br/>
-                    <button onclick="doArduinoCommand('status.start/50','status')">Auto Status Start 50</button><br/>
-                    <button onclick="doArduinoCommand('stop')">Stop Motors</button><br/>
-                    <button onclick="doArduinoCommand('clr.usb.err')">Clear USB Error</button><br/>
-                    <button onclick="doArduinoCommand('clr.num.usb.cmds')">Clear Num USB Cmds</button><br/>
-                </td>
-            </tr>
-        </table>
-        <hr>
+                    -->
+                    <button onclick="doArduinoCommand('status.stop','nostatus')">Auto Status Stop</button>
+                    <button onclick="doArduinoCommand('status.start/100','status')">Auto Status Start 100</button>
+                    <button onclick="doArduinoCommand('status.start/50','status')">Auto Status Start 50</button>
+                    <button onclick="doArduinoCommand('clr.usb.err')">Clear USB Error</button>
+                    <button onclick="doArduinoCommand('clr.num.usb.cmds')">Clear Num USB Cmds</button>
+                    <button onclick="doArduinoCommand('move.timeout/100')">Movement Timeout 100 Ms</button>
+                    <button onclick="doArduinoCommand('move.timeout/150')">Movement Timeout 150 Ms</button>
+                    <button onclick="doArduinoCommand('move.timeout/200')">Movement Timeout 200 Ms</button>
+                    <button onclick="doArduinoCommand('move.timeout/300')">Movement Timeout 300 Ms</button>
+            </div>
 
-        Speed-to-Cmd-Ratio:<input id="speed2cmd" type="range" min="0" max="40" value="0" step="0.1" class="slider" 
-            oninput="doArduinoSetSpeedVsCommandedRatio(this, event)"
-            /><span id="speed2cmdValue"></span><br/>
-        Speed-to-Cmd-Ratio Millis:<input id="speed2cmdMillis" type="range" min="0" max="1000" value="0" step="1" class="slider" 
-            oninput="doArduinoSetSpeedVsCommandedRatioMillis(this, event)"
-            /><span id="speed2cmdMillisValue"></span><br/>
-        Max Speed:<input id="maxspeed" type="range" min="70" max="100" value="100" class="slider" 
-            oninput="doArduinoSetMaxSpeed(this, event)"
-            /><br/>
-        Max Rotation Speed:<input id="maxrotspeed" type="range" min="60" max="100" value="80" class="slider" 
-            oninput="doArduinoSetMaxRotationSpeed(this, event)"
-            /><br/>
-        Forward:<input id="forward" type="range" min="0" max="100" value="0" class="slider" 
-            oninput="doArduinoStartMovement(this, event)"
-            onclick="doArduinoEndMovement(this, event)"
-            /><br/>
-        Backward:<input id="backward" type="range" min="0" max="100" value="0" class="slider" 
-            oninput="doArduinoStartMovement(this)"
-            onclick="doArduinoEndMovement(this, event)"
-            /><br/>
-        Left:<input id="left" type="range" min="0" max="100" value="0" class="slider" 
-            oninput="doArduinoStartMovement(this)"
-            onclick="doArduinoEndMovement(this, event)"
-            /><br/>
-        Right:<input id="right" type="range" min="0" max="100" value="0" class="slider" 
-            oninput="doArduinoStartMovement(this)"
-            onclick="doArduinoEndMovement(this, event)"
-            /><br/>
+            <hr>
+
+            Max Speed:<input id="maxspeed" type="range" min="70" max="100" value="100" class="slider" oninput="doArduinoSetMaxSpeed(this)" />
+            <span id="maxspeedvalue"></span>
+            <br/>
+            Max Rotation Speed:<input id="maxrotspeed" type="range" min="60" max="100" value="80" class="slider" oninput="doArduinoSetMaxRotationSpeed(this)" />
+            <span id="maxrotspeedvalue"></span>
+            <br/>
+
+            <hr>
+
+            If Threshold is Greater <span id="speedcmdthresholdvalue"></span>
+            And Actual Speed is Lower Than <span id="minactualspeedvalue"></span>
+            For More Than <span id="millislowspeedvalue"></span> Ms
+            <hr>
+            Speed Cmd Threshold:<input id="speedcmdthreshold" type="range" min="0" max="100" value="10" class="slider" oninput="doArduinoSetSpeedCmdThreshold(this)" />
+            <br/>
+            Min Actual Speed:<input id="minactualspeed" type="range" min="0" max="1000" value="20" step="1" class="slider" oninput="doArduinoSetMinActualSpeed(this)" />
+            <br/>
+            Millis Low Speed Trigger:<input id="millislowspeed" type="range" min="0" max="1000" value="100" step="20" class="slider" oninput="doArduinoSetMillisLowSpeed(this)" />
+            <br/>
+            If Threshold is Greater <strong>10</strong> And Actual Speed is Lower Than <strong>3</strong> For More Than <strong>200 Ms</strong>
+        </div>
+
+
     </body>
     <script src="p5.min.js"></script>
     <script src="index.js"></script>
