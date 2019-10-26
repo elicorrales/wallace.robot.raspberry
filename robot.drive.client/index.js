@@ -1,11 +1,18 @@
 'use strict';
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// related to establishing initial conncection between browser client and node.js server.
+/////////////////////////////////////////////////////////////////////////////////////////////////
 let ipAddress='10.0.0.58';
-let ipAddress2='192.168.43.64';
+let ipAddress2='192.168.1.3';
 let currIpAddress = ipAddress;
 let haveReachedRaspberryNodeJsServerAtLeastOneTime = false;
 let haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
+let haveInformedUserThatRaspberryNodeJsServerIsAvailable = false;
 let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 5;
+let lastTimeResponseFromRaspberryPiServer = new Date().getTime();
+
+
 
 
 //let autoStatus = false;
@@ -25,8 +32,11 @@ let millislowspeed    = document.getElementById('millislowspeed').value;
 document.getElementById('millislowspeedvalue').innerHTML = millislowspeed;
 let startTrackingMillisLowSpeed = false;
 let currMillisLowSpeed;
-let robotMovementIsDisabled = false;
+let robotMovementIsDisabled = true;
 let movementIsDisabledDetailsMessage = '';
+let millisLastTimeGamepadAxes = new Date().getTime();
+let isGamepadAxesMovement = false;
+
 
 const doArduinoSetSpeedCmdThreshold = (slider) => {
     speedcmdthreshold = slider.value;
@@ -44,22 +54,17 @@ const doArduinoSetMillisLowSpeed = (slider) => {
 }
 
 
-const doArduinoCommand = (command, status) => {
+const doArduinoCommand = (command) => {
 
-/*
-    if (status === 'status') {
-        autoStatus = true;
-    } else if (status === 'nostatus') {
-        autoStatus = false;
-    }
-*/
 
-    if (command === 'clr.usb.err') {
+    if (command === 'arduino/api/clr.usb.err') {
         robotMovementIsDisabled = false;
         movementIsDisabledDetailsMessage = '';
+        robotMovementIsDisabled = false;
+        startTrackingMillisLowSpeed = false;
     }
 
-    fetch('http://'+currIpAddress+':8084/arduino/api/' + command, { method: 'GET' })
+    fetch('http://'+currIpAddress+':8084/' + command, { method: 'GET' })
     .then(result => {
         //console.log(result);
     })
@@ -123,9 +128,13 @@ const sendArduinoMovementCommand = (command) => {
 const sendGamepadAxesToServer = (X, Y) => {
 
     if (robotMovementIsDisabled) {
-        messages.innerHTML = 'ROBOT IS DISABLED : ' + movementIsDisabledDetailsMessage;
+        messages.innerHTML = 'ROBOT IS DISABLED : ' + movementIsDisabledDetailsMessage + '<br/> Press "Clear USB Error"';
+        console.log(movementIsDisabledDetailsMessage);
         return;
     }
+
+    isGamepadAxesMovement = true;
+    millisLastTimeGamepadAxes = new Date().getTime();
 
     //console.log(X,' ',Y);
     fetch('http://'+currIpAddress+':8084/gamepad/axes/', {
@@ -157,7 +166,9 @@ const gamePadHandler = () => {
         const now = new Date().getTime();
 
         // since joystick not guaranteed to be centered..
-        if (absX < 0.18 && absY < 0.18) { return; }
+        if (absX < 0.18 && absY < 0.18) {
+            return;
+        }
 
         // make sure the joystick movement is clearly vertical, or clearly horizontal
         if ((absX + 0.05 > absY) || (absY + 0.05 > absX)) {
@@ -172,14 +183,15 @@ const gamePadHandler = () => {
             //console.log(intx,'  ',inty);
             sendGamepadAxesToServer(intx,inty);
         }
-    }, 20);
+    }, 50);
 }
 
 
 
 //occurs once at start
 const onGamePadConnected = (gamePadEvent) => {
-    //console.log(gamePadEvent);
+
+    console.log(gamePadEvent);
 
     gamePadHandler();
 }
@@ -202,9 +214,19 @@ let statusInterval = 1000;
 setInterval(() => {
 
          if (haveReachedRaspberryNodeJsServerAtLeastOneTime) {
-            statusInterval = 50;
+            if (!haveInformedUserThatRaspberryNodeJsServerIsAvailable) {
+                haveInformedUserThatRaspberryNodeJsServerIsAvailable = true;
+                mainappcontainer.style.display = 'block';
+                connectingcontainer.style.display = 'none';
+                console.log('Have Reached Raspberry Pi Node.js server at ' + currIpAddress);
+                messages.innerHTML = 'Have Reached Raspberry Pi Node.js server at ' + currIpAddress;
+                statusInterval = 5000;
+            } else if (!robotMovementIsDisabled) {
+                statusInterval = 50;
+            }
          }
 
+        lastTimeResponseFromRaspberryPiServer = new Date().getTime();
     
         fetch('http://'+currIpAddress+':8084/arduino/data', { method: 'GET' })
         .then(response => {
@@ -227,7 +249,7 @@ setInterval(() => {
                         + 'Err: ' + ((data.dropped / data.cmds) * 100).toFixed(1) + '%&nbsp;&nbsp;'
                         + 'Last: ' + data.lastcmd + '&nbsp;&nbsp;<br/>';
 
-                if (data.version!==undefined) {
+                if (data.version!==undefined && data.version !== '') {
                     console.log('version:'+data.version);
                 }
                 messages.innerHTML = (data.msg!==undefined?data.msg:'') + (data.version!==undefined?'<br/>'+data.version:'');
@@ -237,11 +259,19 @@ setInterval(() => {
                     && data.spdcmd > speedcmdthreshold 
                     && (Math.abs(data.speed1) < minactualspeed || Math.abs(data.speed2) < minactualspeed)
                 ) {
+                    let now = new Date().getTime();
+
+                    if (now - millisLastTimeGamepadAxes > 200) {
+                        isGamepadAxesMovement = false;
+                        millisLastTimeGamepadAxes = new Date().getTime();
+                        startTrackingMillisLowSpeed = false;
+                    }
+
                     if (!startTrackingMillisLowSpeed) {
                         currMillisLowSpeed = new Date().getTime();
                         startTrackingMillisLowSpeed = true;
                     }
-                    let now = new Date().getTime();
+
                     if (now - currMillisLowSpeed > millislowspeed) {
                         movementIsDisabledDetailsMessage = 'WARNING! ROBOT IS STUCK!!'
                                             + ' thres:' + data.spdcmd
@@ -250,6 +280,7 @@ setInterval(() => {
                                             + ', millis:' + (now - currMillisLowSpeed);
                         warnings.innerHTML = movementIsDisabledDetailsMessage;
                         robotMovementIsDisabled = true;
+                        console.log(movementIsDisabledDetailsMessage);
                     }
                 } else {
                     warnings.innerHTML = '';
@@ -262,6 +293,8 @@ setInterval(() => {
             if (!haveReachedRaspberryNodeJsServerAtLeastOneTime) {
                 console.log('Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #'+
                 haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes);
+                warnings.innerHTML = 'Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #' +
+                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes;
                 if (haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes <=
                 maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses) {
                     haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes++;
@@ -273,6 +306,7 @@ setInterval(() => {
                             break;
                         case ipAddress2:
                             console.log('Not Reaching Raspberry Node Js Server at any address.');
+                            errors.innerHTML = 'Not Reaching Raspberry Node Js Server at any address.';
                             break;
                     }
                 }
