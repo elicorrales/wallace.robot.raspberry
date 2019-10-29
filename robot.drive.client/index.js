@@ -154,13 +154,7 @@ const sendGamepadAxesToServer = (X, Y) => {
 
 }
 
-const gamePadHandler = () => {
-    setInterval(()=> {
-        const gamePad = navigator.getGamepads()[0];
-        const axes = gamePad.axes;
-        //console.log(axes);
-        const X = axes[0];
-        const Y = axes[1];
+const processXandY = (X,Y) => {
         const absX = Math.abs(X);
         const absY = Math.abs(Y);
         const now = new Date().getTime();
@@ -183,7 +177,41 @@ const gamePadHandler = () => {
             //console.log(intx,'  ',inty);
             sendGamepadAxesToServer(intx,inty);
         }
-    }, 50);
+}
+
+const gamePadHandler = () => {
+    setInterval(()=> {
+        const gamePad = navigator.getGamepads()[0];
+        const axes = gamePad.axes;
+        //console.log(axes);
+        const X = axes[0];
+        const Y = axes[1];
+        processXandY(X,Y);
+        /*
+        const absX = Math.abs(X);
+        const absY = Math.abs(Y);
+        const now = new Date().getTime();
+
+        // since joystick not guaranteed to be centered..
+        if (absX < 0.18 && absY < 0.18) {
+            return;
+        }
+
+        // make sure the joystick movement is clearly vertical, or clearly horizontal
+        if ((absX + 0.05 > absY) || (absY + 0.05 > absX)) {
+
+            let x = X>=0 ? map(X,0.2,1,0,maxrotspeed,true) : map(X,-0.2,-1,0,-maxrotspeed,true);
+
+            let y = Y>=0 ? map(Y,0.2,1,0,maxspeed,true) : map(Y,-0.2,-1,0,-maxspeed,true);
+
+            let intx = Math.floor(x);
+            let inty = Math.floor(y);
+
+            //console.log(intx,'  ',inty);
+            sendGamepadAxesToServer(intx,inty);
+        }
+        */
+    }, 10);
 }
 
 
