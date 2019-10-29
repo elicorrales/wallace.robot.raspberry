@@ -49,23 +49,12 @@ const clearTouchEvents = () => {
     toucharea.removeEventListener('touchend', doTouchEnd);
 }
 
-const doSwitchToMainPage = () => {
-    mainappcontainer.style.display = 'block';
-    //messagescontainer.style.display = 'block';
-    touchdrivecontainer.style.display = 'none';
-    inTouchDriveMode = false;
+const doSwitchToGamepadDrive = () => {
+    location.href = "gamepaddrive.html";
     clearTouchEvents();
 }
 
-const doSwitchToTouchDrive = () => {
-    accumulatedTouchMessages += ' Switch To Touch ; ';
-    displayTouchMessages();
-    mainappcontainer.style.display = 'none';
-    //messagescontainer.style.display = 'none';
-    touchdrivecontainer.style.display = 'block';
-    inTouchDriveMode = true;
-    initTouchEvents();
-}
+
 
 const displayTouchMessages = () => {
     touchmessages.innerHTML = '<font size="+4">'+accumulatedTouchMessages+'</font>';
@@ -128,4 +117,6 @@ const doTouchEnd = (event) => {
 }
 
 
-
+window.onload = (event) => {
+    initTouchEvents();
+};
