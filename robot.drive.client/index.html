@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1><center>Test Arduino/Roboclaw Commands</center></h1>
-        <div class="container container-fluid">
+        <div id="messagescontainer" class="container container-fluid">
                     <div id="messages" class="alert alert-info"></div>
                     <div id="warnings" class="alert alert-warning"></div>
                     <div id="errors" class="alert alert-danger"></div>
@@ -13,6 +13,40 @@
         <div id="connectingcontainer" class="container container-fluid">
             <h3>Connecting With Raspberry Node Js Server..pls wait...</h3>
         </div>
+
+
+        <div id="touchdrivecontainer" class="container container-fluid" style="display:none;width:100%">
+            <div class="panel panel-default">
+                <div class="panel panel-heading">
+                    <font size="+4">This is the heading</font>
+                    <div id="touchmessages" class="alert alert-info"></div>
+                    <div id="touchelements" class="alert alert-info"></div>
+                    <div id="touchevents" class="alert alert-info"></div>
+                    <button id="cleartouchmessages" class="btn btn-info" onclick="doClearTouchMessages()"><h1>Clear</h1></button>
+                    X:<span id="Xpos"></span>&nbsp;&nbsp;Y:<span id="Ypos"></span>
+                </div>
+                <div id="toucharea" class="panel panel-body" style="height:1000px;background-color:yellow"
+                    ontouchstart="doTouchStart(event)"
+                    ontouchmove="doTouchMove(event)"
+                    ontouchend="doTouchEnd(event)"
+                    onmousedown="doMouseDown(event)"
+                    onmouseup="doMouseUp(event)"
+                    onmousemove="doMouseMove(event)"
+                    >
+                    <!--
+                    onclick="doEnter(this,event)"
+                    ondragstart="doDragStart(this,event)"
+                    ondragenter="doDragEnter(this,event)"
+                    ondragleave="doDragLeave(this,event)"
+                    ondragend="doDragEnd(this,event)"
+                    onmousedown="doMouseDown(this,event)"
+                    onmouseup="doMouseUp(this,event)"
+                    -->
+                    <font size="+4">This is the body</font>
+                </div>
+            </div>
+        </div>
+
         <div id="mainappcontainer" style="display:none" class="container container-fluid">
             <div class="row">
                     <span id="arduinodata"></span><br/>
@@ -62,7 +96,14 @@
         </div>
 
 
+        <div id="switchcontainer" style="display:none" class="container container-fluid">
+            <button class="btn btn-default" onclick="doSwitchToMainPage()"><font size="+4">Main Page</font></button>
+            <button class="btn btn-default" onclick="doSwitchToTouchDrive()"><font size="+4">Touch Drive</font></button>
+        </div>
+
+
     </body>
     <script src="p5.min.js"></script>
     <script src="index.js"></script>
+    <script src="touchdrive.js"></script>
 </html>

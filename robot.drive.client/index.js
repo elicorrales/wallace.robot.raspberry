@@ -217,6 +217,7 @@ setInterval(() => {
             if (!haveInformedUserThatRaspberryNodeJsServerIsAvailable) {
                 haveInformedUserThatRaspberryNodeJsServerIsAvailable = true;
                 mainappcontainer.style.display = 'block';
+                switchcontainer.style.display = 'block';
                 connectingcontainer.style.display = 'none';
                 console.log('Have Reached Raspberry Pi Node.js server at ' + currIpAddress);
                 messages.innerHTML = 'Have Reached Raspberry Pi Node.js server at ' + currIpAddress;
