@@ -1,15 +1,14 @@
 'use strict';
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // related to establishing initial conncection between browser client and node.js server.
 /////////////////////////////////////////////////////////////////////////////////////////////////
-let ipAddress='10.0.0.58';
-let ipAddress2='192.168.1.3';
-let currIpAddress = ipAddress;
+let currIpAddress = '';
 let haveReachedRaspberryNodeJsServerAtLeastOneTime = false;
 let haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
 let haveInformedUserThatRaspberryNodeJsServerIsAvailable = false;
-let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 5;
+let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 3;
 let lastTimeResponseFromRaspberryPiServer = new Date().getTime();
 
 
@@ -33,6 +32,10 @@ let movementIsDisabledDetailsMessage = '';
 let millisLastTimeXandY = new Date().getTime();
 let isXandYMovement = false;
 
+const doUseThisIp = (ipAddr) => {
+    currIpAddress = ipAddr;
+    connectingplswait.innerHTML = 'Connecting with Raspberry Pi Node.js Server.... pls wait';
+}
 
 
 const doArduinoSetSpeedCmdThreshold = (slider) => {
@@ -151,7 +154,7 @@ const sendXandYToServer = (X, Y) => {
 
 }
 
-const processXandY = (X,Y) => {
+const processXandY = (X,Y, minDiffBetweenThem) => {
         const absX = Math.abs(X);
         const absY = Math.abs(Y);
         const now = new Date().getTime();
@@ -162,7 +165,7 @@ const processXandY = (X,Y) => {
         }
 
         // make sure the joystick movement is clearly vertical, or clearly horizontal
-        if ((absX + 0.05 > absY) || (absY + 0.05 > absX)) {
+        if ((absX + minDiffBetweenThem > absY) || (absY + minDiffBetweenThem > absX)) {
 
             let x = X>=0 ? map(X,0.2,1,0,maxrotspeed,true) : map(X,-0.2,-1,0,-maxrotspeed,true);
 
@@ -177,12 +180,33 @@ const processXandY = (X,Y) => {
 }
 
 
+const handleNotReachingRaspberryPi = () => {
+            if (!haveReachedRaspberryNodeJsServerAtLeastOneTime) {
+                console.log('Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #'+
+                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes);
+                warnings.innerHTML = 'Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #' +
+                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes;
+                if (haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes <=
+                maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses) {
+                    haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes++;
+                } else { 
+                    console.log('Not Reaching Raspberry Node Js Server.');
+                    errors.innerHTML = 'Not Reaching Raspberry Node Js Server';
+                }
 
+            } else {
+                console.log(error);
+            }
+}
 
 
 
 let statusInterval = 1000;
 setInterval(() => {
+
+    if (currIpAddress === '') {
+        return;
+    }
 
          if (haveReachedRaspberryNodeJsServerAtLeastOneTime) {
             if (!haveInformedUserThatRaspberryNodeJsServerIsAvailable) {
@@ -267,30 +291,7 @@ setInterval(() => {
             });
         })
         .catch(error => {
-            if (!haveReachedRaspberryNodeJsServerAtLeastOneTime) {
-                console.log('Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #'+
-                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes);
-                warnings.innerHTML = 'Not Reaching Raspberry Node Js Server at address ' + currIpAddress + ' for try #' +
-                haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes;
-                if (haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes <=
-                maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses) {
-                    haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes++;
-                } else { 
-                    switch (currIpAddress) {
-                        case ipAddress:
-                            currIpAddress = ipAddress2;
-                            haveTriedToReachRaspberryNodeJsServerAtLeastThisManyTimes = 0;
-                            break;
-                        case ipAddress2:
-                            console.log('Not Reaching Raspberry Node Js Server at any address.');
-                            errors.innerHTML = 'Not Reaching Raspberry Node Js Server at any address.';
-                            break;
-                    }
-                }
-
-            } else {
-                console.log(error);
-            }
+            handleNotReachingRaspberryPi();
         });
 }, statusInterval);
 

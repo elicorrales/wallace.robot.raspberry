@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="bootstrap.min.css">
     </head>
     <body>
-        <h1><center>Test Arduino/Roboclaw Commands</center></h1>
+        <h1><center>Wallace's Mouse & Touch Drive</center></h1>
         <div id="messagescontainer" class="container container-fluid">
             <font size="+4">
                     <div id="messages" class="alert alert-info"></div>
@@ -13,8 +13,14 @@
                     <div id="errors" class="alert alert-danger"></div>
             </font>
         </div>
+
+        <div class="container container-fluid">
+                <button class="btn btn-default btn-lg" onclick="doUseThisIp('10.0.0.58')"><font size="+4">10.0.0.58</font></button>
+                <button class="btn btn-default btn-lg" onclick="doUseThisIp('192.168.1.3')"><font size="+4">192.168.1.3</font></button>
+        </div>
+
         <div id="connectingcontainer" class="container container-fluid">
-            <h3>Connecting With Raspberry Node Js Server..pls wait...</h3>
+            <h3 id="connectingplswait">Choose an IP address for Raspberry</h3>
         </div>
 
 
@@ -74,11 +80,11 @@
             And Actual Speed is Lower Than <span id="minactualspeedvalue"></span>
             For More Than <span id="millislowspeedvalue"></span> Ms
             <hr>
-            Speed Cmd Threshold:<input id="speedcmdthreshold" type="range" min="0" max="100" value="10" class="slider" oninput="doArduinoSetSpeedCmdThreshold(this)" />
+            Speed Cmd Threshold:<input id="speedcmdthreshold" type="range" min="0" max="100" value="100" class="slider" oninput="doArduinoSetSpeedCmdThreshold(this)" />
             <br/>
-            Min Actual Speed:<input id="minactualspeed" type="range" min="0" max="200" value="3" step="1" class="slider" oninput="doArduinoSetMinActualSpeed(this)" />
+            Min Actual Speed:<input id="minactualspeed" type="range" min="0" max="200" value="2" step="1" class="slider" oninput="doArduinoSetMinActualSpeed(this)" />
             <br/>
-            Millis Low Speed Trigger:<input id="millislowspeed" type="range" min="0" max="1000" value="100" step="20" class="slider" oninput="doArduinoSetMillisLowSpeed(this)" />
+            Millis Low Speed Trigger:<input id="millislowspeed" type="range" min="0" max="1000" value="1000" step="20" class="slider" oninput="doArduinoSetMillisLowSpeed(this)" />
             <br/>
             If Threshold is Greater <strong>10</strong> And Actual Speed is Lower Than <strong>3</strong> For More Than <strong>200 Ms</strong>
         </div>

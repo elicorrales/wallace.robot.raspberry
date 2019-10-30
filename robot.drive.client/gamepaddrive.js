@@ -17,8 +17,8 @@ const gamePadHandler = () => {
         //console.log(axes);
         const X = axes[0];
         const Y = axes[1];
-        processXandY(X,Y);
-    }, 10);
+        processXandY(X,Y,0.8);
+    }, 50);
 }
 
 

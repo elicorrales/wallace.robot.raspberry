@@ -12,7 +12,7 @@ let touchStartY = 0;
 let currTouchX = 0;
 let currTouchY = 0;
 
-const maxTouchRangeX = 100;
+const maxTouchRangeX = 200;
 const maxTouchRangeY = 200;
 
 const trackTouch = () => {
@@ -25,25 +25,21 @@ const trackTouch = () => {
         //accumulatedTouchMessages = ', ' + (currTouchX - touchStartX) + ':' + (currTouchY - touchStartY);
         accumulatedTouchMessages = x + '('+X.toFixed(2)+'):' + y + '('+Y.toFixed(2)+')';
         displayTouchMessages();
-        processXandY(X.toFixed(2),Y.toFixed(2));
+        processXandY(X.toFixed(2),Y.toFixed(2),0.6);
     }
  
 }
 
 const initTouchEvents = () => {
     doClearTouchMessages();
-    accumulatedTouchMessages += ' Init Touch Events; ';
-    displayTouchMessages();
     toucharea.addEventListener('touchstart',doTouchStart);
     toucharea.addEventListener('touchmove',doTouchMove);
     toucharea.addEventListener('touchend',doTouchEnd);
-    intervalTouchTracker = setInterval(trackTouch,5);
+    intervalTouchTracker = setInterval(trackTouch,40);
 }
 
 const clearTouchEvents = () => {
     clearInterval(intervalTouchTracker);
-    accumulatedTouchMessages += ' Clear Touch Events; ';
-    displayTouchMessages();
     toucharea.removeEventListener('touchstart', doTouchStart);
     toucharea.removeEventListener('touchmove', doTouchMove);
     toucharea.removeEventListener('touchend', doTouchEnd);
