@@ -15,6 +15,17 @@ let currTouchY = 0;
 const maxTouchRangeX = 200;
 const maxTouchRangeY = 200;
 
+const doSwitchToFollowRedShirtDrive = () => {
+    location.href = "followredshirt.html";
+    clearTouchEvents();
+}
+
+const doSwitchToGamepadDrive = () => {
+    location.href = "gamepaddrive.html";
+    clearTouchEvents();
+}
+
+
 const trackTouch = () => {
  
     if (touchHasStarted) {
@@ -44,12 +55,6 @@ const clearTouchEvents = () => {
     toucharea.removeEventListener('touchmove', doTouchMove);
     toucharea.removeEventListener('touchend', doTouchEnd);
 }
-
-const doSwitchToGamepadDrive = () => {
-    location.href = "gamepaddrive.html";
-    clearTouchEvents();
-}
-
 
 
 const displayTouchMessages = () => {

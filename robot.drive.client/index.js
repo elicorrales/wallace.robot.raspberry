@@ -17,6 +17,10 @@ const doUseThisIp = (ipAddr) => {
 }
 
 
+const doSwitchToFollowRedShirtDrive = () => {
+    location.href = "followredshirt.html";
+}
+
 const doSwitchToGamepadDrive = () => {
     location.href = "gamepaddrive.html";
 }

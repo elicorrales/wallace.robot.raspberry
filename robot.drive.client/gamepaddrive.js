@@ -2,7 +2,10 @@
 
 
 
-
+const doSwitchToFollowRedShirtDrive = () => {
+    location.href = "followredshirt.html";
+    clearTouchEvents();
+}
 
 const doSwitchToTouchDrive = () => {
     location.href = "touchdrive.html";

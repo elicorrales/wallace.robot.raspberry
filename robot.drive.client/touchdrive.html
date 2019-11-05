@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="bootstrap.min.css">
     </head>
     <body>
-        <h1><center>Wallace's Mouse & Touch Drive</center></h1>
+        <h1><center>Mouse & Touch Drive</center></h1>
         <div id="messagescontainer" class="container container-fluid">
             <font size="+4">
                     <div id="messages" class="alert alert-info"></div>
@@ -91,8 +91,12 @@
 
 
         <div id="switchcontainer" style="display:none" class="container container-fluid">
-            <button class="btn btn-default" onclick="doSwitchToGampadDrive()"><font size="+4">Main Page</font></button>
+            <div class="row">
+                <button class="btn btn-default btn-lg" onclick="doSwitchToFollowRedShirtDrive()"><font size="+4">Follow Drive</font></button>
+                <button class="btn btn-default btn-lg" onclick="doSwitchToGamepadDrive()"><font size="+4">Gamepad Drive</font></button>
+            </div>
         </div>
+
 
 
     </body>

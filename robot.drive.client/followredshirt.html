@@ -4,11 +4,37 @@
         <link rel="stylesheet" href="bootstrap.min.css">
     </head>
     <body>
-        <h1><center>Gamepad Drive</center></h1>
+        <h1><center>Follow Red Shirt</center></h1>
         <div id="messagescontainer" class="container container-fluid">
                     <div id="messages" class="alert alert-info"></div>
                     <div id="warnings" class="alert alert-warning"></div>
                     <div id="errors" class="alert alert-danger"></div>
+        </div>
+
+        <div class="container container-fluid">
+            <div class="row">
+                <button class="btn btn-default btn-lg" onclick="doChooseColor('red')"><font size="+4">Red</font></button>
+                <button class="btn btn-default btn-lg" onclick="doChooseColor('blue')"><font size="+4">Blue</font></button>
+            </div>
+            <div class="row">
+                Color Diff:<input type="range" min="0" max="60" value="0" class="slider" oninput="doSetColorDiff(this)"/>
+                Min Count:<input type="range" min="0" max="10000" value="0" class="slider" oninput="doSetMinChosenColorCount(this)"/>
+            </div>
+            <div class="row">
+                <div class="col col-xs-6">
+                    <img id="camera0" width="480" height="360"/>
+                </div>
+                <div class="col col-xs-6">
+                    <!--
+                        'TLL'=TopLeftLeft, 'TLC'=TopLeftOfCenter, 'TRC'=TopRightOfCenter, 'TRR'=TopRightRight,
+                        'LL'=LeftLeft, 'LC'=LeftOfCenter, 'RC'=RightOfCenter, 'RR'=RightRight,
+                        'BLL'=BottomLeftLeft, 'BLC'=BottomLeftOfCenter, 'BRC'=BottomRightOfCenter, 'BRR'=BottomRightRight
+                    -->
+                    <canvas id="canvTLL" width="120" height="120"></canvas> <canvas id="canvTLC" width="120" height="120"></canvas> <canvas id="canvTRC" width="120" height="120"></canvas> <canvas id="canvTRR" width="120" height="120"></canvas>
+                    <canvas id="canvLL"  width="120" height="120"></canvas> <canvas id="canvLC"  width="120" height="120"></canvas> <canvas id="canvRC"  width="120" height="120"></canvas> <canvas id="canvRR"  width="120" height="120"></canvas>
+                    <canvas id="canvBLL" width="120" height="120"></canvas> <canvas id="canvBLC" width="120" height="120"></canvas> <canvas id="canvBRC" width="120" height="120"></canvas> <canvas id="canvBRR" width="120" height="120"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="container container-fluid">
@@ -72,13 +98,15 @@
 
         <div id="switchcontainer" style="display:none" class="container container-fluid">
             <div class="row">
-                <button class="btn btn-default btn-lg" onclick="doSwitchToFollowRedShirtDrive()"><font size="+4">Follow Drive</font></button>
+                <button class="btn btn-default btn-lg" onclick="doSwitchToGamepadDrive()"><font size="+4">Gamepad Drive</font></button>
                 <button class="btn btn-default btn-lg" onclick="doSwitchToTouchDrive()"><font size="+4">Touch Drive</font></button>
             </div>
         </div>
 
     </body>
+    <!--
     <script src="p5.min.js"></script>
     <script src="common.js"></script>
-    <script src="gamepaddrive.js"></script>
+    -->
+    <script src="followredshirt.js"></script>
 </html>

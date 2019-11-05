@@ -125,7 +125,7 @@ const sendArduinoMovementCommand = (command) => {
 }
 */
 
-const sendXandYToServer = (X, Y) => {
+const sendCommandToServer = (command) => {
 
     if (robotMovementIsDisabled) {
         messages.innerHTML = 'ROBOT IS DISABLED : ' + movementIsDisabledDetailsMessage + '<br/> Press "Clear USB Error"';
@@ -137,14 +137,7 @@ const sendXandYToServer = (X, Y) => {
     millisLastTimeXandY = new Date().getTime();
 
     //console.log(X,' ',Y);
-    fetch('http://'+currIpAddress+':8084/gamepad/axes/', {
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json',
-            },
-            body: JSON.stringify({X,Y})
-        }
-    )
+    fetch('http://'+currIpAddress+':8084/arduino/api/' + command)
     .then(result => {
         //console.log(result);
     })
@@ -175,8 +168,38 @@ const processXandY = (X,Y, minDiffBetweenThem) => {
             let inty = Math.floor(y);
 
             //console.log(intx,'  ',inty);
-            sendXandYToServer(intx,inty);
+            convertXandYtoMovementUrl(intx, inty);
         }
+}
+
+
+const convertXandYtoMovementUrl = (intx, inty) => {
+    const X = intx;
+    const Y = inty;
+
+    //console.log(X,' ',Y);
+  
+    let command = 'gamepad/axes/';
+    if (Math.abs(Y) > Math.abs(X)) {
+        if (Y < 0) {
+            //command = 'forwardresp/' + (-Y) + '/' + (-Y);
+            command += 'forward/' + (-Y) + '/' + (-Y);
+        } else if (Y > 0) {
+            //command = 'backwardresp/' + Y + '/' + Y;
+            command += 'backward/' + Y + '/' + Y;
+        }
+    } else if (Math.abs(Y) < Math.abs(X)) {
+        if (X > 0) {
+            //command = 'rightresp/' + X + '/' + X;
+            command += 'right/' + X + '/' + X;
+        } else if (X < 0) {
+            //command = 'leftresp/' + (-X) + '/' + (-X);
+            command += 'left/' + (-X) + '/' + (-X);
+        }
+    }
+
+    sendCommandToServer(command);
+
 }
 
 
@@ -298,5 +321,5 @@ setInterval(() => {
 //p5.js functions - i believe required to be able to use the
 //map() function - not sure - haven't double-checked in some time.
 function setup() {}
-//function draw() {}
+//function draw() {} <--- this should go only in the camera-related files
 

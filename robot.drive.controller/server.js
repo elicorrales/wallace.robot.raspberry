@@ -418,6 +418,7 @@ app.get('/nodejs/api/*', nodeJsCommandHandler);
 // remote USB gamepad related stuff
 //////////////////////////////////////////////////////////////////////
 
+/*
 const processAxesValues = (data) => {
     const X = data.X;
     const Y = data.Y;
@@ -472,7 +473,7 @@ const joystickAxesHandler = (request, response) => {
     response.send(request.path);
 }
 app.post('/gamepad/axes/', joystickAxesHandler);
-
+*/
 
 app.listen(8084, () => {
     console.log('HTTP Raspberry Pi Server is Up at 8084');
