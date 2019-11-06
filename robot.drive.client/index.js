@@ -17,8 +17,16 @@ const doUseThisIp = (ipAddr) => {
 }
 
 
-const doSwitchToFollowRedShirtDrive = () => {
-    location.href = "followredshirt.html";
+const doSwitchToFollow1Drive = () => {
+    location.href = "follow1.html";
+}
+
+const doSwitchToMinRotationValuesTest = () => {
+    location.href = "min.rotation.values.test.html";
+}
+
+const doSwitchToFollow2Drive = () => {
+    location.href = "follow2.html";
 }
 
 const doSwitchToGamepadDrive = () => {

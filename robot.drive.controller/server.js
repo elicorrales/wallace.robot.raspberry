@@ -96,6 +96,7 @@ connectToRedboard();
 // arduino - robot - driving functions
 //////////////////////////////////////////////////////////////////////////////////////////
 
+let timestamp = 0;
 let volts = '';
 let amps1 = '';
 let amps2 = '';
@@ -115,7 +116,15 @@ let commandWasSentToArduino = false;
 let millisSinceLastResponseFromArduino = new Date().getTime();
 let showArduinoResponseInServerTerminal = true;
 
+
+
+let lastCommandSentToArduino = '';
+let lastCommandSentTimestamp = 0;
+
+const arduinoHistory = [];
+
 const clearAllStatusVariables = () => {
+    timestamp = 0;
     volts = '';
     amps1 = '';
     amps2 = '';
@@ -141,6 +150,16 @@ arduinoParser.on('data', data => {
     millisSinceLastResponseFromArduino = new Date().getTime();
 
     clearAllStatusVariables();
+
+
+    timestamp = new Date().getTime();
+
+
+    arduinoHistory.push(data);
+
+    if (arduinoHistory.length > 50) {
+        arduinoHistory.shift();
+    }
 
     if (showArduinoResponseInServerTerminal) {
         console.log(data);
@@ -223,9 +242,10 @@ app.get('/', rootHandler);
 
 
 
-///////handler to respond with any collected data///////////////////////////////////
+///////handler to respond with any arduino status data///////////////////////////////////
 const respondWithCollectedDataHandler = (request, response) => {
     response.send({
+        timestamp,
         volts,
         amps1,
         amps2,
@@ -241,7 +261,15 @@ const respondWithCollectedDataHandler = (request, response) => {
         version
     });
 }
-app.get('/arduino/data', respondWithCollectedDataHandler);
+app.get('/nodejs/data', respondWithCollectedDataHandler);
+
+
+///////handler to respond with history ///////////////////////////////////
+const respondWithHistoryHandler = (request, response) => {
+    response.send(arduinoHistory);
+}
+
+
 
 
 ///////arduino command handler command code with gamepad/joystick handler//////////
@@ -335,22 +363,22 @@ const parseAndSendCommandToArduino = (path) => {
                 cmdNum = 28;
                 commandStringToSend = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
-        case 'gamepad.axes.forward':
+        case 'arduino.api.forward':
                 if (thereIsError) { return; }
                 cmdNum = 29;
                 commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
-        case 'gamepad.axes.backward':
+        case 'arduino.api.backward':
                 if (thereIsError) { return; }
                 cmdNum = 32;
                 commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
-        case 'gamepad.axes.left':
+        case 'arduino.api.left':
                 if (thereIsError) { return; }
                 cmdNum = 33;
                 commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
                 break;
-        case 'gamepad.axes.right':
+        case 'arduino.api.right':
                 if (thereIsError) { return; }
                 cmdNum = 34;
                 commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
@@ -362,9 +390,18 @@ const parseAndSendCommandToArduino = (path) => {
     }
 
 
-    console.log(commandStringToSend);
+    console.log('=========================================');
+    console.log('COMMAND TO SEND : ' + commandStringToSend);
+    console.log('=========================================');
     //return;
     commandWasSentToArduino = true;
+
+    lastCommandSentToArduino = commandStringToSend;
+    lastCommandSentTimestamp = new Date().getTime();
+
+    arduinoHistory.push({lastCommandSentToArduino,lastCommandSentTimestamp});
+    console.log(arduinoHistory);
+
     arduinoPort.write(commandStringToSend + '\n', e => {
         if (e) {
             error = 'Error sending data to arduino: ', e.message;
@@ -380,7 +417,7 @@ const parseAndSendCommandToArduino = (path) => {
 ///////arduino command handler/////////////////////////////////////////////////////
 const commandHandler = (request, response) => {
 
-    console.log('server log: ' + request.path);
+    console.log('server log: commandHandler : ' + request.path);
 
     try {
         parseAndSendCommandToArduino(request.path);
@@ -397,10 +434,23 @@ const commandHandler = (request, response) => {
 app.get('/arduino/api/*', commandHandler);
 
 
+
+
 ///////node.js server command handler/////////////////////////////////////////////////////
 const nodeJsCommandHandler = (request, response) => {
 
-    console.log('server log: ' + request.path);
+    console.log('server log: nodeJsCommandHandler: ' + request.path);
+
+
+    if (request.path === '/nodejs/api/data') {
+        respondWithCollectedDataHandler(request, response);
+        return;
+    }
+
+    if (request.path === '/nodejs/api/history') {
+        respondWithHistoryHandler(request, response);
+        return;
+    }
 
     try {
         parseAndSendCommandToArduino(request.path);

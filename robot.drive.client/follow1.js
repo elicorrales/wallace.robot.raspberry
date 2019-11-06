@@ -6,8 +6,8 @@ camera0.crossOrigin = "Anonymous";
 
 
 let chosenColor = 'red';
-let colorDiff = 0;
-let minChosenColorCount = 0;
+let colorDiff = parseInt(document.getElementById('colorDiffElem').value);
+let minChosenColorCount = parseInt(document.getElementById('minChosenColorCountElem').value);
 let processingImage = false;
 
 const tryCamera = (url) => {
@@ -146,7 +146,7 @@ const mainLoop = () => {
             processPartOfImage(canvBRR,3*240,2*240);
             processingImage = false;
         }
-    },50);
+    },20);
 }
 
 

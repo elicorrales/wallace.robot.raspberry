@@ -17,8 +17,8 @@
                 <button class="btn btn-default btn-lg" onclick="doChooseColor('blue')"><font size="+4">Blue</font></button>
             </div>
             <div class="row">
-                Color Diff:<input type="range" min="0" max="60" value="0" class="slider" oninput="doSetColorDiff(this)"/>
-                Min Count:<input type="range" min="0" max="10000" value="0" class="slider" oninput="doSetMinChosenColorCount(this)"/>
+                Color Diff:<input id="colorDiffElem" type="range" min="0" max="60" value="60" class="slider" oninput="doSetColorDiff(this)"/>
+                Min Count:<input  id="minChosenColorCountElem" type="range" min="0" max="3000" value="3000" class="slider" oninput="doSetMinChosenColorCount(this)"/>
             </div>
             <div class="row">
                 <div class="col col-xs-6">
@@ -108,5 +108,5 @@
     <script src="p5.min.js"></script>
     <script src="common.js"></script>
     -->
-    <script src="followredshirt.js"></script>
+    <script src="follow2.js"></script>
 </html>

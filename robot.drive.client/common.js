@@ -12,6 +12,7 @@ let maxTriesToReachRaspberryNodeJsServerBeforeSwitchingIpAddresses = 3;
 let lastTimeResponseFromRaspberryPiServer = new Date().getTime();
 
 
+let p5jsSetupHasRun = false;
 
 
 let maxspeed = document.getElementById('maxspeed').value;
@@ -31,6 +32,10 @@ let robotMovementIsDisabled = true;
 let movementIsDisabledDetailsMessage = '';
 let millisLastTimeXandY = new Date().getTime();
 let isXandYMovement = false;
+
+
+let dataReceivedFromNodeJsServer;
+
 
 const doUseThisIp = (ipAddr) => {
     currIpAddress = ipAddr;
@@ -179,7 +184,7 @@ const convertXandYtoMovementUrl = (intx, inty) => {
 
     //console.log(X,' ',Y);
   
-    let command = 'gamepad/axes/';
+    let command = '';
     if (Math.abs(Y) > Math.abs(X)) {
         if (Y < 0) {
             //command = 'forwardresp/' + (-Y) + '/' + (-Y);
@@ -198,7 +203,11 @@ const convertXandYtoMovementUrl = (intx, inty) => {
         }
     }
 
-    sendCommandToServer(command);
+    if (command !== '') {
+        sendCommandToServer(command);
+    } else {
+        warnings.innerHTML = 'No Speed Command Sent - Too Low';
+    }
 
 }
 
@@ -252,7 +261,7 @@ setInterval(() => {
 
         lastTimeResponseFromRaspberryPiServer = new Date().getTime();
     
-        fetch('http://'+currIpAddress+':8084/arduino/data', { method: 'GET' })
+        fetch('http://'+currIpAddress+':8084/nodejs/api/data', { method: 'GET' })
         .then(response => {
             haveReachedRaspberryNodeJsServerAtLeastOneTime = true;
             if (response.status !== 200) {
@@ -260,6 +269,9 @@ setInterval(() => {
                 return;
             }
             response.json().then(data => {
+
+                dataReceivedFromNodeJsServer = data;
+
                 arduinodata.innerHTML = ''
                         + 'Volts:' + (data.volts/10).toFixed(1) + '<br/>'
                         + 'Amps1:' + (data.amps1/100).toFixed(1) + '<br/>'
@@ -320,6 +332,9 @@ setInterval(() => {
 
 //p5.js functions - i believe required to be able to use the
 //map() function - not sure - haven't double-checked in some time.
-function setup() {}
+function setup() {
+    p5jsSetupHasRun = true;
+    console.log('p5.js setup() ....');
+}
 //function draw() {} <--- this should go only in the camera-related files
 
