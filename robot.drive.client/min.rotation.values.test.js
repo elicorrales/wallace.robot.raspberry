@@ -1,11 +1,20 @@
 'use strict';
 
+const minRequiredActualMotorSpeed = 20;
+const maxDiffActualSpeedM1vsM2 = 20;
 const startingSpeedCommandValue = 0.2;
-
 let doRotationTest = false;
 let currentRotateDirection = 'left';
 let currentlyRotating = false;
+let didNewRotationCycle = false;
 let haveCompletedCurrentLeftAndRightRotationCycle = false;
+
+
+const maxNumRotationCommandsToSendInOneStream = 80; // aprox 2secs worth of drive commands
+let currentNumRotationCommandsSentInStream = 0;
+
+let delayStarted = false;
+let delayMillis = 0;
 
 let currentLeftSpeedCommandValue = startingSpeedCommandValue;
 let currentRightSpeedCommandValue = startingSpeedCommandValue;
@@ -14,7 +23,9 @@ let maxAttainedLeftM1Speed = 0;
 let maxAttainedLeftM2Speed = 0;
 let maxAttainedRightM1Speed = 0;
 let maxAttainedRightM2Speed = 0;
-
+let numTimesToggleBetweenLeftVsRight = 0;
+let LeftSpeedsWereFasterThanRightSpeeds = false;
+let LeftSpeedsAreFasterThanRightSpeeds = false;
 
 const doSwitchToFollowRedShirtDrive = () => {
     location.href = "followredshirt.html";
@@ -36,7 +47,20 @@ const doStopRotationTest = () => {
 }
 
 
+const delay = (millis) => {
+    console.log('..............doing delay.....');
+    delayStarted = true;
+
+    setTimeout(()=> {
+        console.log('..............delay ENDED');
+        delayStarted = false;
+    },millis);
+}
+
 const rotate = (x,directionString) => {
+
+    console.log('Rotating.....' + directionString + ' --------------');
+
     warnings.innerHTML = 'Rotating ' + directionString + ' ....';
     let now = new Date().getTime();
     if (now - currentMillisRotating > 1000) {
@@ -44,37 +68,44 @@ const rotate = (x,directionString) => {
 
         switch (directionString) {
             case 'Left':
-                if (maxAttainedLeftM1Speed < dataReceivedFromNodeJsServer.speed1) {
-                    maxAttainedLeftM1Speed = dataReceivedFromNodeJsServer.speed1;
+                if (maxAttainedLeftM1Speed < Math.abs(dataReceivedFromNodeJsServer.speed1)) {
+                    maxAttainedLeftM1Speed = Math.abs(dataReceivedFromNodeJsServer.speed1);
                 }
 
-                if (maxAttainedLeftM2Speed < dataReceivedFromNodeJsServer.speed2) {
-                    maxAttainedLeftM2Speed = dataReceivedFromNodeJsServer.speed2;
+                if (maxAttainedLeftM2Speed < Math.abs(dataReceivedFromNodeJsServer.speed2)) {
+                    maxAttainedLeftM2Speed = Math.abs(dataReceivedFromNodeJsServer.speed2);
                 }
                 break;
             case 'Right':
-                if (maxAttainedRightM1Speed < dataReceivedFromNodeJsServer.speed1) {
-                    maxAttainedRightM1Speed = dataReceivedFromNodeJsServer.speed1;
+                if (maxAttainedRightM1Speed < Math.abs(dataReceivedFromNodeJsServer.speed1)) {
+                    maxAttainedRightM1Speed = Math.abs(dataReceivedFromNodeJsServer.speed1);
                 }
 
-                if (maxAttainedRightM2Speed < dataReceivedFromNodeJsServer.speed2) {
-                    maxAttainedRightM2Speed = dataReceivedFromNodeJsServer.speed2;
+                if (maxAttainedRightM2Speed < Math.abs(dataReceivedFromNodeJsServer.speed2)) {
+                    maxAttainedRightM2Speed = Math.abs(dataReceivedFromNodeJsServer.speed2);
                 }
                 break;
         }
 
-        currentlyRotating = false;
         if (directionString === 'Right') {
             haveCompletedCurrentLeftAndRightRotationCycle = true;
         }
+        currentlyRotating = false;
         return;
     }
     setTimeout(() => {
         if (!doRotationTest) { return; }
         console.log(dataReceivedFromNodeJsServer);
+        if (currentNumRotationCommandsSentInStream < maxNumRotationCommandsToSendInOneStream) {
+            currentNumRotationCommandsSentInStream++;
+            delayMillis = 50;
+        } else {
+            delayMillis = 500;
+            currentNumRotationCommandsSentInStream = 0;
+        }
         processXandY(x,0,0); 
         rotate(x,directionString);
-    },50);
+    },delayMillis);
 }
 
 
@@ -94,7 +125,11 @@ const rotationTest = () => {
 
     setInterval(()=> {
 
+        console.log('Rotation Test ------------------------------------------------------------------------');
+
         if (doRotationTest && !currentlyRotating && !haveCompletedCurrentLeftAndRightRotationCycle) {
+
+            didNewRotationCycle = true;
 
             currentlyRotating = true;
 
@@ -111,26 +146,72 @@ const rotationTest = () => {
                     break;
             }
 
-        }
+        } 
 
-        messages.innerHTML = '';
+        maxSpeedValueElem.innerHTML = '<font size="+3">'
             + 'M1 Left: ' + maxAttainedLeftM1Speed + ', M2 Left: ' + maxAttainedLeftM2Speed + ' Left Spd Cmd: ' + currentLeftSpeedCommandValue + '<br/>'
-            + 'M1 Right: ' + maxAttainedRightM1Speed + ', M2 Right: ' + maxAttainedRightM2Speed + ' Right Spd Cmd: ' + currentRightSpeedCommandValue;
+            + 'M1 Right: ' + maxAttainedRightM1Speed + ', M2 Right: ' + maxAttainedRightM2Speed + ' Right Spd Cmd: ' + currentRightSpeedCommandValue
+            + '</font>';
 
-        if (haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating && (maxAttainedLeftM1Speed < 2 || maxAttainedLeftM2Speed < 2)) {
-            currentLeftSpeedCommandValue += 0.1;
-            haveCompletedCurrentLeftAndRightRotationCycle = false;
+        if (didNewRotationCycle && haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating && (maxAttainedLeftM1Speed < minRequiredActualMotorSpeed || maxAttainedLeftM2Speed < minRequiredActualMotorSpeed)) {
+            currentLeftSpeedCommandValue += 0.01;
+            currentLeftSpeedCommandValue = parseFloat(currentLeftSpeedCommandValue.toFixed(2));
         }
 
-        if (haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating && (maxAttainedRightM1Speed < 2 || maxAttainedRightM2Speed < 2)) {
-            currentRightSpeedCommandValue += 0.1;
-            haveCompletedCurrentLeftAndRightRotationCycle = false;
+        if (didNewRotationCycle && haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating && (maxAttainedRightM1Speed < minRequiredActualMotorSpeed || maxAttainedRightM2Speed < minRequiredActualMotorSpeed)) {
+            currentRightSpeedCommandValue += 0.01;
+            currentRightSpeedCommandValue = parseFloat(currentRightSpeedCommandValue.toFixed(2));
+        }
+
+        // if right is more powerful move than left, increase left
+        if (didNewRotationCycle && haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating 
+            && (
+                (Math.abs(maxAttainedRightM1Speed) - Math.abs(maxAttainedLeftM1Speed) > maxDiffActualSpeedM1vsM2)
+                || 
+                (Math.abs(maxAttainedRightM2Speed) - Math.abs(maxAttainedLeftM2Speed) > maxDiffActualSpeedM1vsM2)
+                ) 
+        ) {
+            currentLeftSpeedCommandValue += 0.01;
+            currentLeftSpeedCommandValue = parseFloat(currentLeftSpeedCommandValue.toFixed(2));
+            LeftSpeedsWereFasterThanRightSpeeds = LeftSpeedsAreFasterThanRightSpeeds;
+            LeftSpeedsAreFasterThanRightSpeeds = false;
+        }
+
+        // if left is more powerful move than right, increase right
+        if (didNewRotationCycle && haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating 
+            && (
+                (Math.abs(maxAttainedLeftM1Speed) - Math.abs(maxAttainedRightM1Speed) > maxDiffActualSpeedM1vsM2)
+                || 
+                (Math.abs(maxAttainedLeftM2Speed) - Math.abs(maxAttainedRightM2Speed) > maxDiffActualSpeedM1vsM2)
+                ) 
+        ) {
+            currentRightSpeedCommandValue += 0.01;
+            currentRightSpeedCommandValue = parseFloat(currentRightSpeedCommandValue.toFixed(2));
+            LeftSpeedsWereFasterThanRightSpeeds = LeftSpeedsAreFasterThanRightSpeeds;
+            LeftSpeedsWereFasterThanRightSpeeds = true;
         }
 
 
-        rotationTest();
+        if (didNewRotationCycle && haveCompletedCurrentLeftAndRightRotationCycle && !currentlyRotating) {
+            haveCompletedCurrentLeftAndRightRotationCycle = false;
+            didNewRotationCycle = false;
+        }
 
-    },3000);
+        if (currentLeftSpeedCommandValue > 0.99 || currentRightSpeedCommandValue > 0.99) {
+            doRotationTest = false;
+            errors.innerHTML = 'Rotation Speed Value has hit ONE';
+        }
+
+
+        if (doRotationTest && LeftSpeedsWereFasterThanRightSpeeds != LeftSpeedsAreFasterThanRightSpeeds) {
+            numTimesToggleBetweenLeftVsRight++;
+        }
+
+        if (numTimesToggleBetweenLeftVsRight > 5) {
+            doRotationTest = false;
+            messages.innerHTML = 'Left vs Right Rotation Speeds Have Toggled ' + numTimesToggleBetweenLeftVsRight;
+        }
+    },2000);
 }
 
 const initializeMinRotationValuesTest = () => {

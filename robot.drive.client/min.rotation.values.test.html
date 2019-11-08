@@ -6,6 +6,7 @@
     <body>
         <h1><center>Minimum Rotation Values Test</center></h1>
         <div id="messagescontainer" class="container container-fluid">
+                    <div id="maxSpeedValueElem" class="alert alert-info"></div>
                     <div id="messages" class="alert alert-info"></div>
                     <div id="warnings" class="alert alert-warning"></div>
                     <div id="errors" class="alert alert-danger"></div>
@@ -55,7 +56,7 @@
             Max Speed:<input id="maxspeed" type="range" min="70" max="100" value="100" class="slider" oninput="doArduinoSetMaxSpeed(this)" />
             <span id="maxspeedvalue"></span>
             <br/>
-            Max Rotation Speed:<input id="maxrotspeed" type="range" min="60" max="100" value="70" class="slider" oninput="doArduinoSetMaxRotationSpeed(this)" />
+            Max Rotation Speed:<input id="maxrotspeed" type="range" min="60" max="100" value="100" class="slider" oninput="doArduinoSetMaxRotationSpeed(this)" />
             <span id="maxrotspeedvalue"></span>
             <br/>
 

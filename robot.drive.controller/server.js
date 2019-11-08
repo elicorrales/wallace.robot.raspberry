@@ -154,12 +154,13 @@ arduinoParser.on('data', data => {
 
     timestamp = new Date().getTime();
 
-
+/*
     arduinoHistory.push(data);
 
     if (arduinoHistory.length > 50) {
         arduinoHistory.shift();
     }
+*/
 
     if (showArduinoResponseInServerTerminal) {
         console.log(data);
@@ -399,8 +400,8 @@ const parseAndSendCommandToArduino = (path) => {
     lastCommandSentToArduino = commandStringToSend;
     lastCommandSentTimestamp = new Date().getTime();
 
-    arduinoHistory.push({lastCommandSentToArduino,lastCommandSentTimestamp});
-    console.log(arduinoHistory);
+    //arduinoHistory.push({lastCommandSentToArduino,lastCommandSentTimestamp});
+    //console.log(arduinoHistory);
 
     arduinoPort.write(commandStringToSend + '\n', e => {
         if (e) {
