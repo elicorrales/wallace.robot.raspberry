@@ -61,9 +61,9 @@ const doSetMinChosenColorCount = (slider) => {
 const processImageColorOnOffScreenCanvas = (canv,x,y) => {
     let chosenColorCount = 0;
     let offScrnCtx = canv.offscreenCanvas.getContext('2d');
-    offScrnCtx.drawImage(camera0,x,y,240,240,0,0,120,120);
+    offScrnCtx.drawImage(camera0,x,y,160,240,0,0,80,120);
 
-    let imgData = offScrnCtx.getImageData(0,0,120,120);
+    let imgData = offScrnCtx.getImageData(0,0,80,120);
     let data = imgData.data;
     for (let i=0; i<data.length; i+=4) {
         let r = data[i];
@@ -101,17 +101,17 @@ const processImageColorOnOffScreenCanvas = (canv,x,y) => {
     if (chosenColorCount>minChosenColorCount) {
         switch (chosenColor) {
             case 'red':
-                offScrnCtx.rect(0,0,120,120);
+                offScrnCtx.rect(0,0,80,120);
                 offScrnCtx.fillStyle = 'red';
                 offScrnCtx.fill();
                 break;
             case 'green':
-                offScrnCtx.rect(0,0,120,120);
+                offScrnCtx.rect(0,0,80,120);
                 offScrnCtx.fillStyle = 'green';
                 offScrnCtx.fill();
                 break;
             case 'blue':
-                offScrnCtx.rect(0,0,120,120);
+                offScrnCtx.rect(0,0,80,120);
                 offScrnCtx.fillStyle = 'blue';
                 offScrnCtx.fill();
                 break;
@@ -131,19 +131,30 @@ const processPartOfImage = (canv,x,y) => {
 const mainLoop = () => {
     setInterval(() => {
         if (!processingImage) {
+
             processingImage = true;
-            processPartOfImage(canvTLL,0,0);
-            processPartOfImage(canvTLC,240,0);
-            processPartOfImage(canvTRC,2*240,0);
-            processPartOfImage(canvTRR,3*240,0);
-            processPartOfImage(canvLL,0,240);
-            processPartOfImage(canvLC,240,240);
-            processPartOfImage(canvRC,2*240,240);
-            processPartOfImage(canvRR,3*240,240);
-            processPartOfImage(canvBLL,0,2*240);
-            processPartOfImage(canvBLC,240,2*240);
-            processPartOfImage(canvBRC,2*240,2*240);
-            processPartOfImage(canvBRR,3*240,2*240);
+
+            processPartOfImage(canvTLLL,0,0);
+            processPartOfImage(canvTLL,160,0);
+            processPartOfImage(canvTL,2*160,0);
+            processPartOfImage(canvTR,3*160,0);
+            processPartOfImage(canvTRR,4*160,0);
+            processPartOfImage(canvTRRR,5*160,0);
+
+            processPartOfImage(canvLLL,0,240);
+            processPartOfImage(canvLL,160,240);
+            processPartOfImage(canvL,2*160,240);
+            processPartOfImage(canvR,3*160,240);
+            processPartOfImage(canvRR,4*160,240);
+            processPartOfImage(canvRRR,5*160,240);
+
+            processPartOfImage(canvBLLL,0,2*240);
+            processPartOfImage(canvBLL,160,2*240);
+            processPartOfImage(canvBL,2*160,2*240);
+            processPartOfImage(canvBR,3*160,2*240);
+            processPartOfImage(canvBRR,4*160,2*240);
+            processPartOfImage(canvBRRR,5*160,2*240);
+
             processingImage = false;
         }
     },20);
@@ -152,7 +163,7 @@ const mainLoop = () => {
 
 const createOffScreenCanvas = (mainCanvas) => {
         mainCanvas.offscreenCanvas = document.createElement('canvas');
-        mainCanvas.offscreenCanvas.width = 120;
+        mainCanvas.offscreenCanvas.width = 80;
         mainCanvas.offscreenCanvas.height = 120;
 }
 
@@ -161,18 +172,24 @@ const startMainLoop = () => {
     if (cameraWorks) {
         console.log('starting main loop');
 
+        createOffScreenCanvas(canvTLLL); 
         createOffScreenCanvas(canvTLL); 
-        createOffScreenCanvas(canvTLC); 
-        createOffScreenCanvas(canvTRC); 
+        createOffScreenCanvas(canvTL); 
+        createOffScreenCanvas(canvTR); 
         createOffScreenCanvas(canvTRR); 
+        createOffScreenCanvas(canvTRRR); 
+        createOffScreenCanvas(canvLLL); 
         createOffScreenCanvas(canvLL); 
-        createOffScreenCanvas(canvLC); 
-        createOffScreenCanvas(canvRC); 
+        createOffScreenCanvas(canvL); 
+        createOffScreenCanvas(canvR); 
         createOffScreenCanvas(canvRR); 
+        createOffScreenCanvas(canvRRR); 
+        createOffScreenCanvas(canvBLLL); 
         createOffScreenCanvas(canvBLL); 
-        createOffScreenCanvas(canvBLC); 
-        createOffScreenCanvas(canvBRC); 
+        createOffScreenCanvas(canvBL); 
+        createOffScreenCanvas(canvBR); 
         createOffScreenCanvas(canvBRR); 
+        createOffScreenCanvas(canvBRRR); 
         mainLoop();
         return;
     }
