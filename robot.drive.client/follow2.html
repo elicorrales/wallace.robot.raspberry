@@ -15,6 +15,7 @@
         <div class="container container-fluid">
             <div class="row">
                 <button class="btn btn-default btn-lg" onclick="doChooseColor('red')"><font size="+4">Red</font></button>
+                <button class="btn btn-default btn-lg" onclick="doChooseColor('green')"><font size="+4">Green</font></button>
                 <button class="btn btn-default btn-lg" onclick="doChooseColor('blue')"><font size="+4">Blue</font></button>
             </div>
             <div class="row">
@@ -31,12 +32,17 @@
                         'LL'=LeftLeft, 'LC'=LeftOfCenter, 'RC'=RightOfCenter, 'RR'=RightRight,
                         'BLL'=BottomLeftLeft, 'BLC'=BottomLeftOfCenter, 'BRC'=BottomRightOfCenter, 'BRR'=BottomRightRight
                     -->
-                    <canvas id="canvTLLL" width="80" height="120"></canvas> <canvas id="canvTLL" width="80" height="120"></canvas> <canvas id="canvTL" width="80" height="120"></canvas>
-                    <canvas id="canvTR" width="80" height="120"></canvas> <canvas id="canvTRR" width="80" height="120"></canvas> <canvas id="canvTRRR" width="80" height="120"></canvas>
-                    <canvas id="canvLLL" width="80" height="120"></canvas> <canvas id="canvLL" width="80" height="120"></canvas> <canvas id="canvL" width="80" height="120"></canvas>
-                    <canvas id="canvR" width="80" height="120"></canvas> <canvas id="canvRR" width="80" height="120"></canvas> <canvas id="canvRRR" width="80" height="120"></canvas>
-                    <canvas id="canvBLLL" width="80" height="120"></canvas> <canvas id="canvBLL" width="80" height="120"></canvas> <canvas id="canvBL" width="80" height="120"></canvas>
-                    <canvas id="canvBR" width="80" height="120"></canvas> <canvas id="canvBRR" width="80" height="120"></canvas> <canvas id="canvBRRR" width="80" height="120"></canvas>
+                    <canvas id="canvTLLL" width="80" height="120"></canvas> <canvas id="canvTLL" width="80" height="120"></canvas>
+                    <canvas id="canvTC" width="160" height="120"></canvas>
+                    <canvas id="canvTRR" width="80" height="120"></canvas> <canvas id="canvTRRR" width="80" height="120"></canvas>
+
+                    <canvas id="canvLLL" width="80" height="120"></canvas> <canvas id="canvLL" width="80" height="120"></canvas>
+                    <canvas id="canvC" width="160" height="120"></canvas>
+                    <canvas id="canvRR" width="80" height="120"></canvas> <canvas id="canvRRR" width="80" height="120"></canvas>
+
+                    <canvas id="canvBLLL" width="80" height="120"></canvas> <canvas id="canvBLL" width="80" height="120"></canvas>
+                    <canvas id="canvBC" width="160" height="120"></canvas>
+                    <canvas id="canvBRR" width="80" height="120"></canvas> <canvas id="canvBRRR" width="80" height="120"></canvas>
                 </div>
             </div>
         </div>

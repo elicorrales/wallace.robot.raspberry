@@ -10,12 +10,15 @@ let colorDiff = parseInt(document.getElementById('colorDiffElem').value);
 let minChosenColorCount = parseInt(document.getElementById('minChosenColorCountElem').value);
 let processingImage = false;
 
-let isLLL = false;
-let isLL  = false;
-let isL   = false;
-let isR   = false;
-let isRR  = false;
-let isRRR = false;
+// the reason for multiple 'Left's or 'Right's is because originally,
+// the 'isC' was split into 'isL' and 'isR'.  but having a dividing line
+// down the center was bad - robot would oscillate
+// so i joined the center Left and center Right into a single area.
+let isLLL = false;// is Left Left Left
+let isLL  = false;// is Left Left
+let isC   = false;// is Center
+let isRR  = false;// is Right Right
+let isRRR = false;// is Right Right Right
 
 /*
 const minRequiredActualMotorSpeed = 20;
@@ -63,21 +66,6 @@ const doSwitchToTouchDrive = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const tryCamera = (url) => {
     setTimeout(() => {
         fetch(url)
@@ -122,7 +110,7 @@ const rotate = (x,directionString) => {
 
     warnings.innerHTML = 'Rotating ' + directionString + ' ....';
 
-    if (dataReceivedFromNodeJsServer.speed1 < 1 && dataReceivedFromNodeJsServer.speed2 < 1) {
+    if (dataReceivedFromNodeJsServer !== undefined && (dataReceivedFromNodeJsServer.speed1 < 1 && dataReceivedFromNodeJsServer.speed2 < 1)) {
         processXandY(x,0,0); 
     }
 }
@@ -142,70 +130,58 @@ const rotateTowardWhichAreasMatch = () => {
 
     //printWhichAreasMatch();
 
+    if (isC) {
+        return;
+    }
+
+    //////////////////////////////////////////////////
+    // since we are handling the center condition first
+    // (code immediately above here), we do not have to
+    // consider it anymore.
+    //////////////////////////////////////////////////
+ 
     //extreme left side, spans 1 area, almost out of view, time to rotate very fast
-    if (isLLL && !isLL && !isL && !isR && !isRR && !isRRR) {
-        rotateLeft(0.5);
+    if (isLLL && !isLL && !isRR && !isRRR) {
+        rotateLeft(0.55);
     }
 
     //very left side, spans 2 areas, rotate fast
-    if (isLLL && isLL && !isL && !isR && !isRR && !isRRR) {
+    if (isLLL && isLL && !isRR && !isRRR) {
         rotateLeft(0.5);
     }
 
     //left side, spans 1 area, rotate medium
-    if (!isLLL && isLL && !isL && !isR && !isRR && !isRRR) {
-        rotateLeft(0.5);
-    }
-
-    //left center, spans 2 area, rotate slower
-    if (!isLLL && isLL && isL && !isR && !isRR && !isRRR) {
+    if (!isLLL && isLL && !isRR && !isRRR) {
         rotateLeft(0.45);
     }
 
-    //left center, spans 1 area, rotate slow
-    if (!isLLL && !isLL && isL && !isR && !isRR && !isRRR) {
-        rotateLeft(0.4);
-    }
 
-
-
-    //right center, spans 1 area, rotate slow
-    if (!isLLL && !isLL && !isL && isR && !isRR && !isRRR) {
-        rotateRight(0.4);
-    }
-
-    //right center, spans 2 area, rotate slower
-    if (!isLLL && !isLL && !isL && isR && isRR && !isRRR) {
+    //right side, spans 1 area, rotate medium
+    if (!isLLL && !isLL && isRR && !isRRR) {
         rotateRight(0.45);
     }
 
-    //right side, spans 1 area, rotate medium
-    if (!isLLL && !isLL && !isL && !isR && isRR && !isRRR) {
-        rotateRight(0.5);
-    }
-
     //very right side, spans 2 areas, rotate fast
-    if (!isLLL && !isLL && !isL && !isR && isRR && isRRR) {
+    if (!isLLL && !isLL && isRR && isRRR) {
         rotateRight(0.5);
     }
 
     //extreme right side, spans 1 area, almost out of view, time to rotate very fast
-    if (!isLLL && !isLL && !isL && !isR && !isRR && isRRR) {
-        rotateRight(0.5);
+    if (!isLLL && !isLL && !isRR && isRRR) {
+        rotateRight(0.55);
     }
 
 }
 
 
 const printWhichAreasMatch = () => {
-    console.log(isLLL, isLL, isL, isR, isRR, isRRR);
+    console.log(isLLL, isLL, isC, isRR, isRRR);
 }
 
 const clearWhichAreasMatch = () => {
     isLLL = false;
     isLL  = false;
-    isL   = false;
-    isR   = false;
+    isC   = false;
     isRR  = false;
     isRRR = false;
 }
@@ -215,8 +191,7 @@ const setWhichAreasMatch = (area) => {
     switch (area) {
         case 'LLL': isLLL = true; break;
         case 'LL' : isLL  = true; break;
-        case 'L'  : isL   = true; break;
-        case 'R'  : isR   = true; break;
+        case 'C'  : isC   = true; break;
         case 'RR' : isRR  = true; break;
         case 'RRR': isRRR = true; break;
     }
@@ -225,9 +200,11 @@ const setWhichAreasMatch = (area) => {
 const processImageColorOnOffScreenCanvas = (whichArea,canv,x,y) => {
     let chosenColorCount = 0;
     let offScrnCtx = canv.offscreenCanvas.getContext('2d');
-    offScrnCtx.drawImage(camera0,x,y,160,240,0,0,80,120);
+    let imgWidth  = (whichArea === 'C' ? 320 : 160);
+    let canvWidth = (whichArea === 'C' ? 160 : 80); 
+    offScrnCtx.drawImage(camera0,x,y,imgWidth,240,0,0,canvWidth,120);
 
-    let imgData = offScrnCtx.getImageData(0,0,80,120);
+    let imgData = offScrnCtx.getImageData(0,0,canvWidth,120);
     let data = imgData.data;
     for (let i=0; i<data.length; i+=4) {
         let r = data[i];
@@ -262,22 +239,23 @@ const processImageColorOnOffScreenCanvas = (whichArea,canv,x,y) => {
         }
     }
 
-    if (chosenColorCount>minChosenColorCount) {
+    let areaCountMultiplier = whichArea==='C'?2:1; // since the center areas are bigger, we need to adjust what is the minimum
+    if (chosenColorCount>minChosenColorCount * areaCountMultiplier) {
         switch (chosenColor) {
             case 'red':
-                offScrnCtx.rect(0,0,80,120);
+                offScrnCtx.rect(0,0,canvWidth,120);
                 offScrnCtx.fillStyle = 'red';
                 offScrnCtx.fill();
                 setWhichAreasMatch(whichArea);
                 break;
             case 'green':
-                offScrnCtx.rect(0,0,80,120);
+                offScrnCtx.rect(0,0,canvWidth,120);
                 offScrnCtx.fillStyle = 'green';
                 offScrnCtx.fill();
                 setWhichAreasMatch(whichArea);
                 break;
             case 'blue':
-                offScrnCtx.rect(0,0,80,120);
+                offScrnCtx.rect(0,0,canvWidth,120);
                 offScrnCtx.fillStyle = 'blue';
                 offScrnCtx.fill();
                 setWhichAreasMatch(whichArea);
@@ -303,22 +281,19 @@ const mainLoop = () => {
 
             processPartOfImage('LLL',canvTLLL,0,0);
             processPartOfImage('LL', canvTLL,160,0);
-            processPartOfImage('L',  canvTL,2*160,0);
-            processPartOfImage('R',  canvTR,3*160,0);
+            processPartOfImage('C',  canvTC,2*160,0);
             processPartOfImage('RR', canvTRR,4*160,0);
             processPartOfImage('RRR',canvTRRR,5*160,0);
 
             processPartOfImage('LLL',canvLLL,0,240);
             processPartOfImage('LL', canvLL,160,240);
-            processPartOfImage('L',  canvL,2*160,240);
-            processPartOfImage('R',  canvR,3*160,240);
+            processPartOfImage('C',  canvC,2*160,240);
             processPartOfImage('RR', canvRR,4*160,240);
             processPartOfImage('RRR',canvRRR,5*160,240);
 
             processPartOfImage('LLL',canvBLLL,0,2*240);
             processPartOfImage('LL', canvBLL,160,2*240);
-            processPartOfImage('L',  canvBL,2*160,2*240);
-            processPartOfImage('R',  canvBR,3*160,2*240);
+            processPartOfImage('C',  canvBC,2*160,2*240);
             processPartOfImage('RR', canvBRR,4*160,2*240);
             processPartOfImage('RRR',canvBRRR,5*160,2*240);
 
@@ -332,9 +307,9 @@ const mainLoop = () => {
 }
 
 
-const createOffScreenCanvas = (mainCanvas) => {
+const createOffScreenCanvas = (mainCanvas, center) => {
         mainCanvas.offscreenCanvas = document.createElement('canvas');
-        mainCanvas.offscreenCanvas.width = 80;
+        mainCanvas.offscreenCanvas.width = (center==='C'?160:80);
         mainCanvas.offscreenCanvas.height = 120;
 }
 
@@ -345,20 +320,17 @@ const startMainLoop = () => {
 
         createOffScreenCanvas(canvTLLL); 
         createOffScreenCanvas(canvTLL); 
-        createOffScreenCanvas(canvTL); 
-        createOffScreenCanvas(canvTR); 
+        createOffScreenCanvas(canvTC,'C'); 
         createOffScreenCanvas(canvTRR); 
         createOffScreenCanvas(canvTRRR); 
         createOffScreenCanvas(canvLLL); 
         createOffScreenCanvas(canvLL); 
-        createOffScreenCanvas(canvL); 
-        createOffScreenCanvas(canvR); 
+        createOffScreenCanvas(canvC,'C'); 
         createOffScreenCanvas(canvRR); 
         createOffScreenCanvas(canvRRR); 
         createOffScreenCanvas(canvBLLL); 
         createOffScreenCanvas(canvBLL); 
-        createOffScreenCanvas(canvBL); 
-        createOffScreenCanvas(canvBR); 
+        createOffScreenCanvas(canvBC,'C'); 
         createOffScreenCanvas(canvBRR); 
         createOffScreenCanvas(canvBRRR); 
         mainLoop();
