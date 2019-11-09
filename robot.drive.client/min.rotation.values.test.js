@@ -13,6 +13,7 @@ let haveCompletedCurrentLeftAndRightRotationCycle = false;
 const maxNumRotationCommandsToSendInOneStream = 80; // aprox 2secs worth of drive commands
 let currentNumRotationCommandsSentInStream = 0;
 
+
 let delayStarted = false;
 let delayMillis = 0;
 
