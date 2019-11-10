@@ -20,39 +20,8 @@ let isC   = false;// is Center
 let isRR  = false;// is Right Right
 let isRRR = false;// is Right Right Right
 
-/*
-const minRequiredActualMotorSpeed = 20;
-const maxDiffActualSpeedM1vsM2 = 20;
-const startingSpeedCommandValue = 0.2;
-let doRotationTest = false;
-let currentRotateDirection = 'left';
-let currentlyRotating = false;
-let didNewRotationCycle = false;
-let haveCompletedCurrentLeftAndRightRotationCycle = false;
-*/
-
 const maxNumRotationCommandsToSendInOneStream = 80; // aprox 2secs worth of drive commands
 let currentNumRotationCommandsSentInStream = 0;
-
-/*
-let delayStarted = false;
-*/
-
-let delayMillis = 0;
-
-/*
-let currentLeftSpeedCommandValue = startingSpeedCommandValue;
-let currentRightSpeedCommandValue = startingSpeedCommandValue;
-let currentMillisRotating = 0;
-let maxAttainedLeftM1Speed = 0;
-let maxAttainedLeftM2Speed = 0;
-let maxAttainedRightM1Speed = 0;
-let maxAttainedRightM2Speed = 0;
-let numTimesToggleBetweenLeftVsRight = 0;
-let LeftSpeedsWereFasterThanRightSpeeds = false;
-let LeftSpeedsAreFasterThanRightSpeeds = false;
-*/
-
 
 
 const doSwitchToGamepadDrive = () => {
@@ -89,6 +58,8 @@ const tryCamera = (url) => {
         });
     },1000);
 }
+
+
 
 
 const doChooseColor = (color) => {
@@ -274,11 +245,13 @@ const processPartOfImage = (whichArea, canv,x,y) => {
 
 
 const mainLoop = () => {
+
     setInterval(() => {
+
         if (!processingImage) {
 
             processingImage = true;
-
+/*
             processPartOfImage('LLL',canvTLLL,0,0);
             processPartOfImage('LL', canvTLL,160,0);
             processPartOfImage('C',  canvTC,2*160,0);
@@ -296,13 +269,14 @@ const mainLoop = () => {
             processPartOfImage('C',  canvBC,2*160,2*240);
             processPartOfImage('RR', canvBRR,4*160,2*240);
             processPartOfImage('RRR',canvBRRR,5*160,2*240);
-
+*/
             rotateTowardWhichAreasMatch();
 
             clearWhichAreasMatch();
 
             processingImage = false;
         }
+
     },20);
 }
 
@@ -343,6 +317,8 @@ const startMainLoop = () => {
     },50);
 
 }
+
+
 
 tryCamera(url0);
 startMainLoop();

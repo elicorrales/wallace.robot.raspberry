@@ -17,6 +17,15 @@ const doUseThisIp = (ipAddr) => {
 }
 
 
+const doSwitchToGamepadDrive = () => {
+    location.href = "gamepaddrive.html";
+}
+
+const doSwitchToTouchDrive = () => {
+    location.href = "touchdrive.html";
+}
+
+
 const doSwitchToFollow1Drive = () => {
     location.href = "follow1.html";
 }
@@ -29,12 +38,11 @@ const doSwitchToFollow2Drive = () => {
     location.href = "follow2.html";
 }
 
-const doSwitchToGamepadDrive = () => {
-    location.href = "gamepaddrive.html";
+const doSwitchToUNetRotate = () => {
+    location.href = "unet.follow/unet.rotate.html";
 }
 
-const doSwitchToTouchDrive = () => {
-    location.href = "touchdrive.html";
+const doSwitchToBodyPixRotate = () => {
+    location.href = "bodypix.follow/bodypix.rotate.html";
 }
-
 
