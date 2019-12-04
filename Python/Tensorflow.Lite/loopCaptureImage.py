@@ -2,10 +2,10 @@ import numpy as np
 import cv2
 import time
 
-url = "http:/localhost:8082/?action=stream"
+#url = "http:/localhost:8082/?action=stream"
 
-cap = cv2.VideoCapture(url)
-cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
+cap = cv2.VideoCapture(0)
+#cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
 MAX_FEATURES = 500
 orb = cv2.ORB_create(MAX_FEATURES)
