@@ -48,6 +48,7 @@ trim=args.trim
 seconds=args.seconds
 saveNoTrimFile=args.saveNoTrimFile
 
+maxFramesBeforeTrim = 0
 
 ##################################################################
 def numZeroCrossings(data):
@@ -76,8 +77,13 @@ def getAudioMetaData(frames):
                 "peak": bars}
         #print(jsonStr) 
         jsonArray.append(jsonStr)
-    jsonObject = {"phrase": phrase, "numFrames": len(frames), "frames": jsonArray }
-    return json.dumps(jsonObject)
+    jsonObject = {
+            "phrase": phrase, 
+            "recLimitSecs": seconds, 
+            "framesLimit": maxFramesBeforeTrim, 
+            "numRecFrames": len(frames), "frameData": jsonArray }
+    #return json.dumps(jsonObject)
+    return jsonObject
 
 ##################################################################
 def countVolumeValue(data, value):
@@ -126,9 +132,19 @@ frames = []  # Initialize array to store frames
 
 print('recording...')
 
+isFirstValidSound = False
 for i in range(0, int(RATE / CHUNK * seconds)):
     data = stream.read(CHUNK)
+    if not isFirstValidSound:
+        if isValidSound(data, maxBackgroundStart):
+            print('.......capturing.....')
+            print('.......capturing.....')
+            print('.......capturing.....')
+            isFirstValidSound = True
     frames.append(data)
+
+maxFramesBeforeTrim = len(frames)
+
 
 # Stop and close the stream 
 stream.stop_stream()
@@ -137,19 +153,31 @@ stream.close()
 p.terminate()
 
 
+lastNumberStr = '0'
+try:
+    lastNumberFile= open('wave.files/last.number.txt','r+')
+    lastNumberStr = lastNumberFile.readline()
+except:
+    lastNumberFile = open('wave.files/last.number.txt','w+')
+    lastNumberStr = '1'
+print(lastNumberStr)
+lastNumber = int(lastNumberStr)
+lastNumber += 1
+lastNumberStr = str(lastNumber)
+lastNumberFile.write(lastNumberStr)
+lastNumberFile.close()
+
 if trim:
 
-    """
     if saveNoTrimFile:
-        print('Saving NOT trimmed...')
+        print('Saving UN-trimmed wave file...')
         # Save the recorded data as a WAV file
-        wf = wave.open('no.trim.'+fileName+'.wav', 'wb')
+        wf = wave.open('wave.files/'+'untrimmed.'+phrase+'.'+lastNumberStr+'.wav', 'wb')
         wf.setnchannels(channels)
         wf.setsampwidth(p.get_sample_size(sample_format))
         wf.setframerate(RATE)
         wf.writeframes(b''.join(frames))
         wf.close()
-    """
 
     print('Triming start...')
 
@@ -173,19 +201,34 @@ if trim:
             break
 
 
+print('Load Existing JSON meta data from file...')
+phrasesArray = []
+try:
+    phrasesFile = open('phrases.json','r')
+    phrasesString = phrasesFile.read()
+    phrasesFile.close()
+    phrasesArray = json.loads(phrasesString)
+except:
+    print('no pre-existing meta data..')
 
-print('Saving...')
-phrasesFile = open('phrases.json','a+')
-phrasesFile.write(getAudioMetaData(frames))
+
+phrasesArray.append(getAudioMetaData(frames))
+
+print(phrasesArray)
+
+print('Saving metat data as JSON file...')
+phrasesFile = open('phrases.json','w')
+phrasesFile.write(json.dumps(phrasesArray))
 phrasesFile.close()
 
-"""
+
+print('Saving wave file...')
 # Save the recorded data as a WAV file
-wf = wave.open(fileName+'.wav', 'wb')
+wf = wave.open('wave.files/'+phrase+'.'+lastNumberStr+'.wav', 'wb')
 wf.setnchannels(channels)
 wf.setsampwidth(p.get_sample_size(sample_format))
 wf.setframerate(RATE)
 wf.writeframes(b''.join(frames))
 wf.close()
-"""
+
 print('Done.')
