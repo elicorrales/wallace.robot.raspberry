@@ -8,6 +8,9 @@ if len(sys.argv) < 3:
 file1 = sys.argv[1]
 file2 = sys.argv[2]
 
+print(file1, '   ', file2)
+
+
 Fs1, data1 = read(file1)
 Fs2, data2 = read(file2)
 
@@ -32,7 +35,7 @@ numDiffs = 0
 for idx in range(size):
     diff = abs(trimmed1[idx]-trimmed2[idx])
     if diff > 6 and diff < 249 and not (diff >= 126 and diff <= 128):
-        print(idx, ' ', diff, ' ', trimmed1[idx], ' ', trimmed2[idx])
+        #print(idx, ' ', diff, ' ', trimmed1[idx], ' ', trimmed2[idx])
         numDiffs += 1
 
 print(numDiffs)

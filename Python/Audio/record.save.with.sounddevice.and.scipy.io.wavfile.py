@@ -1,3 +1,6 @@
+##################################################################
+# this uses numpy arrays
+##################################################################
 import sys
 import sounddevice as sndev
 from scipy.io.wavfile import write
@@ -19,6 +22,14 @@ recording = sndev.rec(
     samplerate=RATE,
     channels=CHANNELS)
 
+print('waiting...')
 sndev.wait()
 
+
+print(recording.size)
+for i in range(recording.size):
+    print(recording[i])
+
+print('saving...')
 write(fileName, RATE, recording)
+print('done.')
