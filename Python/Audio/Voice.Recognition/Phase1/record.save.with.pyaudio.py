@@ -14,7 +14,8 @@ import talkey
 CHUNK = 512
 sample_format = pyaudio.paInt16  # 16 bits per sample
 channels = 1
-RATE = 16000
+#RATE = 16000
+RATE = 32000
 
 ##################################################################
 # set up command-line arguments
