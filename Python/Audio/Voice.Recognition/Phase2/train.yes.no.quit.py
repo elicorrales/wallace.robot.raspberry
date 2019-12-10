@@ -21,15 +21,13 @@ RATE = 32000
 ##################################################################
 # set up command-line arguments
 ##################################################################
-parser = argparse.ArgumentParser(prog=sys.argv[0], description='Record, trim, save audio', allow_abbrev=False)
+parser = argparse.ArgumentParser(prog=sys.argv[0], description='Train Yes, No, Quit', allow_abbrev=False)
 #parser.add_argument('-p', '--phrase', type=str, required=True, dest='phrase')
 parser.add_argument('-s', '--max-bg-start', type=int, dest='maxBackgroundStart')
 parser.add_argument('-e', '--max-bg-end', type=int, dest='maxBackgroundEnd')
-parser.add_argument('-n', '--no-trim', dest='trim', action='store_false')
-parser.add_argument('-w', '--save-wave-file', dest='saveWaveFile', action='store_true')
 parser.add_argument('-l', '--length', type=int, dest='seconds')
 parser.add_argument('-j', '--json-file', type=str, dest='jsonFile')
-parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5, trim=True, saveWaveFile=False, jsonFile='yes.no.quit.json')
+parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5, jsonFile='yes.no.quit.json')
 
 args = parser.parse_args()
 
@@ -37,7 +35,6 @@ args = parser.parse_args()
 #print(args.phrase)
 print(args.maxBackgroundStart)
 print(args.maxBackgroundEnd)
-print(args.trim)
 print(args.seconds)
 print(args.jsonFile)
 
@@ -49,11 +46,10 @@ print(args.jsonFile)
 phrase=''
 maxBackgroundStart=args.maxBackgroundStart
 maxBackgroundEnd=args.maxBackgroundEnd
-trim=args.trim
 seconds=args.seconds
-saveWaveFile=args.saveWaveFile
 jsonFile=args.jsonFile
 frames = []
+numActualRecordedFrames = 0
 maxFramesBeforeTrim = 0
 
 textToSpeech = talkey.Talkey()
@@ -63,31 +59,18 @@ p = pyaudio.PyAudio()  # Create an interface to PortAudio
 phrasesArray = []
 
 quitProgram = False
+newPhraseAddedThisTime = False
 
 ##################################################################
-def saveWaveFile(phrase):
-    lastNumber = 0
-    try:
-        lastNumberFile= open('wave.files/last.number.txt','r')
-        lastNumber = int(lastNumberFile.read())
-        lastNumberFile.close()
-    except:
-        print('no wave.files/last.number.txt file')
+def listPhrasesTrained():
 
-    print('last number: ', lastNumber)
-    lastNumber += 1
-    lastNumberFile= open('wave.files/last.number.txt','w')
-    lastNumberFile.write('%d'%lastNumber)
-    lastNumberFile.close()
-    lastNumberStr = str(lastNumber)
+    listedPhrases = []
+    for phrase in phrasesArray:
+        #print(listedPhrases)
+        if not phrase['phrase'] in listedPhrases:
+            listedPhrases.append(phrase['phrase'])
+            print(phrase['phrase'])
 
-    print('Saving wave file...')
-    wf = wave.open('wave.files/'+phrase.replace(' ','.',100)+'.'+lastNumberStr+'.wav', 'wb')
-    wf.setnchannels(channels)
-    wf.setsampwidth(p.get_sample_size(sample_format))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
 
 ##################################################################
 def signalHandler(signalReceived, frame):
@@ -98,9 +81,10 @@ def signalHandler(signalReceived, frame):
     global p
     p.terminate()
 
+    global newPhraseAddedThisTime
     global phrasesArray
 
-    if len(phrasesArray) > 0:
+    if newPhraseAddedThisTime and len(phrasesArray) > 0:
         print('Saving meta data as JSON file...')
         phrasesFile = open(jsonFile,'w')
         phrasesFile.write(json.dumps(phrasesArray))
@@ -129,7 +113,6 @@ def recordAudio():
     lastSoundWasInvalid = False
     numConsecutiveInvalidSounds = 0
     global maxFramesBeforeTrim 
-    #maxFramesBeforeTrim = len(frames)
     maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
     for i in range(0, int(RATE / CHUNK * seconds)):
         data = stream.read(CHUNK)
@@ -155,7 +138,8 @@ def recordAudio():
                 print('...Aborting capture.....')
                 break
 
-        frames.append(data)
+        if isFirstValidSound:
+            frames.append(data)
 
 
     # Stop and close the stream 
@@ -178,7 +162,8 @@ def compareTwoPhraseMetaData(phrase1, phrase2):
             crossingsDiff += crDiff
             peakDiff += pkDiff
 
-    return crossingsDiff, peakDiff
+    numFramesDiff = abs(phrase1['numRecFrames'] - phrase2['numRecFrames'])
+    return crossingsDiff, peakDiff, numFramesDiff
 
 ##################################################################
 def findBestMatch(latestPhrase, phrasesArray):
@@ -187,16 +172,30 @@ def findBestMatch(latestPhrase, phrasesArray):
 
     leastDiff = sys.maxsize
     bestMatchIndex = -1
+    previousPhrase = ''
+    numMatches = 0
+    print('numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
         phrase = phrasesArray[i]
-        crDiff, pkDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
-        difference = crDiff + pkDiff
+        print('comparing ' + latestPhrase['phrase'] +', ' + latestPhrase['numRecFrames'] + 
+                ' against ' + phrase['phrase'] + ', ' + phrase['numRecFrames'])
+        crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
+        difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
             print(phrase['phrase'], ' ', difference)
 
-    return phrasesArray[bestMatchIndex]
+            if phrase['phrase'] == previousPhrase:
+                numMatches += 1
+                print('currPhrase EQUALS previousPhrase', numMatches)
+            else:
+                numMatches = 0
+                previousPhrase = phrase['phrase']
+                print('currPhrase NOT previousPhrase', numMatches)
+
+
+    return numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
 def numZeroCrossings(data):
@@ -227,7 +226,7 @@ def getAudioMetaData(frames):
             "phrase": phrase, 
             "recLimitSecs": seconds, 
             "framesLimit": maxFramesBeforeTrim, 
-            "numRecFrames": len(frames), "frameData": jsonArray }
+            "numRecFrames": numActualRecordedFrames, "frameData": jsonArray }
     return jsonObject
 
 ##################################################################
@@ -239,7 +238,7 @@ def addFakeAudioMetaDataForFillerFrames(metaData):
     frameData = metaData['frameData']
     for i in range(numFillFrames):
         frameData.append({"crossings": 0, "peak": 0})
-    metaData['numRecFrames'] = framesLimit
+    #metaData['numRecFrames'] = framesLimit
 
 ##################################################################
 def countVolumeValue(data, value):
@@ -294,11 +293,16 @@ try:
     phrasesString = phrasesFile.read()
     phrasesFile.close()
     phrasesArray = json.loads(phrasesString)
+    print('Existing JSON meta data loaded from file.')
 except:
+    print('')
     print('no pre-existing meta data..')
+    print('')
 
 
 while not quitProgram:
+
+    listPhrasesTrained()
 
     userInput = input('Press <ENTER> to record, or \'q\' to quit program: ')
 
@@ -309,72 +313,50 @@ while not quitProgram:
     recordAudio()
 
 
-    if trim:
 
-        print('Triming start...')
-
-        while len(frames) > 0:
-            index = 0;
-            if not isValidStartingSound(frames[0], maxBackgroundStart):
-                frames.pop(index)
-                #print('...popped...')
-            else:
-                break
-        """
-        print('Triming end...')
-
-        while len(frames) > 0:
-            index = len(frames) - 1;
-            #print('index: ', index)
-            if not isValidSound(frames[index], maxBackgroundEnd):
-                frames.pop(index)
-                #print('...popped...')
-            else:
-                break
-        """
-
-        print('frames: ', maxFramesBeforeTrim, ' ', len(frames))
-
-        if len(frames) > 0:
+    if len(frames) > 0:
         
 
-            metaDataForLatestRecordedPhrase = getAudioMetaData(frames)
-            addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
+        metaDataForLatestRecordedPhrase = getAudioMetaData(frames)
+        addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
-            if len(phrasesArray) > 0:
-                bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
-                print('bestMatch: ', bestMatch['phrase'])
-                textToSpeech.say(bestMatch['phrase'])
+        if len(phrasesArray) > 0:
+            numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
+            print('best Yes No Quit Match: ', bestMatch['phrase'], ' numMatches: ', numMatches)
+            if numMatches > 6:
+                textToSpeech.say('You said, ' + bestMatch['phrase'])
+                needPhrase = bestMatch['phrase']
+            else:
+                textToSpeech.say(bestMatch['phrase'] + '?')
                 isThisCorrect = input('Correct ? <y|n> :')
                 if isThisCorrect == 'y':
                     needPhrase = bestMatch['phrase']
                 else:
                     needPhrase = input('Need to assign new phrase to this latest recording:')
-            else:
-                needPhrase = input('Need to assign new phrase to this latest recording:')
-
-            if len(needPhrase) > 0:
-                if saveWaveFile:
-                    saveWaveFile(needPhrase)
-                metaDataForLatestRecordedPhrase['phrase'] = needPhrase
-                phrasesArray.append(metaDataForLatestRecordedPhrase)
-            else:
-                print('Throwing new recording away....')
         else:
-            print('Nothing Recorded ....')
-            print('Nothing Recorded ....')
-            print('Nothing Recorded ....')
+            needPhrase = input('Need to assign new phrase to this latest recording:')
+
+        if len(needPhrase) > 0:
+            metaDataForLatestRecordedPhrase['phrase'] = needPhrase
+            phrasesArray.append(metaDataForLatestRecordedPhrase)
+            newPhraseAddedThisTime = True
+        else:
+            print('Throwing new recording away....')
+    else:
+        print('Nothing Recorded ....')
+        print('Nothing Recorded ....')
+        print('Nothing Recorded ....')
 
 
 
 # Terminate the PortAudio interface
 p.terminate()
 
-print('Saving meta data as JSON file...')
-phrasesFile = open(jsonFile,'w')
-phrasesFile.write(json.dumps(phrasesArray))
-phrasesFile.close()
-
-print('Done.')
+if newPhraseAddedThisTime:
+    print('Saving meta data as JSON file...')
+    phrasesFile = open(jsonFile,'w')
+    phrasesFile.write(json.dumps(phrasesArray, indent=4, sort_keys=True))
+    phrasesFile.close()
+    print('Done.')
 
 

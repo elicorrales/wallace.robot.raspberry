@@ -25,21 +25,12 @@ parser = argparse.ArgumentParser(prog=sys.argv[0], description='Record, trim, sa
 #parser.add_argument('-p', '--phrase', type=str, required=True, dest='phrase')
 parser.add_argument('-s', '--max-bg-start', type=int, dest='maxBackgroundStart')
 parser.add_argument('-e', '--max-bg-end', type=int, dest='maxBackgroundEnd')
-parser.add_argument('-n', '--no-trim', dest='trim', action='store_false')
-parser.add_argument('-w', '--save-wave-file', dest='saveWaveFile', action='store_true')
 parser.add_argument('-l', '--length', type=int, dest='seconds')
-parser.add_argument('-j', '--json-file', type=str, dest='jsonFile')
-parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=3, trim=True, saveWaveFile=False, jsonFile='yes.no.quit.json')
+parser.add_argument('-j', '--json-file', type=str, required=True, dest='jsonFile')
+parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5)
 
 args = parser.parse_args()
 
-
-#print(args.phrase)
-print(args.maxBackgroundStart)
-print(args.maxBackgroundEnd)
-print(args.trim)
-print(args.seconds)
-print(args.jsonFile)
 
 
 
@@ -49,11 +40,10 @@ print(args.jsonFile)
 phrase=''
 maxBackgroundStart=args.maxBackgroundStart
 maxBackgroundEnd=args.maxBackgroundEnd
-trim=args.trim
 seconds=args.seconds
-saveWaveFile=args.saveWaveFile
 jsonFile=args.jsonFile
 frames = []
+numActualRecordedFrames = 0
 maxFramesBeforeTrim = 0
 
 textToSpeech = talkey.Talkey()
@@ -63,6 +53,17 @@ p = pyaudio.PyAudio()  # Create an interface to PortAudio
 phrasesArray = []
 
 quitProgram = False
+
+##################################################################
+def listPhrasesTrained():
+
+    listedPhrases = []
+    for phrase in phrasesArray:
+        #print(listedPhrases)
+        if not phrase['phrase'] in listedPhrases:
+            listedPhrases.append(phrase['phrase'])
+            print(phrase['phrase'])
+
 
 ##################################################################
 def signalHandler(signalReceived, frame):
@@ -122,8 +123,10 @@ def recordAudio():
                 print('...Aborting capture.....')
                 break
 
-        frames.append(data)
+        if isFirstValidSound:
+            frames.append(data)
 
+    numActualRecordedFrames = len(frames)
 
     # Stop and close the stream 
     stream.stop_stream()
@@ -145,7 +148,8 @@ def compareTwoPhraseMetaData(phrase1, phrase2):
             crossingsDiff += crDiff
             peakDiff += pkDiff
 
-    return crossingsDiff, peakDiff
+    numFramesDiff = abs(phrase1['numRecFrames'] - phrase2['numRecFrames'])
+    return crossingsDiff, peakDiff, numFramesDiff
 
 ##################################################################
 def findBestMatch(latestPhrase, phrasesArray):
@@ -154,15 +158,30 @@ def findBestMatch(latestPhrase, phrasesArray):
 
     leastDiff = sys.maxsize
     bestMatchIndex = -1
+    previousPhrase = ''
+    numMatches = 0
+    print('numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
         phrase = phrasesArray[i]
-        crDiff, pkDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
-        difference = crDiff + pkDiff
+        print('comparing ' + latestPhrase['phrase'] +', ' + latestPhrase['numRecFrames'] + 
+                ' against ' + phrase['phrase'] + ', ' + phrase['numRecFrames'])
+        crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
+        difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
+            print(phrase['phrase'], ' ', difference)
 
-    return phrasesArray[bestMatchIndex]
+            if phrase['phrase'] == previousPhrase:
+                numMatches += 1
+                print('currPhrase EQUALS previousPhrase', numMatches)
+            else:
+                numMatches = 0
+                previousPhrase = phrase['phrase']
+                print('currPhrase NOT previousPhrase', numMatches)
+
+
+    return numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
 def numZeroCrossings(data):
@@ -191,9 +210,9 @@ def getAudioMetaData(frames):
 
     jsonObject = {
             "phrase": phrase, 
-            "recLimitSecs": seconds, 
-            "framesLimit": maxFramesBeforeTrim, 
-            "numRecFrames": len(frames), "frameData": jsonArray }
+            "recLimitSecs": seconds,
+            "framesLimit": maxFramesBeforeTrim,
+            "numRecFrames": numActualRecordedFrames, "frameData": jsonArray }
     return jsonObject
 
 ##################################################################
@@ -205,7 +224,7 @@ def addFakeAudioMetaDataForFillerFrames(metaData):
     frameData = metaData['frameData']
     for i in range(numFillFrames):
         frameData.append({"crossings": 0, "peak": 0})
-    metaData['numRecFrames'] = framesLimit
+    #metaData['numRecFrames'] = framesLimit
 
 ##################################################################
 def countVolumeValue(data, value):
@@ -266,50 +285,28 @@ except:
 
 while not quitProgram:
 
-    #userInput = input('Press <ENTER> to record, or \'q\' to quit program: ')
-
-    #if userInput == 'q':
-        #break
-
+    listPhrasesTrained()
 
     recordAudio()
 
 
-    if trim:
 
-        print('Triming start...')
-
-        while len(frames) > 0:
-            index = 0;
-            if not isValidStartingSound(frames[0], maxBackgroundStart):
-                frames.pop(index)
-                #print('...popped...')
-            else:
-                break
-        """
-        print('Triming end...')
-
-        while len(frames) > 0:
-            index = len(frames) - 1;
-            #print('index: ', index)
-            if not isValidSound(frames[index], maxBackgroundEnd):
-                frames.pop(index)
-                #print('...popped...')
-            else:
-                break
-        """
-
-
-        if len(frames) > 0:
+    if len(frames) > 0:
         
 
-            metaDataForLatestRecordedPhrase = getAudioMetaData(frames)
-            addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
+        metaDataForLatestRecordedPhrase = getAudioMetaData(frames)
+        addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
-            if len(phrasesArray) > 0:
-                bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
-                print('bestMatch: ', bestMatch['phrase'])
-                textToSpeech.say(bestMatch['phrase'])
+        if len(phrasesArray) > 0:
+            numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
+            print('bestMatch: ', bestMatch['phrase'], ' numMatches: ', numMatches)
+            if numMatches > 6:
+                textToSpeech.say('You said, ' + bestMatch['phrase'])
+            elif numMatches > 3:
+                textToSpeech.say('I think you said, ' + bestMatch['phrase'])
+            else:
+                textToSpeech.say('Best guess, ' + bestMatch['phrase'])
+
 
 
 
@@ -318,7 +315,6 @@ while not quitProgram:
 # Terminate the PortAudio interface
 p.terminate()
 
-#print(phrasesArray)
 
 
 print('Done.')
