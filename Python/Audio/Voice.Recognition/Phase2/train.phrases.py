@@ -30,8 +30,8 @@ parser.add_argument('-l', '--length', type=int, dest='seconds')
 parser.add_argument('-j', '--json-file', type=str, dest='phrasesJsonFile')
 parser.add_argument('-n', '--find-noise-level', dest='findNoiseLevel', action='store_true')
 parser.set_defaults(
-        maxBackgroundStartVolume=7, 
-        maxBackgroundStartCrossings=14, 
+        maxBackgroundStartVolume=9, 
+        maxBackgroundStartCrossings=24, 
         seconds=5, 
         phrasesJsonFile='phrases.json', 
         continuousPhrase='')
@@ -53,6 +53,7 @@ continuousPhrase=args.continuousPhrase
 findNoiseLevel=args.findNoiseLevel
 
 
+findNoiseLevelReadyToBegin = False
 foundMaxBackgroundStartVolumeLevel = False
 valueOfMaxBackgroundStartVolumeFound = sys.maxsize
 foundMaxBackgroundStartCrossingsLevel = False
@@ -104,11 +105,14 @@ def getIsThisCorrectUserInput():
             difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, yesNoQuitArray)
             print('difference: ', difference, ', numMatches: ', numMatches)
 
-    if difference < 300 and numMatches > 3:
+    if (difference < 400 and numMatches > 3) or (difference < 650 and numMatches > 5) or (difference < 550 and numMatches > 4):
         print('Found good match...')
         if bestMatch['phrase'] == 'yes':
             isThisCorrect = True
             textToSpeech.say('Very Well.')
+        elif bestMatch['phrase'] == 'no':
+            isThisCorrect = False
+            textToSpeech.say('Enter phrase.')
     else:
         userResponse = input('Correct ? <y|n> :')
         if userResponse == 'y':
@@ -177,9 +181,9 @@ def recordAudio():
         if not isFirstValidSound:
             resultTrue, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
             if resultTrue:
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 isFirstValidSound = True
         if isFirstValidSound:
             isValid, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
@@ -192,9 +196,9 @@ def recordAudio():
                 lastSoundWasInvalid = False
 
             if numConsecutiveInvalidSounds > 15:
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 break
 
         if isFirstValidSound:
@@ -353,9 +357,10 @@ try:
 except:
     print('')
     print('no pre-existing yes / no / quit meta data. Need this to continue.')
-    print('first generate yes/no/quit meta data.')
-    print('')
-    sys.exit(1)
+    if not findNoiseLevel:
+        print('first generate yes/no/quit meta data.')
+        print('')
+        sys.exit(1)
 
 
 print('Load Existing JSON meta data from file...')
@@ -375,9 +380,12 @@ while not quitProgram:
 
     # if a continuousPhrase was given, we dont need to ask for input
     # we just keep listening, and assign that continuous phrase to everthing
-    if continuousPhrase == '':
+    if continuousPhrase == '' or (findNoiseLevel and not findNoiseLevelReadyToBegin):
 
         listPhrasesTrained()
+
+        if findNoiseLevel:
+            findNoiseLevelReadyToBegin = True
 
         userInput = input('Press <ENTER> to record, or \'q\' to quit program: ')
 
@@ -457,7 +465,7 @@ while not quitProgram:
 
             difference, numMatches, bestPhraseMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
             print('best Phrase Match: ', bestPhraseMatch['phrase'], '  numMatches: ', numMatches)
-            if difference < 400 and numMatches > 3:
+            if (difference < 300 and numMatches > 4) or (difference < 450 and numMatches > 5):
                 print(f.renderText(bestPhraseMatch['phrase']))
                 textToSpeech.say('You said, ' + bestPhraseMatch['phrase'])
                 needPhrase = bestPhraseMatch['phrase']

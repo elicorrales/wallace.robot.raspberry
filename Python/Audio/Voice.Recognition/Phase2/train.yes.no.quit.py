@@ -29,8 +29,8 @@ parser.add_argument('--max-bg-start-crossings', type=int, dest='maxBackgroundSta
 parser.add_argument('-l', '--length', type=int, dest='seconds')
 parser.add_argument('-j', '--json-file', type=str, dest='jsonFile')
 parser.set_defaults(
-        maxBackgroundStartVolume=7, 
-        maxBackgroundStartCrossings=14, 
+        maxBackgroundStartVolume=9, 
+        maxBackgroundStartCrossings=24, 
         seconds=5, 
         jsonFile='yes.no.quit.json')
 
@@ -46,7 +46,7 @@ maxBackgroundStartVolume=args.maxBackgroundStartVolume
 maxBackgroundStartCrossings=args.maxBackgroundStartCrossings
 seconds=args.seconds
 jsonFile=args.jsonFile
-frames = []
+#frames = []
 numActualRecordedFrames = 0
 maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
 
@@ -132,9 +132,9 @@ def recordAudio():
         if not isFirstValidSound:
             resultTrue, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
             if resultTrue:
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
-                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('.......capturing..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 isFirstValidSound = True
         if isFirstValidSound:
             isValid, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
@@ -147,9 +147,9 @@ def recordAudio():
                 lastSoundWasInvalid = False
 
             if numConsecutiveInvalidSounds > 15:
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
-                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
+                print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 break
 
         if isFirstValidSound:
@@ -162,6 +162,7 @@ def recordAudio():
     stream.stop_stream()
     stream.close()
 
+    return frames
 
 ##################################################################
 def compareTwoPhraseMetaData(phrase1, phrase2):
@@ -315,14 +316,15 @@ while not quitProgram:
         break
 
 
-    recordAudio()
+    phraseFrames = recordAudio()
+
+    print('phrase frames: ', len(phraseFrames), ' vol thre: ', maxBackgroundStartVolume, ', cros the:' , maxBackgroundStartCrossings)
 
 
-
-    if len(frames) > 0:
+    if len(phraseFrames) > 0:
         
 
-        metaDataForLatestRecordedPhrase = getAudioMetaData(frames)
+        metaDataForLatestRecordedPhrase = getAudioMetaData(phraseFrames)
         addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
         if len(phrasesArray) > 0:
