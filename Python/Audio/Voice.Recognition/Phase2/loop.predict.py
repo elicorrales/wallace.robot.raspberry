@@ -11,6 +11,7 @@ import statistics
 import json
 import talkey
 from signal import signal, SIGINT
+from pyfiglet import Figlet
 
 CHUNK = 512
 sample_format = pyaudio.paInt16  # 16 bits per sample
@@ -27,7 +28,8 @@ parser.add_argument('-s', '--max-bg-start', type=int, dest='maxBackgroundStart')
 parser.add_argument('-e', '--max-bg-end', type=int, dest='maxBackgroundEnd')
 parser.add_argument('-l', '--length', type=int, dest='seconds')
 parser.add_argument('-j', '--json-file', type=str, required=True, dest='jsonFile')
-parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5)
+parser.add_argument('-t', '--strict-match', dest='strictMatch', action='store_true')
+parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5, strictMatch=False)
 
 args = parser.parse_args()
 
@@ -42,13 +44,16 @@ maxBackgroundStart=args.maxBackgroundStart
 maxBackgroundEnd=args.maxBackgroundEnd
 seconds=args.seconds
 jsonFile=args.jsonFile
+strictMatch=args.strictMatch
+
 frames = []
 numActualRecordedFrames = 0
 maxFramesBeforeTrim = 0
 
-textToSpeech = talkey.Talkey()
+textToSpeech = talkey.Talkey(preferred_language=['en'])
 
 p = pyaudio.PyAudio()  # Create an interface to PortAudio
+f = Figlet()
 
 phrasesArray = []
 
@@ -126,6 +131,7 @@ def recordAudio():
         if isFirstValidSound:
             frames.append(data)
 
+    global numActualRecordedFrames
     numActualRecordedFrames = len(frames)
 
     # Stop and close the stream 
@@ -160,28 +166,28 @@ def findBestMatch(latestPhrase, phrasesArray):
     bestMatchIndex = -1
     previousPhrase = ''
     numMatches = 0
-    print('numPhrases to compare against: ', numPhrases)
+    #print('numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
         phrase = phrasesArray[i]
-        print('comparing ' + latestPhrase['phrase'] +', ' + latestPhrase['numRecFrames'] + 
-                ' against ' + phrase['phrase'] + ', ' + phrase['numRecFrames'])
+        #print('comparing ' + latestPhrase['phrase'] +', ' + str(latestPhrase['numRecFrames']) + 
+                #' against ' + phrase['phrase'] + ', ' + str(phrase['numRecFrames']))
         crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
         difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
-            print(phrase['phrase'], ' ', difference)
+            print(phrase['phrase'], ' ', leastDiff)
 
             if phrase['phrase'] == previousPhrase:
                 numMatches += 1
-                print('currPhrase EQUALS previousPhrase', numMatches)
+                #print('currPhrase EQUALS previousPhrase', numMatches)
             else:
                 numMatches = 0
                 previousPhrase = phrase['phrase']
-                print('currPhrase NOT previousPhrase', numMatches)
+                #print('currPhrase NOT previousPhrase', numMatches)
 
 
-    return numMatches, phrasesArray[bestMatchIndex]
+    return leastDiff, numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
 def numZeroCrossings(data):
@@ -298,14 +304,28 @@ while not quitProgram:
         addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
         if len(phrasesArray) > 0:
-            numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
+            difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
             print('bestMatch: ', bestMatch['phrase'], ' numMatches: ', numMatches)
-            if numMatches > 6:
-                textToSpeech.say('You said, ' + bestMatch['phrase'])
-            elif numMatches > 3:
-                textToSpeech.say('I think you said, ' + bestMatch['phrase'])
+
+            if strictMatch:
+                if difference < 100 and numMatches > 3:
+                    print(f.renderText(bestMatch['phrase']))
+                    textToSpeech.say('You said, ' + bestMatch['phrase'])
+                elif difference < 300 and numMatches > 3:
+                    print(f.renderText(bestMatch['phrase']))
+                    textToSpeech.say('I believe you said, ' + bestMatch['phrase'])
+                elif numMatches > 2:
+                    print(f.renderText(bestMatch['phrase']))
+                    textToSpeech.say('I think you said, ' + bestMatch['phrase'])
+                elif difference < 400:
+                    print(f.renderText(bestMatch['phrase']))
+                    textToSpeech.say(bestMatch['phrase'] + '?')
+                else:
+                    print(f.renderText('Sorry'))
+                    textToSpeech.say('Sorry.')
             else:
-                textToSpeech.say('Best guess, ' + bestMatch['phrase'])
+                print(f.renderText(bestMatch['phrase']))
+                textToSpeech.say(bestMatch['phrase'])
 
 
 

@@ -11,6 +11,7 @@ import statistics
 import json
 import talkey
 from signal import signal, SIGINT
+from pyfiglet import Figlet
 
 CHUNK = 512
 sample_format = pyaudio.paInt16  # 16 bits per sample
@@ -22,21 +23,18 @@ RATE = 32000
 # set up command-line arguments
 ##################################################################
 parser = argparse.ArgumentParser(prog=sys.argv[0], description='Train Yes, No, Quit', allow_abbrev=False)
-#parser.add_argument('-p', '--phrase', type=str, required=True, dest='phrase')
 parser.add_argument('-s', '--max-bg-start', type=int, dest='maxBackgroundStart')
-parser.add_argument('-e', '--max-bg-end', type=int, dest='maxBackgroundEnd')
+parser.add_argument('--max-bg-start-volume', type=int, dest='maxBackgroundStartVolume')
+parser.add_argument('--max-bg-start-crossings', type=int, dest='maxBackgroundStartCrossings')
 parser.add_argument('-l', '--length', type=int, dest='seconds')
 parser.add_argument('-j', '--json-file', type=str, dest='jsonFile')
-parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5, jsonFile='yes.no.quit.json')
+parser.set_defaults(
+        maxBackgroundStartVolume=7, 
+        maxBackgroundStartCrossings=14, 
+        seconds=5, 
+        jsonFile='yes.no.quit.json')
 
 args = parser.parse_args()
-
-
-#print(args.phrase)
-print(args.maxBackgroundStart)
-print(args.maxBackgroundEnd)
-print(args.seconds)
-print(args.jsonFile)
 
 
 
@@ -44,17 +42,19 @@ print(args.jsonFile)
 #init program global variables
 ##################################################################
 phrase=''
-maxBackgroundStart=args.maxBackgroundStart
-maxBackgroundEnd=args.maxBackgroundEnd
+maxBackgroundStartVolume=args.maxBackgroundStartVolume
+maxBackgroundStartCrossings=args.maxBackgroundStartCrossings
 seconds=args.seconds
 jsonFile=args.jsonFile
 frames = []
 numActualRecordedFrames = 0
-maxFramesBeforeTrim = 0
+maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
 
-textToSpeech = talkey.Talkey()
+#textToSpeech = talkey.Talkey()
+textToSpeech = talkey.Talkey(preferred_language=['en'])
 
 p = pyaudio.PyAudio()  # Create an interface to PortAudio
+f = Figlet()
 
 phrasesArray = []
 
@@ -96,6 +96,22 @@ def signalHandler(signalReceived, frame):
 
 
 ##################################################################
+def isValidSound(frame, maxBackgroundVolume, maxBackgroundCrossings):
+    jsonArray = []
+    data = np.frombuffer(frame, dtype=np.int16)
+    peak = np.amax(np.abs(data))
+    bars = int(255*peak/2**16)
+    #print('#'*bars)
+    crossings = numZeroCrossings(data)
+    #print('vol:', bars,' freq:', crossings)
+    if bars > maxBackgroundVolume:
+        return True, 'bars', bars, crossings
+    if crossings > maxBackgroundCrossings:
+        return True, 'crossings', bars, crossings
+    else:
+        return False, 'nothing', bars, crossings
+
+##################################################################
 def recordAudio():
 
     stream = p.open(format=sample_format,
@@ -104,7 +120,6 @@ def recordAudio():
                 frames_per_buffer=CHUNK,
                 input=True)
 
-    global frames
     frames = []  # Initialize array to store frames
 
     print('recording...')
@@ -112,18 +127,17 @@ def recordAudio():
     isFirstValidSound = False
     lastSoundWasInvalid = False
     numConsecutiveInvalidSounds = 0
-    global maxFramesBeforeTrim 
-    maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
     for i in range(0, int(RATE / CHUNK * seconds)):
-        data = stream.read(CHUNK)
+        data = stream.read(CHUNK, exception_on_overflow=False)
         if not isFirstValidSound:
-            if isValidStartingSound(data, maxBackgroundStart):
-                print('.......capturing.....')
-                print('.......capturing.....')
-                print('.......capturing.....')
+            resultTrue, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
+            if resultTrue:
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
                 isFirstValidSound = True
         if isFirstValidSound:
-            isValid = isValidSound(data, maxBackgroundEnd)
+            isValid, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
             if lastSoundWasInvalid and not isValid:
                 numConsecutiveInvalidSounds += 1
             elif not isValid:
@@ -132,15 +146,17 @@ def recordAudio():
             else:
                 lastSoundWasInvalid = False
 
-            if numConsecutiveInvalidSounds > 4:
-                print('...Aborting capture.....')
-                print('...Aborting capture.....')
-                print('...Aborting capture.....')
+            if numConsecutiveInvalidSounds > 15:
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
                 break
 
         if isFirstValidSound:
             frames.append(data)
 
+    global numActualRecordedFrames
+    numActualRecordedFrames = len(frames)
 
     # Stop and close the stream 
     stream.stop_stream()
@@ -174,28 +190,29 @@ def findBestMatch(latestPhrase, phrasesArray):
     bestMatchIndex = -1
     previousPhrase = ''
     numMatches = 0
-    print('numPhrases to compare against: ', numPhrases)
+    print('findBestMatch(): numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
         phrase = phrasesArray[i]
-        print('comparing ' + latestPhrase['phrase'] +', ' + latestPhrase['numRecFrames'] + 
-                ' against ' + phrase['phrase'] + ', ' + phrase['numRecFrames'])
+        #print('comparing ' + latestPhrase['phrase'] +', ' + str(latestPhrase['numRecFrames']) + 
+                #' against ' + phrase['phrase'] + ', ' + str(phrase['numRecFrames']))
         crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
         difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
-            print(phrase['phrase'], ' ', difference)
+            print('findBestMatch():' + phrase['phrase'], ' leastDiff: ', leastDiff)
 
             if phrase['phrase'] == previousPhrase:
                 numMatches += 1
-                print('currPhrase EQUALS previousPhrase', numMatches)
+                #print('currPhrase EQUALS previousPhrase', numMatches)
             else:
                 numMatches = 0
                 previousPhrase = phrase['phrase']
-                print('currPhrase NOT previousPhrase', numMatches)
+                #print('currPhrase NOT previousPhrase', numMatches)
 
 
-    return numMatches, phrasesArray[bestMatchIndex]
+    print('findBestMatch(): leastDiff ', leastDiff)
+    return leastDiff, numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
 def numZeroCrossings(data):
@@ -268,18 +285,6 @@ def isValidStartingSound(data, maxBackground):
         return False
 
 ##################################################################
-def isValidSound(frame, maxBackground):
-    jsonArray = []
-    data = np.frombuffer(frame, dtype=np.int16)
-    peak = np.amax(np.abs(data))
-    bars = int(255*peak/2**16)
-    print('#'*bars)
-    if bars > maxBackground:
-        return True
-    else:
-        return False
-
-##################################################################
 
 
 if __name__ == '__main__':
@@ -321,12 +326,14 @@ while not quitProgram:
         addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
         if len(phrasesArray) > 0:
-            numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
+            difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
             print('best Yes No Quit Match: ', bestMatch['phrase'], ' numMatches: ', numMatches)
-            if numMatches > 6:
+            if difference < 200 and numMatches > 6:
+                print(f.renderText(bestMatch['phrase']))
                 textToSpeech.say('You said, ' + bestMatch['phrase'])
                 needPhrase = bestMatch['phrase']
             else:
+                print(f.renderText(bestMatch['phrase']))
                 textToSpeech.say(bestMatch['phrase'] + '?')
                 isThisCorrect = input('Correct ? <y|n> :')
                 if isThisCorrect == 'y':

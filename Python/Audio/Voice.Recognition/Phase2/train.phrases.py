@@ -11,7 +11,7 @@ import statistics
 import json
 import talkey
 from signal import signal, SIGINT
-import pyfiglet
+from pyfiglet import Figlet
 
 CHUNK = 512
 sample_format = pyaudio.paInt16  # 16 bits per sample
@@ -23,13 +23,18 @@ RATE = 32000
 # set up command-line arguments
 ##################################################################
 parser = argparse.ArgumentParser(prog=sys.argv[0], description='train with phrases', allow_abbrev=False)
-#parser.add_argument('-p', '--phrase', type=str, required=True, dest='phrase')
-parser.add_argument('-s', '--max-bg-start', type=int, dest='maxBackgroundStart')
-parser.add_argument('-e', '--max-bg-end', type=int, dest='maxBackgroundEnd')
-parser.add_argument('-w', '--save-wave-file', dest='saveWaveFile', action='store_true')
+parser.add_argument('-p', '--phrase', type=str, dest='continuousPhrase')
+parser.add_argument('--max-bg-start-volume', type=int, dest='maxBackgroundStartVolume')
+parser.add_argument('--max-bg-start-crossings', type=int, dest='maxBackgroundStartCrossings')
 parser.add_argument('-l', '--length', type=int, dest='seconds')
-parser.add_argument('-j', '--json-file', type=str, dest='jsonFile')
-parser.set_defaults(maxBackgroundStart=80, maxBackgroundEnd=1, seconds=5)
+parser.add_argument('-j', '--json-file', type=str, dest='phrasesJsonFile')
+parser.add_argument('-n', '--find-noise-level', dest='findNoiseLevel', action='store_true')
+parser.set_defaults(
+        maxBackgroundStartVolume=7, 
+        maxBackgroundStartCrossings=14, 
+        seconds=5, 
+        phrasesJsonFile='phrases.json', 
+        continuousPhrase='')
 
 args = parser.parse_args()
 
@@ -38,26 +43,33 @@ args = parser.parse_args()
 ##################################################################
 #init program global variables
 ##################################################################
-phrase=''
-maxBackgroundStart=args.maxBackgroundStart
-maxBackgroundEnd=args.maxBackgroundEnd
+#phrase=''
+maxBackgroundStartVolume=args.maxBackgroundStartVolume
+maxBackgroundStartCrossings=args.maxBackgroundStartCrossings
 seconds=args.seconds
-saveWaveFile=args.saveWaveFile
 yesNoQuitJsonFile='yes.no.quit.json'
-phrasesJsonFile='phrases.json'
-#frames = []
+phrasesJsonFile=args.phrasesJsonFile
+continuousPhrase=args.continuousPhrase
+findNoiseLevel=args.findNoiseLevel
+
+
+foundMaxBackgroundStartVolumeLevel = False
+valueOfMaxBackgroundStartVolumeFound = sys.maxsize
+foundMaxBackgroundStartCrossingsLevel = False
+valueOfMaxBackgroundStartCrossingsFound = sys.maxsize
+
 numActualRecordedFrames = 0
 maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
-
-textToSpeech = talkey.Talkey()
-
+#textToSpeech = talkey.Talkey()
+textToSpeech = talkey.Talkey(preferred_language=['en'])
 p = pyaudio.PyAudio()  # Create an interface to PortAudio
-
+f = Figlet()
 yesNoQuitArray = []
 phrasesArray = []
 
 quitProgram = False
 newPhraseAddedThisTime = False
+
 
 
 ##################################################################
@@ -81,6 +93,7 @@ def getIsThisCorrectUserInput():
 
     numMatches = 0
     isThisCorrect = False
+    difference = sys.maxsize
     if len(yesNoQuitFrames) > 0:
         
         metaDataForLatestRecordedPhrase = getAudioMetaData(yesNoQuitFrames)
@@ -88,12 +101,14 @@ def getIsThisCorrectUserInput():
 
         global yesNoQuitArray
         if len(yesNoQuitArray) > 0:
-            numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, yesNoQuitArray)
-            #print('bestMatch: ', bestMatch['phrase'], '  numMatches: ', numMatches)
+            difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, yesNoQuitArray)
+            print('difference: ', difference, ', numMatches: ', numMatches)
 
-    if numMatches > 2:
+    if difference < 300 and numMatches > 3:
         print('Found good match...')
-        isThisCorrect = True
+        if bestMatch['phrase'] == 'yes':
+            isThisCorrect = True
+            textToSpeech.say('Very Well.')
     else:
         userResponse = input('Correct ? <y|n> :')
         if userResponse == 'y':
@@ -101,31 +116,6 @@ def getIsThisCorrectUserInput():
 
 
     return isThisCorrect
-
-##################################################################
-def saveWaveFile(phrase, frames):
-    lastNumber = 0
-    try:
-        lastNumberFile= open('wave.files/last.number.txt','r')
-        lastNumber = int(lastNumberFile.read())
-        lastNumberFile.close()
-    except:
-        print('no wave.files/last.number.txt file')
-
-    print('last number: ', lastNumber)
-    lastNumber += 1
-    lastNumberFile= open('wave.files/last.number.txt','w')
-    lastNumberFile.write('%d'%lastNumber)
-    lastNumberFile.close()
-    lastNumberStr = str(lastNumber)
-
-    print('Saving wave file...')
-    wf = wave.open('wave.files/'+phrase.replace(' ','.',100)+'.'+lastNumberStr+'.wav', 'wb')
-    wf.setnchannels(channels)
-    wf.setsampwidth(p.get_sample_size(sample_format))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
 
 ##################################################################
 def signalHandler(signalReceived, frame):
@@ -151,6 +141,22 @@ def signalHandler(signalReceived, frame):
 
 
 ##################################################################
+def isValidSound(frame, maxBackgroundVolume, maxBackgroundCrossings):
+    jsonArray = []
+    data = np.frombuffer(frame, dtype=np.int16)
+    peak = np.amax(np.abs(data))
+    bars = int(255*peak/2**16)
+    #print('#'*bars)
+    crossings = numZeroCrossings(data)
+    #print('vol:', bars,' freq:', crossings)
+    if bars > maxBackgroundVolume:
+        return True, 'bars', bars, crossings
+    if crossings > maxBackgroundCrossings:
+        return True, 'crossings', bars, crossings
+    else:
+        return False, 'nothing', bars, crossings
+
+##################################################################
 def recordAudio():
 
     stream = p.open(format=sample_format,
@@ -167,15 +173,16 @@ def recordAudio():
     lastSoundWasInvalid = False
     numConsecutiveInvalidSounds = 0
     for i in range(0, int(RATE / CHUNK * seconds)):
-        data = stream.read(CHUNK)
+        data = stream.read(CHUNK, exception_on_overflow=False)
         if not isFirstValidSound:
-            if isValidStartingSound(data, maxBackgroundStart):
-                print('.......capturing.....')
-                print('.......capturing.....')
-                print('.......capturing.....')
+            resultTrue, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
+            if resultTrue:
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
+                print('.......capturing.....', why, ' ', bars, ' ', crossings)
                 isFirstValidSound = True
         if isFirstValidSound:
-            isValid = isValidSound(data, maxBackgroundEnd)
+            isValid, why, bars, crossings = isValidSound(data, maxBackgroundStartVolume, maxBackgroundStartCrossings)
             if lastSoundWasInvalid and not isValid:
                 numConsecutiveInvalidSounds += 1
             elif not isValid:
@@ -184,15 +191,17 @@ def recordAudio():
             else:
                 lastSoundWasInvalid = False
 
-            if numConsecutiveInvalidSounds > 4:
-                print('...Aborting capture.....')
-                print('...Aborting capture.....')
-                print('...Aborting capture.....')
+            if numConsecutiveInvalidSounds > 15:
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
+                print('...Aborting capture.....', why, ' ', bars, ' ', crossings)
                 break
 
         if isFirstValidSound:
             frames.append(data)
 
+    global numActualRecordedFrames
+    numActualRecordedFrames = len(frames)
 
     # Stop and close the stream 
     stream.stop_stream()
@@ -227,28 +236,29 @@ def findBestMatch(latestPhrase, phrasesArray):
     bestMatchIndex = -1
     previousPhrase = ''
     numMatches = 0
-    print('numPhrases to compare against: ', numPhrases)
+    print('findBestMatch(): numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
         phrase = phrasesArray[i]
-        print('comparing ' + latestPhrase['phrase'] +', ' + latestPhrase['numRecFrames'] + 
-                ' against ' + phrase['phrase'] + ', ' + phrase['numRecFrames'])
+        #print('comparing ' + latestPhrase['phrase'] +', ' + str(latestPhrase['numRecFrames']) + 
+                #' against ' + phrase['phrase'] + ', ' + str(phrase['numRecFrames']))
         crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
         difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
-            print(phrase['phrase'], ' ', difference)
+            print('findBestMatch():' + phrase['phrase'], ' leastDiff: ', leastDiff)
 
             if phrase['phrase'] == previousPhrase:
                 numMatches += 1
-                print('currPhrase EQUALS previousPhrase', numMatches)
+                #print('currPhrase EQUALS previousPhrase', numMatches)
             else:
                 numMatches = 0
                 previousPhrase = phrase['phrase']
-                print('currPhrase NOT previousPhrase', numMatches)
+                #print('currPhrase NOT previousPhrase', numMatches)
 
 
-    return numMatches, phrasesArray[bestMatchIndex]
+    print('findBestMatch(): leastDiff ', leastDiff)
+    return leastDiff, numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
 def numZeroCrossings(data):
@@ -276,7 +286,7 @@ def getAudioMetaData(frames):
         jsonArray.append(jsonStr)
 
     jsonObject = {
-            "phrase": phrase, 
+            #"phrase": phrase, 
             "recLimitSecs": seconds, 
             "framesLimit": maxFramesBeforeTrim, 
             "numRecFrames": numActualRecordedFrames, "frameData": jsonArray }
@@ -309,27 +319,20 @@ def isValidStartingSound(data, maxBackground):
         mode = statistics.mode(data)
         volCount = countVolumeValue(data, mode)
 
+        print('mode:', mode, ', volCount:', volCount, ', maxBackground:', maxBackground)
+
         if mode > 250  and volCount>= maxBackground:
             return False
         if mode < 3    and volCount >= maxBackground:
             return False
 
-        return True
+        if mode >= 3 and mode <= 250 and volCount >= maxBackground:
+            return True
+
+        return False
 
     except:
         #print('exception')
-        return False
-
-##################################################################
-def isValidSound(frame, maxBackground):
-    jsonArray = []
-    data = np.frombuffer(frame, dtype=np.int16)
-    peak = np.amax(np.abs(data))
-    bars = int(255*peak/2**16)
-    print('#'*bars)
-    if bars > maxBackground:
-        return True
-    else:
         return False
 
 ##################################################################
@@ -370,31 +373,96 @@ except:
 
 while not quitProgram:
 
-    listPhrasesTrained()
+    # if a continuousPhrase was given, we dont need to ask for input
+    # we just keep listening, and assign that continuous phrase to everthing
+    if continuousPhrase == '':
 
-    userInput = input('Press <ENTER> to record, or \'q\' to quit program: ')
+        listPhrasesTrained()
 
-    if userInput == 'q':
-        break
+        userInput = input('Press <ENTER> to record, or \'q\' to quit program: ')
+
+        if userInput == 'q':
+            break
 
 
     phraseFrames = recordAudio()
 
+    print('phrase frames: ', len(phraseFrames), ' vol thre: ', maxBackgroundStartVolume, ', cros the:' , maxBackgroundStartCrossings)
+    # we assume here that:
+    #   we are not attempting to record particular phrase.
+    #   we are merely establishing what is the level of background noise.
+    #   we start with a very high value and just listen,
+    #       expecting NO audio result, and we slowly lower the value
+    #       until we DO get an audio result.
+    #       That is our background level
+    if continuousPhrase and findNoiseLevel:
+
+        print('we are in find-noise-level mode....')
+
+        if len(phraseFrames) > 0 and not foundMaxBackgroundStartVolumeLevel:
+            valueOfMaxBackgroundStartVolumeFound = maxBackgroundStartVolume
+            maxBackgroundStartVolume = sys.maxsize
+            foundMaxBackgroundStartVolumeLevel = True
+            input('Found Start Background Volume Noise Level: ' +  str(valueOfMaxBackgroundStartVolumeFound) + ' ; <ENTER>: ')
+            continue
+
+
+        if len(phraseFrames) > 0 and foundMaxBackgroundStartVolumeLevel and not foundMaxBackgroundStartCrossingsLevel:
+            valueOfMaxBackgroundStartCrossingsFound = maxBackgroundStartCrossings
+            foundMaxBackgroundStartCrossingsLevel = True
+            print('Found Start Background Crossings Noise Level: ', valueOfMaxBackgroundStartCrossingsFound)
+            print('Found Start Background Volume Noise Level: ', valueOfMaxBackgroundStartVolumeFound)
+            break
+
+        if len(phraseFrames) < 1:
+            print('we are in find-noise-level mode and nothing was recorded so we might change some params....')
+            if not foundMaxBackgroundStartVolumeLevel:
+
+                if maxBackgroundStartVolume > 0:
+                    maxBackgroundStartVolume -= 1
+                    print('Lowered Start Background Volume Threshold: ', maxBackgroundStartVolume)
+                else:
+                    valueOfMaxBackgroundStartVolumeFound = maxBackgroundStartVolume
+                    maxBackgroundStartVolume = sys.maxsize
+                    foundMaxBackgroundStartVolumeLevel = True
+                    input('Found Start Background Volume Noise Level: ' +  str(valueOfMaxBackgroundStartVolumeFound) + ' ; <ENTER>: ')
+
+            if foundMaxBackgroundStartVolumeLevel and not foundMaxBackgroundStartCrossingsLevel:
+
+                if maxBackgroundStartCrossings > 0:
+                    maxBackgroundStartCrossings -= 1
+                    print('Lowered Start Background Crossings Threshold: ', maxBackgroundStartCrossings)
+                else:
+                    valueOfMaxBackgroundStartCrossingsFound = maxBackgroundStartCrossings
+                    foundMaxBackgroundStartCrossingsLevel = True
+                    input('Found Start Background Crossings Noise Level: ' + str(valueOfMaxBackgroundStartCrossingsFound) + '. Press <ENTER>:')
+                    break
 
 
     if len(phraseFrames) > 0:
-        
+ 
 
         metaDataForLatestRecordedPhrase = getAudioMetaData(phraseFrames)
         addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
 
+
+        if continuousPhrase != '':
+            metaDataForLatestRecordedPhrase['phrase'] = continuousPhrase
+            phrasesArray.append(metaDataForLatestRecordedPhrase)
+            newPhraseAddedThisTime = True
+            continue
+
         if len(phrasesArray) > 0:
-            numMatches, bestPhraseMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
+
+
+            difference, numMatches, bestPhraseMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
             print('best Phrase Match: ', bestPhraseMatch['phrase'], '  numMatches: ', numMatches)
-            if numMatches > 3:
+            if difference < 400 and numMatches > 3:
+                print(f.renderText(bestPhraseMatch['phrase']))
                 textToSpeech.say('You said, ' + bestPhraseMatch['phrase'])
                 needPhrase = bestPhraseMatch['phrase']
             else:
+                print(f.renderText(bestPhraseMatch['phrase']))
                 textToSpeech.say(bestPhraseMatch['phrase'] + '?')
                 isThisCorrect = getIsThisCorrectUserInput()
                 if isThisCorrect == True:
@@ -405,8 +473,6 @@ while not quitProgram:
             needPhrase = input('Need to assign new phrase to this latest recording:')
 
         if len(needPhrase) > 0:
-            if saveWaveFile:
-                saveWaveFile(needPhrase, phraseFrames)
             metaDataForLatestRecordedPhrase['phrase'] = needPhrase
             print('')
             print('Saving : ', metaDataForLatestRecordedPhrase['phrase'])
@@ -415,6 +481,8 @@ while not quitProgram:
             newPhraseAddedThisTime = True
         else:
             print('Throwing new recording away....')
+
+
     else:
         print('Nothing Recorded ....')
         print('Nothing Recorded ....')
