@@ -70,6 +70,7 @@ phrasesArray = []
 
 quitProgram = False
 newPhraseAddedThisTime = False
+newYesNoQuitAddedThisTime = False
 
 
 
@@ -97,15 +98,18 @@ def getIsThisCorrectUserInput():
     difference = sys.maxsize
     if len(yesNoQuitFrames) > 0:
         
-        metaDataForLatestRecordedPhrase = getAudioMetaData(yesNoQuitFrames)
-        addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedPhrase)
+        metaDataForLatestRecordedYesNo = getAudioMetaData(yesNoQuitFrames)
+        addFakeAudioMetaDataForFillerFrames(metaDataForLatestRecordedYesNo)
 
         global yesNoQuitArray
         if len(yesNoQuitArray) > 0:
-            difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedPhrase, yesNoQuitArray)
+            difference, numMatches, bestMatch = findBestMatch(metaDataForLatestRecordedYesNo, yesNoQuitArray)
             print('difference: ', difference, ', numMatches: ', numMatches)
 
+    global newYesNoQuitAddedThisTime
     if (difference < 400 and numMatches > 3) or (difference < 650 and numMatches > 5) or (difference < 550 and numMatches > 4):
+        yesNoQuitArray.append(metaDataForLatestRecordedYesNo)
+        newYesNoAddedThisTime = True
         print('Found good match...')
         if bestMatch['phrase'] == 'yes':
             isThisCorrect = True
@@ -117,6 +121,13 @@ def getIsThisCorrectUserInput():
         userResponse = input('Correct ? <y|n> :')
         if userResponse == 'y':
             isThisCorrect = True
+            metaDataForLatestRecordedYesNo['phrase'] = 'yes'
+            yesNoQuitArray.append(metaDataForLatestRecordedYesNo)
+            newYesNoQuitAddedThisTime = True
+        elif userResponse == 'n':
+            metaDataForLatestRecordedYesNo['phrase'] = 'no'
+            yesNoQuitArray.append(metaDataForLatestRecordedYesNo)
+            newYesNoQuitAddedThisTime = True
 
 
     return isThisCorrect
@@ -136,8 +147,19 @@ def signalHandler(signalReceived, frame):
     if newPhraseAddedThisTime and len(phrasesArray) > 0:
         print('Saving meta data as JSON file...')
         phrasesFile = open(phrasesJsonFile,'w')
-        phrasesFile.write(json.dumps(phrasesArray))
+        phrasesFile.write(json.dumps(phrasesArray, indent=4))
         phrasesFile.close()
+
+    global newYesNoQuitAddedThisTime
+    global yesNoQuitArray
+
+    if newYesNoQuitAddedThisTime and len(yesNoQuitArray) > 0:
+        print('Saving Yes/No/Quit meta data as JSON file...')
+        yesNoFile = open(yesNoQuitJsonFile,'w')
+        yesNoFile.write(json.dumps(yesNoQuitArray, indent=4))
+        yesNoFile.close()
+
+
 
     print('Done.')
 
@@ -232,7 +254,8 @@ def compareTwoPhraseMetaData(phrase1, phrase2):
     return crossingsDiff, peakDiff, numFramesDiff
 
 ##################################################################
-def findBestMatch(latestPhrase, phrasesArray):
+def findBestMatch(latestPhraseData, phrasesArray):
+
 
     numPhrases = len(phrasesArray)
 
@@ -240,28 +263,22 @@ def findBestMatch(latestPhrase, phrasesArray):
     bestMatchIndex = -1
     previousPhrase = ''
     numMatches = 0
-    print('findBestMatch(): numPhrases to compare against: ', numPhrases)
     for i in range(numPhrases):
-        phrase = phrasesArray[i]
-        #print('comparing ' + latestPhrase['phrase'] +', ' + str(latestPhrase['numRecFrames']) + 
-                #' against ' + phrase['phrase'] + ', ' + str(phrase['numRecFrames']))
-        crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhrase, phrase)
+        phraseData = phrasesArray[i]
+        crDiff, pkDiff, numFramesDiff = compareTwoPhraseMetaData(latestPhraseData, phraseData)
         difference = crDiff + pkDiff + numFramesDiff
         if leastDiff > difference:
             leastDiff = difference
             bestMatchIndex = i
-            print('findBestMatch():' + phrase['phrase'], ' leastDiff: ', leastDiff)
 
-            if phrase['phrase'] == previousPhrase:
+            print(phraseData.keys())
+            if phraseData['phrase'] == previousPhrase:
                 numMatches += 1
-                #print('currPhrase EQUALS previousPhrase', numMatches)
             else:
                 numMatches = 0
-                previousPhrase = phrase['phrase']
-                #print('currPhrase NOT previousPhrase', numMatches)
+                previousPhrase = phraseData['phrase']
 
 
-    print('findBestMatch(): leastDiff ', leastDiff)
     return leastDiff, numMatches, phrasesArray[bestMatchIndex]
 
 ##################################################################
@@ -347,20 +364,22 @@ if __name__ == '__main__':
 
 
 
-print('Load Existing JSON meta data from file...')
+print('Load Existing Yes/No/Quit JSON meta data from file...')
 try:
     yesNoQuitFile = open(yesNoQuitJsonFile,'r')
     yesNoQuitString = yesNoQuitFile.read()
     yesNoQuitFile.close()
-    yesNoQuitArray = json.loads(yesNoQuitString)
-    print('Existing JSON meta data loaded from file.')
-except:
+    yesNoQuitArray = json.loads(phrasesString)
+    print('Existing Yes/No/Quit JSON meta data loaded from file.')
+except json.decoder.JSONDecodeError:
     print('')
-    print('no pre-existing yes / no / quit meta data. Need this to continue.')
-    if not findNoiseLevel:
-        print('first generate yes/no/quit meta data.')
-        print('')
-        sys.exit(1)
+    print('bad Yes/No/Quit JSON file data..')
+    print('')
+    sys.exit(1)
+except FileNotFoundError:
+    print('')
+    print('No Yes/No/Quit JSON file Data..')
+    print('')
 
 
 print('Load Existing JSON meta data from file...')
@@ -370,9 +389,14 @@ try:
     phrasesFile.close()
     phrasesArray = json.loads(phrasesString)
     print('Existing JSON meta data loaded from file.')
-except:
+except json.decoder.JSONDecodeError:
     print('')
-    print('no pre-existing meta data..')
+    print('bad JSON file data..')
+    print('')
+    sys.exit(1)
+except FileNotFoundError:
+    print('')
+    print('No JSON file Data..')
     print('')
 
 
@@ -509,3 +533,9 @@ if newPhraseAddedThisTime:
     print('Done.')
 
 
+if newYesNoQuitAddedThisTime:
+    print('Saving Yes/No/Quit meta data as JSON file...')
+    yesNoFile = open(yesNoQuitJsonFile,'w')
+    yesNoFile.write(json.dumps(yesNoQuitArray, indent=4, sort_keys=True))
+    yesNoFile.close()
+    print('Done.')

@@ -66,7 +66,7 @@ def listPhrasesTrained():
 
     listedPhrases = []
     for phrase in phrasesArray:
-        #print(listedPhrases)
+        print(phrase.keys())
         if not phrase['phrase'] in listedPhrases:
             listedPhrases.append(phrase['phrase'])
             print(phrase['phrase'])
@@ -87,7 +87,7 @@ def signalHandler(signalReceived, frame):
     if newPhraseAddedThisTime and len(phrasesArray) > 0:
         print('Saving meta data as JSON file...')
         phrasesFile = open(jsonFile,'w')
-        phrasesFile.write(json.dumps(phrasesArray))
+        phrasesFile.write(json.dumps(phrasesArray, indent=4, sort_keys=True))
         phrasesFile.close()
 
     print('Done.')
@@ -293,6 +293,7 @@ if __name__ == '__main__':
 
 
 
+
 print('Load Existing JSON meta data from file...')
 try:
     phrasesFile = open(jsonFile,'r')
@@ -300,9 +301,14 @@ try:
     phrasesFile.close()
     phrasesArray = json.loads(phrasesString)
     print('Existing JSON meta data loaded from file.')
-except:
+except json.decoder.JSONDecodeError:
     print('')
-    print('no pre-existing meta data..')
+    print('bad JSON file data..')
+    print('')
+    sys.exit(1)
+except FileNotFoundError:
+    print('')
+    print('No JSON file Data..')
     print('')
 
 
