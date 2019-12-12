@@ -61,7 +61,6 @@ valueOfMaxBackgroundStartCrossingsFound = sys.maxsize
 
 numActualRecordedFrames = 0
 maxFramesBeforeTrim = int(RATE / CHUNK * seconds)
-#textToSpeech = talkey.Talkey()
 textToSpeech = talkey.Talkey(preferred_language=['en'])
 p = pyaudio.PyAudio()  # Create an interface to PortAudio
 f = Figlet()
@@ -180,9 +179,7 @@ def isValidSound(frame, maxBackgroundVolume, maxBackgroundCrossings):
     data = np.frombuffer(frame, dtype=np.int16)
     peak = np.amax(np.abs(data))
     bars = int(255*peak/2**16)
-    #print('#'*bars)
     crossings = numZeroCrossings(data)
-    #print('vol:', bars,' freq:', crossings)
     if bars > maxBackgroundVolume:
         return True, 'bars', bars, crossings
     if crossings > maxBackgroundCrossings:
@@ -225,7 +222,7 @@ def recordAudio():
             else:
                 lastSoundWasInvalid = False
 
-            if numConsecutiveInvalidSounds > 15:
+            if numConsecutiveInvalidSounds > 20:
                 print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
                 print('...Aborting capture..... reason:', why, ' vol:', bars, ' crossings:', crossings)
@@ -328,8 +325,8 @@ def getAudioMetaData(frames):
 
     jsonObject = {
             #"phrase": phrase, 
-            "recLimitSecs": seconds, 
-            "framesLimit": maxFramesBeforeTrim, 
+            "recLimitSecs": seconds,
+            "framesLimit": maxFramesBeforeTrim,
             "numRecFrames": numActualRecordedFrames, "frameData": jsonArray }
     return jsonObject
 
@@ -509,7 +506,7 @@ while not quitProgram:
 
             difference, numMatches, bestPhraseMatch = findBestMatch(metaDataForLatestRecordedPhrase, phrasesArray)
             print('best Phrase Match: ', bestPhraseMatch['phrase'], '  numMatches: ', numMatches)
-            if (difference < 300 and numMatches > 4) or (difference < 450 and numMatches > 5):
+            if (difference < 230 and numMatches > 5) or (difference < 300 and numMatches > 6):
                 print(f.renderText(bestPhraseMatch['phrase']))
                 textToSpeech.say('You said, ' + bestPhraseMatch['phrase'])
                 needPhrase = bestPhraseMatch['phrase']
