@@ -109,12 +109,14 @@ def getIsThisCorrectUserInput():
     global newYesNoQuitAddedThisTime
     if (difference < 400 and numMatches > 3) or (difference < 650 and numMatches > 5) or (difference < 550 and numMatches > 4):
         yesNoQuitArray.append(metaDataForLatestRecordedYesNo)
-        newYesNoAddedThisTime = True
+        newYesNoQuitAddedThisTime = True
         print('Found good match...')
         if bestMatch['phrase'] == 'yes':
+            metaDataForLatestRecordedYesNo['phrase'] = 'yes'
             isThisCorrect = True
             textToSpeech.say('Very Well.')
         elif bestMatch['phrase'] == 'no':
+            metaDataForLatestRecordedYesNo['phrase'] = 'no'
             isThisCorrect = False
             textToSpeech.say('Enter phrase.')
     else:
@@ -133,13 +135,7 @@ def getIsThisCorrectUserInput():
     return isThisCorrect
 
 ##################################################################
-def signalHandler(signalReceived, frame):
-    print('Got CTRL-C...')
-
-
-    # Terminate the PortAudio interface
-    global p
-    p.terminate()
+def saveJsonData():
 
     global newPhraseAddedThisTime
     global phrasesArray
@@ -160,6 +156,18 @@ def signalHandler(signalReceived, frame):
         yesNoFile.close()
 
 
+
+
+##################################################################
+def signalHandler(signalReceived, frame):
+    print('Got CTRL-C...')
+
+
+    # Terminate the PortAudio interface
+    global p
+    p.terminate()
+
+    saveJsonData()
 
     print('Done.')
 
@@ -254,6 +262,13 @@ def compareTwoPhraseMetaData(phrase1, phrase2):
     return crossingsDiff, peakDiff, numFramesDiff
 
 ##################################################################
+def dictHasKey(dict, key):
+    if key in dict:
+        return True
+    else:
+        return False
+
+##################################################################
 def findBestMatch(latestPhraseData, phrasesArray):
 
 
@@ -271,12 +286,17 @@ def findBestMatch(latestPhraseData, phrasesArray):
             leastDiff = difference
             bestMatchIndex = i
 
-            print(phraseData.keys())
+            if not dictHasKey(phraseData,'phrase'):
+                print('Error: Num Array Items: ', str(numPhrases), ', idx: ', str(i), ' is missing \'phrase\'')
+                saveJsonData()
+                sys.exit(1)
             if phraseData['phrase'] == previousPhrase:
                 numMatches += 1
             else:
                 numMatches = 0
                 previousPhrase = phraseData['phrase']
+
+            print(phraseData['phrase'], ' ', leastDiff)
 
 
     return leastDiff, numMatches, phrasesArray[bestMatchIndex]
@@ -369,7 +389,7 @@ try:
     yesNoQuitFile = open(yesNoQuitJsonFile,'r')
     yesNoQuitString = yesNoQuitFile.read()
     yesNoQuitFile.close()
-    yesNoQuitArray = json.loads(phrasesString)
+    yesNoQuitArray = json.loads(yesNoQuitString)
     print('Existing Yes/No/Quit JSON meta data loaded from file.')
 except json.decoder.JSONDecodeError:
     print('')
@@ -525,17 +545,7 @@ while not quitProgram:
 # Terminate the PortAudio interface
 p.terminate()
 
-if newPhraseAddedThisTime:
-    print('Saving meta data as JSON file...')
-    phrasesFile = open(phrasesJsonFile,'w')
-    phrasesFile.write(json.dumps(phrasesArray, indent=4, sort_keys=True))
-    phrasesFile.close()
-    print('Done.')
+saveJsonData()
 
 
-if newYesNoQuitAddedThisTime:
-    print('Saving Yes/No/Quit meta data as JSON file...')
-    yesNoFile = open(yesNoQuitJsonFile,'w')
-    yesNoFile.write(json.dumps(yesNoQuitArray, indent=4, sort_keys=True))
-    yesNoFile.close()
-    print('Done.')
+
