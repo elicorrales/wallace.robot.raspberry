@@ -162,6 +162,10 @@ const processXandY = (X,Y, minDiffBetweenThem) => {
             return;
         }
 
+        // insure maxspeed and maxrotspeed do NOT exceed 100. that is what arduino is expecting.
+        if (maxrotspeed > 100) maxrotspeed = 100;
+        if (maxspeed > 100) maxspeed = 100;
+
         // make sure the joystick movement is clearly vertical, or clearly horizontal
         if ((absX + minDiffBetweenThem > absY) || (absY + minDiffBetweenThem > absX)) {
 
