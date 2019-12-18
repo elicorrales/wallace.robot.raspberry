@@ -18,11 +18,11 @@ const doUseThisIp = (ipAddr) => {
 
 
 const doSwitchToGamepadDrive = () => {
-    location.href = "gamepaddrive.html";
+    location.href = "gamepaddrive/gamepaddrive.html";
 }
 
 const doSwitchToTouchDrive = () => {
-    location.href = "touchdrive.html";
+    location.href = "touchdrive/touchdrive.html";
 }
 
 
