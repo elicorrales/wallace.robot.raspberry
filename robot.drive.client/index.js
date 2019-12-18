@@ -3,7 +3,8 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // related to establishing initial conncection between browser client and node.js server.
 /////////////////////////////////////////////////////////////////////////////////////////////////
-let ipAddress='10.0.0.58';
+//let ipAddress='10.0.0.58';
+let ipAddress='10.0.0.173';
 let ipAddress2='192.168.1.3';
 let currIpAddress = ipAddress;
 let haveReachedRaspberryNodeJsServerAtLeastOneTime = false;
