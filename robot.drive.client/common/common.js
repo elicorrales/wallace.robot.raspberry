@@ -187,19 +187,19 @@ const convertXandYtoMovementUrl = (intx, inty) => {
     let command = '';
     if (Math.abs(Y) > Math.abs(X)) {
         if (Y < 0) {
-            //command = 'forwardresp/' + (-Y) + '/' + (-Y);
-            command += 'forward/' + (-Y) + '/' + (-Y);
+            //command = 'forwardresp/' + (-Y);
+            command += 'forward/' + (-Y);
         } else if (Y > 0) {
             //command = 'backwardresp/' + Y + '/' + Y;
-            command += 'backward/' + Y + '/' + Y;
+            command += 'backward/' + Y;
         }
     } else if (Math.abs(Y) < Math.abs(X)) {
         if (X > 0) {
-            //command = 'rightresp/' + X + '/' + X;
-            command += 'right/' + X + '/' + X;
+            //command = 'rightresp/' + X;
+            command += 'right/' + X;
         } else if (X < 0) {
-            //command = 'leftresp/' + (-X) + '/' + (-X);
-            command += 'left/' + (-X) + '/' + (-X);
+            //command = 'leftresp/' + (-X);
+            command += 'left/' + (-X);
         }
     }
 
