@@ -163,7 +163,7 @@ arduinoParser.on('data', data => {
 */
 
     if (showArduinoResponseInServerTerminal) {
-        console.log(data);
+        console.log('from arduino:', data);
     }
 
     try {
@@ -245,7 +245,24 @@ app.get('/', rootHandler);
 
 ///////handler to respond with any arduino status data///////////////////////////////////
 const respondWithCollectedDataHandler = (request, response) => {
-    response.send({
+
+console.log('response to client request: ', JSON.stringify({
+        timestamp,
+        volts,
+        amps1,
+        amps2,
+        temp,
+        speed1,
+        speed2,
+        msg,
+        cmds,
+        spdcmd,
+        dropped,
+        lastcmd,
+        error,
+        version
+    }));
+response.send({
         timestamp,
         volts,
         amps1,
@@ -440,7 +457,7 @@ app.get('/arduino/api/*', commandHandler);
 ///////node.js server command handler/////////////////////////////////////////////////////
 const nodeJsCommandHandler = (request, response) => {
 
-    console.log('server log: nodeJsCommandHandler: ' + request.path);
+    console.log('client request : nodeJsCommandHandler: ' + request.path);
 
 
     if (request.path === '/nodejs/api/data') {
@@ -465,66 +482,7 @@ app.get('/nodejs/api/*', nodeJsCommandHandler);
 
 
 
-//////////////////////////////////////////////////////////////////////
-// remote USB gamepad related stuff
-//////////////////////////////////////////////////////////////////////
 
-/*
-const processAxesValues = (data) => {
-    const X = data.X;
-    const Y = data.Y;
-
-    //console.log(X,' ',Y);
-  
-    let command = 'gamepad/axes/';
-    if (Math.abs(Y) > Math.abs(X)) {
-        if (Y < 0) {
-            //command = 'forwardresp/' + (-Y) + '/' + (-Y);
-            command += 'forward/' + (-Y) + '/' + (-Y);
-        } else if (Y > 0) {
-            //command = 'backwardresp/' + Y + '/' + Y;
-            command += 'backward/' + Y + '/' + Y;
-        }
-    } else if (Math.abs(Y) < Math.abs(X)) {
-        if (X > 0) {
-            //command = 'rightresp/' + X + '/' + X;
-            command += 'right/' + X + '/' + X;
-        } else if (X < 0) {
-            //command = 'leftresp/' + (-X) + '/' + (-X);
-            command += 'left/' + (-X) + '/' + (-X);
-        }
-    }
-
-
-    let path = command;
-    try {
-        parseAndSendCommandToArduino(path);
-    } catch (e) {
-        console.log(e);
-        error = e;
-    }
-}
-
-
-//gamepad joystick axes handler
-const joystickAxesHandler = (request, response) => {
-
-    let now = new Date().getTime();
-
-    if (now - millisSinceLastResponseFromArduino > 200) {
-       response.status(500).send('{\"error\":\"ARDUINO is NOT RESPONDING\"}');
-       return;
-    }
-
-    console.log('server log: ' + request.path);
-    if (request.body !== undefined) {
-        //console.log(request.body);
-        processAxesValues(request.body);
-    } else console.log('no request body');
-    response.send(request.path);
-}
-app.post('/gamepad/axes/', joystickAxesHandler);
-*/
 
 app.listen(8084, () => {
     console.log('HTTP Raspberry Pi Server is Up at 8084');
