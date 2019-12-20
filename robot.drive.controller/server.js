@@ -24,9 +24,11 @@ const raspberry2redboardBaud = 9600;
  
 const arduinoPort = new serial('/dev/ttyACM0',{baudRate:raspberry2arduinoBaud,autoOpen:false});
 const arduinoParser = arduinoPort.pipe(new readline({ delimiter: '\n'}));
+let   isConnectedToArduino = false;
 
 arduinoPort.on('open', () => {
         console.log('serial arduinoPort open');
+        isConnectedToArduino = true;
 });
 
 arduinoPort.on('close', () => {
@@ -44,6 +46,8 @@ const connectToArduino = () => {
 }
 
 const reconnectToArduino = () => {
+    isConnectedToArduino = false;
+    clearAllStatusVariables();
     console.log('ATTEMPT RE-CONNECT TO ARDUINO');
     error = 'ATTEMPT RE-CONNECT TO ARDUINO';
     setTimeout(() => {
@@ -275,7 +279,9 @@ const respondWithCollectedDataHandler = (request, response) => {
         error,
         version
     };
-    console.log('client requrested data: ', JSON.stringify(dataToSend));
+    if (isConnectedToArduino) { 
+        console.log('client requrested data: ', JSON.stringify(dataToSend));
+    }
     response.send(dataToSend);
 }
 app.get('/nodejs/data', respondWithCollectedDataHandler);
