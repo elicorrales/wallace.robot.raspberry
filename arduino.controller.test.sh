@@ -1,6 +1,6 @@
 #!/bin/bash
 
-baseurl="http://localhost:8080";
+baseurl="http://localhost:8084";
 arduino="${baseurl}/arduino";
 api="${arduino}/api";
 
@@ -47,55 +47,39 @@ echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
 curl "${api}/status/stop";
 
-#echo;echo "This next test should should show voltage";
-#echo "on server side console (node server.js)";
-#read -p "press <ENTER> to move on.";
-#curl "${api}/volts";
-
-#echo;echo "This next test should should show current";
-#echo "on server side console (node server.js)";
-#read -p "press <ENTER> to move on.";
-#curl "${api}/amps";
-
-#echo;echo "This next test should should show temperature";
-#echo "on server side console (node server.js)";
-#read -p "press <ENTER> to move on.";
-#curl "${api}/temp";
-
-#echo;echo "This next test should should show speeds";
-#echo "on server side console (node server.js)";
-#read -p "press <ENTER> to move on.";
-#curl "${api}/speeds";
-
 echo;echo "This next test should should stop RC";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
 curl "${api}/stop";
 
+echo;echo "This next test should should send clr.usb.err to arduino";
+read -p "press <ENTER> to move on.";
+curl "${api}/clr.usb.err";
+
 echo;echo "This next test should should forward RC at 30 30";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
-curl "${api}/forward/30/30";
+curl "${api}/forward/30/0";
 
 echo;echo "This next test should should forward RC at 50 50";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
-curl "${api}/forward/50/50";
+curl "${api}/forward/50/1";
 
 echo;echo "This next test should should backward RC at 80 80";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
-curl "${api}/backward/80/80";
+curl "${api}/backward/80/2";
 
 echo;echo "This next test should should rotate left RC at 100 100";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
-curl "${api}/left/100/100";
+curl "${api}/left/100/3";
 
 echo;echo "This next test should should rotate right RC at 100 100";
 echo "on server side console (node server.js)";
 read -p "press <ENTER> to move on.";
-curl "${api}/right/100/100";
+curl "${api}/right/100/4";
 
 echo;echo "This next test should should stop RC";
 echo "on server side console (node server.js)";

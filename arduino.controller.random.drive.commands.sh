@@ -13,7 +13,7 @@ read -p "press <ENTER> to move on.";
 curl --silent "${api}/status/start/50";
 echo; echo;
 
-speed=50;
+speed=100;
 
 curl --silent $clrusberr;
 echo; echo;
@@ -21,10 +21,12 @@ sleep 1;
 curl --silent $clrcmds;
 echo; echo;
 
-numCycles=400;
+#numCycles=400;
+numCycles=16;
 while [ $numCycles -gt 0 ];
 do
     random=$RANDOM;
+#random=100;
     if [ $random -ge 0 ] && [ $random -lt 8192 ];
     then
         echo;echo "Move forward at $speed..";
@@ -45,19 +47,21 @@ do
         curl --silent "${api}/right/${speed}";
         echo; echo;
     fi;
-        numCycles=$((numCycles-1));
-        dataResults=$(curl --silent $data 2>&1);
-        cmdNotSent=$(echo $dataResults | grep "CMD NOT SENT");
-        unkCmd=$(echo $dataResults | grep "UNKCMD");
-        if [ "$unkCmd" != "" ];
-        then
-            echo $unkCmd;
-            break;
-        elif [ "$cmdNotSent" != "" ];
-        then
-            echo $cmdNotSent;
-            break;
-        fi;
+    driveCmdNum=$((driveCmdNum+1));
+    numCycles=$((numCycles-1));
+    dataResults=$(curl --silent $data 2>&1);
+    cmdNotSent=$(echo $dataResults | grep "CMD NOT SENT");
+    unkCmd=$(echo $dataResults | grep "UNKCMD");
+    if [ "$unkCmd" != "" ];
+    then
+        echo $unkCmd;
+        break;
+    elif [ "$cmdNotSent" != "" ];
+    then
+        echo $cmdNotSent;
+        break;
+    fi;
+    #sleep 0.8;
 done;
 
 

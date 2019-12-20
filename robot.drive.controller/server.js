@@ -96,6 +96,7 @@ connectToRedboard();
 // arduino - robot - driving functions
 //////////////////////////////////////////////////////////////////////////////////////////
 
+////////////these are the status values ///////////////////////////
 let timestamp = 0;
 let volts = '';
 let amps1 = '';
@@ -113,10 +114,17 @@ let cmdNum = '';
 let dropped = '';
 let thereIsError = false;
 let commandWasSentToArduino = false;
+let millisSinceLastCommandSentToArduino = new Date().getTime();
 let millisSinceLastResponseFromArduino = new Date().getTime();
 let showArduinoResponseInServerTerminal = true;
 
-
+////////////// these are the drive command ack values ///////////////////
+let waitForDriveCmdAck = false;
+let driveCmdAckRcvd = false;
+let lastDriveCmd = '';
+let lastAckNum = '';
+let dir = '';
+let ackNum = '';
 
 let lastCommandSentToArduino = '';
 let lastCommandSentTimestamp = 0;
@@ -212,6 +220,12 @@ arduinoParser.on('data', data => {
             console.log('VERSION VERSION'+version);
         }
 
+        if (result.dir !== undefined) {
+            dir = result.dir;
+            ackNum = result.ackNum;
+            driveCmdAckRcvd = true;
+        } 
+
         if (thereIsError) { console.log(result); }
 
     } catch (e) {
@@ -245,7 +259,7 @@ app.get('/', rootHandler);
 
 ///////handler to respond with any arduino status data///////////////////////////////////
 const respondWithCollectedDataHandler = (request, response) => {
-    response.send({
+    let dataToSend = {
         timestamp,
         volts,
         amps1,
@@ -260,7 +274,9 @@ const respondWithCollectedDataHandler = (request, response) => {
         lastcmd,
         error,
         version
-    });
+    };
+    console.log('client requrested data: ', JSON.stringify(dataToSend));
+    response.send(dataToSend);
 }
 app.get('/nodejs/data', respondWithCollectedDataHandler);
 
@@ -272,6 +288,26 @@ const respondWithHistoryHandler = (request, response) => {
 
 
 
+const processDriveCommand = (ackWaitTime,cmdNum, commandStr, myRand, p1) => {
+    if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
+    if (waitForDriveCmdAck) { return ''; }
+    if (thereIsError) { return ''; }
+    let now = new Date().getTime();
+    let timeout = now - millisSinceLastCommandSentToArduino;
+    millisSinceLastCommandSentToArduino = new Date().getTime();
+    let p2 = 0;
+    if (timeout < 1000 && ackNum !== '') {
+        p2 = parseInt(ackNum) + 1;    
+    }
+    lastDriveCmd = commandStr;
+    lastAckNum = p2;
+    waitForDriveCmdAck = true;
+    driveCmdAckRcvd = false;
+    let commandStringToSend = '6 ' + cmdNum + ' ' + myRand + ' ' 
+                        + (parseInt(cmdNum) + parseInt(myRand) + parseInt(p1) + parseInt(p2) + 6) 
+                        + ' ' + p1 + ' ' + p2;
+    return commandStringToSend;
+}
 
 ///////arduino command handler command code with gamepad/joystick handler//////////
 const parseAndSendCommandToArduino = (path) => {
@@ -320,6 +356,7 @@ const parseAndSendCommandToArduino = (path) => {
 
 
     const now = new Date().getTime();
+    let ackWaitTime = now - millisSinceLastResponseFromArduino;
 
     let cmdUri = baseUri + '.' + apiStr + '.' + cmd;
     switch (cmdUri) {
@@ -364,25 +401,74 @@ const parseAndSendCommandToArduino = (path) => {
                 cmdNum = 28;
                 commandStringToSend = '4 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + 4);
                 break;
+
         case 'arduino.api.forward':
+                commandStringToSend = processDriveCommand(ackWaitTime,29, cmd, myRandom, parm1, parm2);
+                if (commandStringToSend === '') { return; }
+/*
+                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
+                if (waitForDriveCmdAck) { return; }
                 if (thereIsError) { return; }
                 cmdNum = 29;
-                commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                lastDriveCmd = cmd;
+                lastAckNum = parm2;
+                waitForDriveCmdAck = true;
+                driveCmdAckRcvd = false;
+                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
+                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
+                                        + ' ' + parm1 + ' ' + parm2;
+*/
                 break;
         case 'arduino.api.backward':
+                commandStringToSend = processDriveCommand(ackWaitTime,32, cmd, myRandom, parm1, parm2);
+                if (commandStringToSend === '') { return; }
+/*
+                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
+                if (waitForDriveCmdAck) { return; }
                 if (thereIsError) { return; }
                 cmdNum = 32;
-                commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                lastDriveCmd = cmd;
+                lastAckNum = parm2;
+                waitForDriveCmdAck = true;
+                driveCmdAckRcvd = false;
+                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
+                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
+                                        + ' ' + parm1 + ' ' + parm2;
+*/
                 break;
         case 'arduino.api.left':
+                commandStringToSend = processDriveCommand(ackWaitTime,33, cmd, myRandom, parm1, parm2);
+                if (commandStringToSend === '') { return; }
+/*
+                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
+                if (waitForDriveCmdAck) { return; }
                 if (thereIsError) { return; }
                 cmdNum = 33;
-                commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                lastDriveCmd = cmd;
+                lastAckNum = parm2;
+                waitForDriveCmdAck = true;
+                driveCmdAckRcvd = false;
+                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
+                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
+                                        + ' ' + parm1 + ' ' + parm2;
+*/
                 break;
         case 'arduino.api.right':
+                commandStringToSend = processDriveCommand(ackWaitTime,34, cmd, myRandom, parm1, parm2);
+                if (commandStringToSend === '') { return; }
+/*
+                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
+                if (waitForDriveCmdAck) { return; }
                 if (thereIsError) { return; }
                 cmdNum = 34;
-                commandStringToSend = '5 ' + cmdNum + ' ' + myRandom + ' ' + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + 5) + ' ' + parm1;
+                lastDriveCmd = cmd;
+                lastAckNum = parm2;
+                waitForDriveCmdAck = true;
+                driveCmdAckRcvd = false;
+                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
+                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
+                                        + ' ' + parm1 + ' ' + parm2;
+*/
                 break;
 
         default:
@@ -416,9 +502,9 @@ const parseAndSendCommandToArduino = (path) => {
 
 
 ///////arduino command handler/////////////////////////////////////////////////////
-const commandHandler = (request, response) => {
+const arduinoApiCommandHandler = (request, response) => {
 
-    console.log('server log: commandHandler : ' + request.path);
+    console.log('client request: commandHandler : ' + request.path);
 
     try {
         parseAndSendCommandToArduino(request.path);
@@ -432,15 +518,32 @@ const commandHandler = (request, response) => {
         error = 'Error: ' + e + ' requesting ' + request.path;
     }
 }
-app.get('/arduino/api/*', commandHandler);
+app.get('/arduino/api/*', arduinoApiCommandHandler);
 
 
+///////arduino api NO command handler/////////////////////////////////////////////////////
+const arduinoApiNoCommandHandler = (request, response) => {
 
+    console.log('client request: commandHandler : ' + request.path);
+
+    response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need something after that.\"}');
+}
+app.get('/arduino/api', arduinoApiNoCommandHandler);
+
+
+///////arduino NO command handler/////////////////////////////////////////////////////
+const arduinoNoCommandHandler = (request, response) => {
+
+    console.log('client request: commandHandler : ' + request.path);
+
+    response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need /api/blah.blah after that.\"}');
+}
+app.get('/arduino', arduinoNoCommandHandler);
 
 ///////node.js server command handler/////////////////////////////////////////////////////
 const nodeJsCommandHandler = (request, response) => {
 
-    console.log('server log: nodeJsCommandHandler: ' + request.path);
+    console.log('client request: nodeJsCommandHandler: ' + request.path);
 
 
     if (request.path === '/nodejs/api/data') {
@@ -465,66 +568,6 @@ app.get('/nodejs/api/*', nodeJsCommandHandler);
 
 
 
-//////////////////////////////////////////////////////////////////////
-// remote USB gamepad related stuff
-//////////////////////////////////////////////////////////////////////
-
-/*
-const processAxesValues = (data) => {
-    const X = data.X;
-    const Y = data.Y;
-
-    //console.log(X,' ',Y);
-  
-    let command = 'gamepad/axes/';
-    if (Math.abs(Y) > Math.abs(X)) {
-        if (Y < 0) {
-            //command = 'forwardresp/' + (-Y) + '/' + (-Y);
-            command += 'forward/' + (-Y) + '/' + (-Y);
-        } else if (Y > 0) {
-            //command = 'backwardresp/' + Y + '/' + Y;
-            command += 'backward/' + Y + '/' + Y;
-        }
-    } else if (Math.abs(Y) < Math.abs(X)) {
-        if (X > 0) {
-            //command = 'rightresp/' + X + '/' + X;
-            command += 'right/' + X + '/' + X;
-        } else if (X < 0) {
-            //command = 'leftresp/' + (-X) + '/' + (-X);
-            command += 'left/' + (-X) + '/' + (-X);
-        }
-    }
-
-
-    let path = command;
-    try {
-        parseAndSendCommandToArduino(path);
-    } catch (e) {
-        console.log(e);
-        error = e;
-    }
-}
-
-
-//gamepad joystick axes handler
-const joystickAxesHandler = (request, response) => {
-
-    let now = new Date().getTime();
-
-    if (now - millisSinceLastResponseFromArduino > 200) {
-       response.status(500).send('{\"error\":\"ARDUINO is NOT RESPONDING\"}');
-       return;
-    }
-
-    console.log('server log: ' + request.path);
-    if (request.body !== undefined) {
-        //console.log(request.body);
-        processAxesValues(request.body);
-    } else console.log('no request body');
-    response.send(request.path);
-}
-app.post('/gamepad/axes/', joystickAxesHandler);
-*/
 
 app.listen(8084, () => {
     console.log('HTTP Raspberry Pi Server is Up at 8084');
