@@ -295,14 +295,25 @@ const respondWithHistoryHandler = (request, response) => {
 
 
 const processDriveCommand = (ackWaitTime,cmdNum, commandStr, myRand, p1) => {
-    if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
-    if (waitForDriveCmdAck) { return ''; }
-    if (thereIsError) { return ''; }
-    let now = new Date().getTime();
-    let timeout = now - millisSinceLastCommandSentToArduino;
+    //console.log('ELIELI: drCmdAckRcvd:',driveCmdAckRcvd,' dir:',dir,' lastDrivCmd:',lastDriveCmd,' ackNum:',ackNum,' lastAck:',lastAckNum,' time:',ackWaitTime);
+    if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 200) {
+        //console.log('ELIELI clear wait');
+        waitForDriveCmdAck = false;
+    }
+    if (waitForDriveCmdAck) {
+        //console.log('ELIELI waiting for ack...');
+        return '';
+    }
+    if (thereIsError) {
+        //console.log('ELIELI there is error');
+        return '';
+    }
     millisSinceLastCommandSentToArduino = new Date().getTime();
+
+    ////////// we increment the drive command number if it is part of a stream of drive commands,
+    ////////// other wise if some time elapsed, and it is a new stream, we reset the drive command number.
     let p2 = 0;
-    if (timeout < 1000 && ackNum !== '') {
+    if (ackWaitTime < 1000 && ackNum !== '') {
         p2 = parseInt(ackNum) + 1;    
     }
     lastDriveCmd = commandStr;
@@ -362,7 +373,7 @@ const parseAndSendCommandToArduino = (path) => {
 
 
     const now = new Date().getTime();
-    let ackWaitTime = now - millisSinceLastResponseFromArduino;
+    let ackWaitTime = now - millisSinceLastCommandSentToArduino;
 
     let cmdUri = baseUri + '.' + apiStr + '.' + cmd;
     switch (cmdUri) {
