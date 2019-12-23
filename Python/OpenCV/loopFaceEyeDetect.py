@@ -25,7 +25,7 @@ cap.set(cv2.CAP_PROP_FPS, FPS)
 if limitBuffer:
     cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
-xml_path = '/home/devchu/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/'
+xml_path = '/home/pi/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/'
 face_cascade = cv2.CascadeClassifier(xml_path + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(xml_path + 'haarcascade_eye.xml')
 

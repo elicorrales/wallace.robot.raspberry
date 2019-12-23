@@ -26,7 +26,7 @@ if limitBuffer:
 
 
 
-xml_path = '/home/devchu/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/'
+xml_path = '/home/pi/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/'
 face_cascade = cv2.CascadeClassifier(xml_path + 'haarcascade_frontalface_default.xml')
 
 

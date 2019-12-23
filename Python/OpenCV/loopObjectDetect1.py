@@ -24,7 +24,7 @@ if limitBuffer:
     cap.set(cv2.CAP_PROP_BUFFERSIZE,1)
 
             
-face_xml = '/home/devchu/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/haarcascade_frontalface_default.xml'
+face_xml = '/home/pi/.virtualenvs/cv/lib/python3.7/site-packages/cv2/data/haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(face_xml)
 
 # only attempt to read if it is opened
