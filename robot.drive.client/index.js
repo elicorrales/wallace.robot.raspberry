@@ -28,7 +28,7 @@ const doSwitchToTouchDrive = () => {
 
 
 const doSwitchToFollow1Drive = () => {
-    location.href = "follow1.html";
+    location.href = "crude.follow/follow1.html";
 }
 
 const doSwitchToMinRotationValuesTest = () => {
@@ -36,7 +36,7 @@ const doSwitchToMinRotationValuesTest = () => {
 }
 
 const doSwitchToFollow2Drive = () => {
-    location.href = "follow2.html";
+    location.href = "crude.follow/follow2.html";
 }
 
 const doSwitchToUNetRotate = () => {
