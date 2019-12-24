@@ -1,6 +1,6 @@
 'use strict';
 
-const url0="http://10.0.0.34:8081/?action=stream";
+const url0="http://10.0.0.34:8082/?action=stream";
 let cameraWorks = false;
 camera0.crossOrigin = "Anonymous";
 
