@@ -1,6 +1,6 @@
 'use strict';
 
-const MY_CAM_URL ="http://10.0.0.34:8081/?action=stream";
+const MY_CAM_URL ="http://10.0.0.34:8082/?action=stream";
 const MY_WIDTH = 240;
 const MY_HEIGHT = 180;
 const MY_THIRD  = MY_WIDTH/3;

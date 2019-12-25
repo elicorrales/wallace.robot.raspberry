@@ -540,9 +540,7 @@ app.get('/arduino/api/*', arduinoApiCommandHandler);
 
 ///////arduino api NO command handler/////////////////////////////////////////////////////
 const arduinoApiNoCommandHandler = (request, response) => {
-
     console.log('client request: commandHandler : ' + request.path);
-
     response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need something after that.\"}');
 }
 app.get('/arduino/api', arduinoApiNoCommandHandler);
@@ -550,9 +548,7 @@ app.get('/arduino/api', arduinoApiNoCommandHandler);
 
 ///////arduino NO command handler/////////////////////////////////////////////////////
 const arduinoNoCommandHandler = (request, response) => {
-
     console.log('client request: commandHandler : ' + request.path);
-
     response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need /api/blah.blah after that.\"}');
 }
 app.get('/arduino', arduinoNoCommandHandler);
@@ -581,6 +577,33 @@ const nodeJsCommandHandler = (request, response) => {
     }
 }
 app.get('/nodejs/api/*', nodeJsCommandHandler);
+
+
+///////node.js api NO command handler/////////////////////////////////////////////////////
+const nodeJsApiNoCommandHandler = (request, response) => {
+    console.log('client request: commandHandler : ' + request.path);
+    response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need something after that.\"}');
+}
+app.get('/nodejs/api', nodeJsApiNoCommandHandler);
+
+///////node.js NO command handler/////////////////////////////////////////////////////
+const nodeJsNoCommandHandler = (request, response) => {
+
+    console.log('client request: nodeJsCommandHandler : ' + request.path);
+
+    response.status(404).send('{\"error\":\"You requested ' + request.path + '. You need /api/blah.blah after that.\"}');
+}
+app.get('/nodejs', nodeJsNoCommandHandler);
+
+
+///////node.js bad/////////////////////////////////////////////////////
+const nodeJsBad = (request, response) => {
+
+    console.log('client request: nodeJsCommandHandler : ' + request.path);
+
+    response.status(404).send('{\"error\":\"You requested ' + request.path + '. Did you mean /nodejs?\"}');
+}
+app.get('/node.js', nodeJsBad);
 
 
 
