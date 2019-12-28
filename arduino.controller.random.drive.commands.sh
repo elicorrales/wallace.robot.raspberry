@@ -21,12 +21,12 @@ sleep 1;
 curl --silent $clrcmds;
 echo; echo;
 
-#numCycles=400;
-numCycles=16;
+numCycles=400;
+#numCycles=16;
 while [ $numCycles -gt 0 ];
 do
     random=$RANDOM;
-#random=100;
+random=100;
     if [ $random -ge 0 ] && [ $random -lt 8192 ];
     then
         echo;echo "Move forward at $speed..";

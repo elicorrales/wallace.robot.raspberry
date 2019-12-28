@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "parser-readline": "^1.0.2",
-    "serialport": "^7.1.5"
+    "serialport": "^7.1.5",
+    "yargs": "^15.0.2"
   }
 }

@@ -1,5 +1,6 @@
 'use strict';
 
+const argv = require('yargs').argv;
 const serial = require('serialport');
 const readline = require('@serialport/parser-readline');
 
@@ -123,6 +124,10 @@ let millisSinceLastResponseFromArduino = new Date().getTime();
 let showArduinoResponseInServerTerminal = true;
 
 ////////////// these are the drive command ack values ///////////////////
+//console.log(argv.maxTimeout);
+//process.exit(0);
+if (argv.maxTimeout === undefined) { console.log('Need --maxTimeout'); process.exit(1); }
+const maxTimeToWaitForAck = argv.maxTimeout;
 let waitForDriveCmdAck = false;
 let driveCmdAckRcvd = false;
 let lastDriveCmd = '';
@@ -296,7 +301,7 @@ const respondWithHistoryHandler = (request, response) => {
 
 const processDriveCommand = (ackWaitTime,cmdNum, commandStr, myRand, p1) => {
     //console.log('ELIELI: drCmdAckRcvd:',driveCmdAckRcvd,' dir:',dir,' lastDrivCmd:',lastDriveCmd,' ackNum:',ackNum,' lastAck:',lastAckNum,' time:',ackWaitTime);
-    if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 100) {
+    if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > maxTimeToWaitForAck) {
         //console.log('ELIELI clear wait');
         waitForDriveCmdAck = false;
     }
@@ -422,70 +427,18 @@ const parseAndSendCommandToArduino = (path) => {
         case 'arduino.api.forward':
                 commandStringToSend = processDriveCommand(ackWaitTime,29, cmd, myRandom, parm1, parm2);
                 if (commandStringToSend === '') { return; }
-/*
-                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
-                if (waitForDriveCmdAck) { return; }
-                if (thereIsError) { return; }
-                cmdNum = 29;
-                lastDriveCmd = cmd;
-                lastAckNum = parm2;
-                waitForDriveCmdAck = true;
-                driveCmdAckRcvd = false;
-                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
-                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
-                                        + ' ' + parm1 + ' ' + parm2;
-*/
                 break;
         case 'arduino.api.backward':
                 commandStringToSend = processDriveCommand(ackWaitTime,32, cmd, myRandom, parm1, parm2);
                 if (commandStringToSend === '') { return; }
-/*
-                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
-                if (waitForDriveCmdAck) { return; }
-                if (thereIsError) { return; }
-                cmdNum = 32;
-                lastDriveCmd = cmd;
-                lastAckNum = parm2;
-                waitForDriveCmdAck = true;
-                driveCmdAckRcvd = false;
-                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
-                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
-                                        + ' ' + parm1 + ' ' + parm2;
-*/
                 break;
         case 'arduino.api.left':
                 commandStringToSend = processDriveCommand(ackWaitTime,33, cmd, myRandom, parm1, parm2);
                 if (commandStringToSend === '') { return; }
-/*
-                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
-                if (waitForDriveCmdAck) { return; }
-                if (thereIsError) { return; }
-                cmdNum = 33;
-                lastDriveCmd = cmd;
-                lastAckNum = parm2;
-                waitForDriveCmdAck = true;
-                driveCmdAckRcvd = false;
-                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
-                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
-                                        + ' ' + parm1 + ' ' + parm2;
-*/
                 break;
         case 'arduino.api.right':
                 commandStringToSend = processDriveCommand(ackWaitTime,34, cmd, myRandom, parm1, parm2);
                 if (commandStringToSend === '') { return; }
-/*
-                if ((driveCmdAckRcvd && dir === lastDriveCmd && ackNum == lastAckNum) || ackWaitTime > 500) { waitForDriveCmdAck = false; }
-                if (waitForDriveCmdAck) { return; }
-                if (thereIsError) { return; }
-                cmdNum = 34;
-                lastDriveCmd = cmd;
-                lastAckNum = parm2;
-                waitForDriveCmdAck = true;
-                driveCmdAckRcvd = false;
-                commandStringToSend = '6 ' + cmdNum + ' ' + myRandom + ' ' 
-                                        + (parseInt(cmdNum) + parseInt(myRandom) + parseInt(parm1) + parseInt(parm2) + 6) 
-                                        + ' ' + parm1 + ' ' + parm2;
-*/
                 break;
 
         default:
